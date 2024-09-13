@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SideBar from './Components/Dashboard/sidebar';
 import Equipos from './Components/Dashboard/equipos';
 import Usuarios from './Components/Dashboard/usuarios';
+import Usuarioequip from './Components/DashboardUsuarios/usuarioequip';
 
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Carrusel />} />
+          <Route path='/' element={<Usuarioequip />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register/>}/>
           <Route path="/admin/home" element ={<SideBar/>}/>
