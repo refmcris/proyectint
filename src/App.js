@@ -9,6 +9,7 @@ import Login from './Components/Login';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SideBar from './Components/Dashboard/sidebar';
 import Equipos from './Components/Dashboard/equipos';
+import Usuarios from './Components/Dashboard/usuarios';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path='/register' element={<Register/>}/>
           <Route path="/admin/home" element ={<SideBar/>}/>
           <Route path="/admin/equipos" element={<Equipos/>}/>
+          <Route path="/admin/usuarios" element={<Usuarios/>}/>
         </Routes>
       </BrowserRouter>
     </div>

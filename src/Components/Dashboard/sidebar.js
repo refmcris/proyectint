@@ -181,7 +181,7 @@ export default function SideBar() {
               <ListItemText primary="Registro equipos" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { alert('Nueva funcionalidad ASAP'); }}>
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/usuarios"); }}>
             <ListItemButton
               sx={{
                 minHeight: 48,
