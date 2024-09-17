@@ -11,6 +11,8 @@ import SideBar from './Components/Dashboard/sidebar';
 import Equipos from './Components/Dashboard/equipos';
 import Usuarios from './Components/Dashboard/usuarios';
 import Usuarioequip from './Components/DashboardUsuarios/usuarioequip';
+import SideBarus from './Components/DashboardUsuarios/sidebarus';
+import Prestamos from './Components/DashboardUsuarios/prestamos';
 
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
           <Route path="/admin/home" element ={<SideBar/>}/>
           <Route path="/admin/equipos" element={<Equipos/>}/>
           <Route path="/admin/usuarios" element={<Usuarios/>}/>
+          <Route path="/usuarios/home" element={<Usuarioequip/>}/>
+          <Route path="/area-prestamos" element ={<Prestamos/>}/>
         </Routes>
       </BrowserRouter>
     </div>
