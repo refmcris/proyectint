@@ -92,6 +92,18 @@
         return 0;
       });
 
+      const getEstadoColor = (estado) => {
+        switch (estado) {
+          case "disponible":
+            return "#3df27b"; 
+          case "en_préstamo":
+            return "#feac54"; 
+          case "en_reparación":
+            return "#f8646d"; 
+          default:
+            return "black";
+        }
+      };
       const handleSubmit = async (event) => {
         event.preventDefault();
         const postData = { ...editRecord };
@@ -154,8 +166,23 @@
                   <TableRow key={row.id_equipo}>
                     {columns.map((column) => (
                       <TableCell key={column.id}>
-                        {row[column.id]}
-                      </TableCell>
+                      {column.id === "estado" ? (
+                        <span
+                          style={{
+                            backgroundColor: getEstadoColor(row[column.id]), 
+                            color: "white", 
+                            padding: "5px 10px", 
+                            borderRadius: "5px", 
+                            fontWeight: "bold",
+                            display: "inline-block"
+                          }}
+                        >
+                          {row[column.id]}
+                        </span>
+                      ) : (
+                        row[column.id]
+                      )}
+                    </TableCell>
                     ))}
                     <TableCell>
                     <Button variant="outlined" onClick={() => handleEditRecord(row)} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' } }} >

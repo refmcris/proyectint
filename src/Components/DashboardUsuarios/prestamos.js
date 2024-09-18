@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Navbar from './sidebarus'
-import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell,TableBody,Paper,TablePagination, TableSortLabel
+import {Button,Box,TextField,Typography,Table,TableContainer,TableHead,TableRow,TableCell,TableBody,Paper,TablePagination, TableSortLabel
 ,Dialog, DialogActions, DialogContent,
 DialogTitle} from "@mui/material";
 import axios from "axios";
@@ -8,6 +8,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import Cookies from 'js-cookie';
 const initialData = [];
 
 const columns = [
@@ -28,6 +29,8 @@ function Prestamos() {
   const [reservationDate, setReservationDate] = useState(dayjs());
   const today = dayjs();
 
+
+  const id_usuario = Cookies.get('id_usuario') || '';
   const handleOpen = (row) => {
     setSelectedRow(row);
     setOpen(true); 
@@ -86,7 +89,25 @@ function Prestamos() {
       }
       return 0;
     });
-
+    const handleConfirmar = async () => {
+      try {
+        const payload = {
+          id_usuario: id_usuario, 
+          id_equipo: selectedRow.id_equipo, 
+          fecha_devolucion: reservationDate.format('YYYY-MM-DD'), 
+        };
+    
+        const response = await axios.post("http://localhost:3001/api/prestamos", payload);
+    
+        if (response.status === 201) {
+          alert('Préstamo registrado con éxito');
+          handleClose(); 
+        }
+      } catch (error) {
+        console.error("Error al registrar el préstamo:", error);
+        alert("Hubo un error al registrar el préstamo");
+      }
+    };
   return (
     <Box sx={{}}>
       <Navbar />
@@ -130,11 +151,21 @@ function Prestamos() {
                 </TableRow>
               ))}
             </TableBody>
-            <Dialog  open={open}onClose={handleClose}fullWidthmaxWidth="md" sx={{'& .MuiDialog-paper': {width: '20%',maxWidth: 'none',padding: '24px', },}}>
+            <Dialog  open={open} onClose={handleClose} fullWidth maxWidth="md" sx={{'& .MuiDialog-paper': {width: '20%', maxWidth: 'none', padding: '24px'}}}>
             <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>
               Reservar equipo
             </DialogTitle>
             <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              {selectedRow && (
+                <Box sx={{ width: '100%', mb: 2, textAlign: 'center' }}>
+                  <Typography variant="h6" gutterBottom>Detalles del equipo:</Typography>
+                  <Typography>Nombre: {selectedRow.nombre_equipo}</Typography>
+                  <Typography>Tipo: {selectedRow.tipo}</Typography>
+                  <Typography>Marca: {selectedRow.marca}</Typography>
+                  <Typography>Modelo: {selectedRow.modelo}</Typography>
+                </Box>
+              )}
+
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Fecha de reserva"
@@ -149,7 +180,7 @@ function Prestamos() {
               <Button onClick={handleClose} color="primary" variant="outlined">
                 Cancelar
               </Button>
-              <Button onClick={() => { handleClose(); }} color="primary" variant="contained">
+              <Button onClick={handleConfirmar} color="primary" variant="contained">
                 Confirmar
               </Button>
             </DialogActions>

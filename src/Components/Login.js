@@ -35,7 +35,8 @@ const Login = () => {
       console.log('Respuesta de la API:', response.data);
 
       setUserInfo(response.data);
-
+      
+      Cookies.set('id_usuario',response.data.id_usuario);
       Cookies.set('userName', response.data.nombre);
       Cookies.set('userLastName', response.data.apellido);
       Cookies.set('userRole', response.data.rol);
