@@ -6,7 +6,7 @@ import Logo from './logo.png'
 import Logo2 from './logo2.PNG';
 import { Link, NavLink, useNavigate} from 'react-router-dom';
 import axios from 'axios';
-
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +14,7 @@ const Login = () => {
   const [passwordInput, setPasswordInput] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -31,8 +32,23 @@ const Login = () => {
         email: emailInput,
         password: passwordInput
       });
+      console.log('Respuesta de la API:', response.data);
+
+      setUserInfo(response.data);
+
+      Cookies.set('userName', response.data.nombre);
+      Cookies.set('userLastName', response.data.apellido);
+      Cookies.set('userRole', response.data.rol);
+
       alert('Inicio de sesión exitoso');
-      navigate('/admin/home');
+      const userRole = response.data.rol;
+      if (userRole === 'admin') {
+        navigate('/admin/home');
+      } else if (userRole === 'estudiante') {
+        navigate('/usuarios/home');
+      } else {
+        navigate('/error'); 
+      }
     } catch (error) {
       if (error.response) {
         console.error('Error al iniciar sesión:', error.response.data.message);

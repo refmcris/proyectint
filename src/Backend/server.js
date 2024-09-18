@@ -26,10 +26,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
-    const values = [email, password];
-    
-    connection.query("SELECT * FROM usuarios WHERE correo_electronico = ? AND contraseña = ?", values, (err, result) => {
+  const { email, password } = req.body;
+  const values = [email, password];
+
+  connection.query(
+    "SELECT nombre, apellido, rol, correo_electronico FROM usuarios WHERE correo_electronico = ? AND contraseña = ?",
+    values,
+    (err, result) => {
       if (err) {
         res.status(500).send(err);
       } else {
@@ -39,7 +42,8 @@ app.post('/api/login', (req, res) => {
           res.status(400).send('Not Found');
         }
       }
-    });
+    }
+  );
 });
 app.post('/api/register', (req, res) => {
     const { username, name, lastname, document, documentType, phone, password } = req.body;
