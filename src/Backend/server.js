@@ -154,3 +154,24 @@ app.get('/api/usuarios', (req, res) => {
       }
     });
   });
+
+  app.get('/api/prestamos-equipos/:id_usuario', (req, res) => {
+    const { id_usuario } = req.params;
+  
+    const query = `
+      SELECT e.nombre_equipo, e.tipo, e.marca, e.modelo, e.estado, p.fecha_prestamo, p.fecha_devolucion, p.estado_prestamo
+      FROM préstamos p
+      JOIN equipos e ON p.id_equipo = e.id_equipo
+      WHERE p.id_usuario = ?
+    `;
+  
+    connection.query(query, [id_usuario], (err, results) => {
+      if (err) {
+        console.error('Error al obtener los préstamos y equipos:', err);
+        res.status(500).send('Error al obtener los préstamos y equipos');
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });
+  

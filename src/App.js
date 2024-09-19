@@ -13,6 +13,7 @@ import Usuarios from './Components/Dashboard/usuarios';
 import Usuarioequip from './Components/DashboardUsuarios/usuarioequip';
 import SideBarus from './Components/DashboardUsuarios/sidebarus';
 import Prestamos from './Components/DashboardUsuarios/prestamos';
+import Misprestamos from './Components/DashboardUsuarios/misprestamos';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/admin/usuarios" element={<Usuarios/>}/>
           <Route path="/usuarios/home" element={<Usuarioequip/>}/>
           <Route path="/area-prestamos" element ={<Prestamos/>}/>
+          <Route path="/mis-prestamos" element ={<Misprestamos/>}/>
         </Routes>
       </BrowserRouter>
     </div>

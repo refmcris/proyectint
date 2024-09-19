@@ -111,11 +111,11 @@ function Prestamos() {
   return (
     <Box sx={{}}>
       <Navbar />
-      <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "100px" }}>
       <Typography variant="h4" gutterBottom>
           Lista de Equipos
         </Typography>
-        <TableContainer sx={{ maxWidth: '1200',border: '1px solid #ddd' }}>
+        <TableContainer sx={{ maxWidth: '1800px',border: '1px solid #ddd' }}>
           <Table>
             <TableHead>
               <TableRow >
