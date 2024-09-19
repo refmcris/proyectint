@@ -88,17 +88,33 @@ function Misprestamos() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedData.map((row) => (
+            {sortedData.map((row) => (
                 <TableRow key={row.id_equipo}>
-                  {columns.map((column) => (
-                    <TableCell key={column.id}  align="center" sx={{ borderBottom: '1px solid #ddd' }}>
-                      {column.id === 'fecha_devolucion' 
-                        ? new Date(row[column.id]).toLocaleDateString() 
-                        : row[column.id]} 
+                {columns.map((column) => (
+                    <TableCell key={column.id} align="center" sx={{ borderBottom: '1px solid #ddd' }}>
+                    {column.id === 'estado_prestamo' ? (
+                        <Typography 
+                        sx={{ 
+                            display: 'inline-block', 
+                            backgroundColor: row[column.id] === 'pendiente' ? '#feac54' : row[column.id] === 'devuelto' ? '#3df27b' : 'inherit',
+                            color: 'white', 
+                            fontWeight: 'bold',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            textAlign: 'center'
+                          }}
+                        >
+                        {row[column.id]}
+                        </Typography>
+                    ) : column.id === 'fecha_devolucion' ? (
+                        new Date(row[column.id]).toLocaleDateString()
+                    ) : (
+                        row[column.id]
+                    )}
                     </TableCell>
-                  ))}
+                ))}
                 </TableRow>
-              ))}
+            ))}
             </TableBody>
           </Table>
         </TableContainer>
