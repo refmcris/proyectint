@@ -14,6 +14,7 @@ import Usuarioequip from './Components/DashboardUsuarios/usuarioequip';
 import SideBarus from './Components/DashboardUsuarios/sidebarus';
 import Prestamos from './Components/DashboardUsuarios/prestamos';
 import Misprestamos from './Components/DashboardUsuarios/misprestamos';
+import Devprestamos from './Components/Dashboard/devprestamos';
 
 
 function App() {
@@ -27,9 +28,12 @@ function App() {
           <Route path="/admin/home" element ={<SideBar/>}/>
           <Route path="/admin/equipos" element={<Equipos/>}/>
           <Route path="/admin/usuarios" element={<Usuarios/>}/>
+          <Route path="/admin/prestamos" element ={<Devprestamos/>}/>
           <Route path="/usuarios/home" element={<Usuarioequip/>}/>
           <Route path="/area-prestamos" element ={<Prestamos/>}/>
           <Route path="/mis-prestamos" element ={<Misprestamos/>}/>
+          
+          
         </Routes>
       </BrowserRouter>
     </div>

@@ -129,17 +129,25 @@ app.get('/api/usuarios', (req, res) => {
     const fecha_prestamo = new Date(); 
     const estado = 'pendiente';
 
-    const queryPrestamo = `INSERT INTO préstamos (id_usuario, id_equipo, fecha_prestamo, fecha_devolucion, estado_prestamo)
+    const queryPrestamo = `INSERT INTO préstamos(id_usuario, id_equipo, fecha_prestamo, fecha_devolucion, estado_prestamo)
                            VALUES (?, ?, ?, ?, ?)`;
     
-    const prestamoValues = [id_usuario, id_equipo, fecha_prestamo, fecha_devolucion, estado];
+    const prestamoValues = [id_usuario, id_equipo, fecha_prestamo, fecha_devolucion,estado];
+    
   
     connection.query(queryPrestamo, prestamoValues, (err, result) => {
       if (err) {
         console.error('Error al registrar el préstamo:', err);
         res.status(500).send('Error al registrar el préstamo');
-      } else {
-        
+      } 
+      else {
+        const id_prestamo = result.insertId;
+        const queryHistorial = `INSERT INTO historialpréstamos(id_prestamo, id_usuario, id_equipo, fecha_prestamo, fecha_devolucion)
+                              VALUES (?, ?, ?, ?, ?)`;
+
+        const historialValues = [id_prestamo, id_usuario, id_equipo, fecha_prestamo, fecha_devolucion];
+        connection.query(queryHistorial, historialValues);
+          
         const queryEquipo = `UPDATE equipos SET estado = ? WHERE id_equipo = ?`;
         const equipoValues = ['en_préstamo', id_equipo];
   
@@ -174,4 +182,61 @@ app.get('/api/usuarios', (req, res) => {
       }
     });
   });
+  app.get('/api/prestamos-equipos', (req, res) => {
+    const query = `
+      SELECT p.id_prestamo, u.nombre AS nombre_usuario, u.apellido AS apellido_usuario, 
+             e.nombre_equipo, e.tipo, e.marca, e.modelo, 
+             p.estado_prestamo, p.fecha_prestamo, p.fecha_devolucion
+      FROM préstamos p
+      JOIN equipos e ON p.id_equipo = e.id_equipo
+      JOIN usuarios u ON p.id_usuario = u.id_usuario
+    `;
   
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('Error al obtener los préstamos, usuarios y equipos:', err);
+        res.status(500).send('Error al obtener los préstamos, usuarios y equipos');
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });
+
+  app.put('/api/prestamos-equipos/:id_prestamo', (req, res) => {
+    const { id_prestamo } = req.params;
+    const { estado } = req.body;
+
+    const updatePrestamoQuery = `
+      UPDATE préstamos 
+      SET estado_prestamo = ? 
+      WHERE id_prestamo = ?`;
+
+    connection.query(updatePrestamoQuery, [estado, id_prestamo], (err, results) => {
+      if (err) {
+        console.error('Error al actualizar el préstamo:', err);
+        res.status(500).send('Error al actualizar el préstamo');
+      } else {
+
+        if (estado === 'devuelto') {
+          const updateEquipoQuery = `
+            UPDATE equipos 
+            SET estado = 'disponible' 
+            WHERE id_equipo = (
+              SELECT id_equipo 
+              FROM préstamos 
+              WHERE id_prestamo = ?)`;
+
+          connection.query(updateEquipoQuery, [id_prestamo], (err, results) => {
+            if (err) {
+              console.error('Error al actualizar el estado del equipo:', err);
+              res.status(500).send('Error al actualizar el estado del equipo');
+            } else {
+              res.status(200).send('Préstamo y equipo actualizados correctamente');
+            }
+          });
+        } else {
+          res.status(200).send('Préstamo actualizado correctamente');
+        }
+      }
+    });
+});
