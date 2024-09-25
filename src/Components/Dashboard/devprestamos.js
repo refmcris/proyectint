@@ -27,7 +27,7 @@ function Devprestamos() {
   const [orderBy, setOrderBy] = useState("nombre_usuario");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const fetchData = async () => {
     try {
@@ -127,7 +127,7 @@ function Devprestamos() {
             Agregar Registro
           </Button>
         </Box>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper}sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>
               <TableRow>

@@ -18,7 +18,7 @@ function Misprestamos() {
   const [orderBy, setOrderBy] = useState("nombre_equipo");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const id_usuario = Cookies.get('id_usuario') || '';
 
@@ -78,12 +78,12 @@ function Misprestamos() {
         <Typography variant="h4" gutterBottom>
           Mis Préstamos
         </Typography>
-        <TableContainer component={Paper} sx={{ maxWidth: '1800px', border: '1px solid #ddd' }}>
+        <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)', maxWidth: '1800px', border: '1px solid #ddd' }}>
           <Table>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id} align="center" sx={{ fontWeight: 'bold', padding: '20px', borderBottom: '2px solid #ddd' }}>
+                  <TableCell key={column.id}  sx={{ fontWeight: 'bold', padding: '20px', borderBottom: '2px solid #ddd' }}>
                     <TableSortLabel  active={orderBy === column.id}  direction={orderBy === column.id ? order : "asc"}  onClick={() => handleSort(column.id)} >
                       {column.label}
                     </TableSortLabel>
@@ -95,7 +95,7 @@ function Misprestamos() {
             {sortedData.map((row) => (
                 <TableRow key={row.id_equipo}>
                 {columns.map((column) => (
-                    <TableCell key={column.id} align="center" sx={{ borderBottom: '1px solid #ddd' }}>
+                    <TableCell key={column.id}  sx={{ borderBottom: '1px solid #ddd' }}>
                     {column.id === 'estado_prestamo' ? (
                         <Typography 
                         sx={{ display: 'inline-block',  backgroundColor: row[column.id] === 'pendiente' ? '#feac54' : row[column.id] === 'devuelto' ? '#3df27b' : 'inherit', borderRadius: '4px', padding: '4px 8px', textAlign: 'center' }} >
@@ -114,7 +114,7 @@ function Misprestamos() {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 15, 30]}
+          rowsPerPageOptions={[ 10, 15, 30]}
           component="div"
           count={data.length}
           rowsPerPage={rowsPerPage}

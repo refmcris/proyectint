@@ -24,7 +24,7 @@ function Prestamos() {
   const [orderBy, setOrderBy] = useState("id_equipo");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [hoveredRow, setHoveredRow] = useState(null);
   const [reservationDate, setReservationDate] = useState(dayjs());
   const today = dayjs();
@@ -115,7 +115,7 @@ function Prestamos() {
       <Typography variant="h4" gutterBottom>
           Lista de Equipos
         </Typography>
-        <TableContainer sx={{ maxWidth: '1800px',border: '1px solid #ddd' }}>
+        <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)', maxWidth: '1800px',border: '1px solid #ddd' }}>
           <Table>
             <TableHead>
               <TableRow >
@@ -135,7 +135,7 @@ function Prestamos() {
             </TableHead>
             <TableBody>
               {sortedData.map((row) => (
-                <TableRow key={row.id_equipo}  onMouseEnter={() => setHoveredRow(row.id_equipo)} onMouseLeave={() => setHoveredRow(null)} >
+                <TableRow key={row.id_equipo} sx={{ '&:hover': { backgroundColor: '#e0f7fa' } }}  onMouseEnter={() => setHoveredRow(row.id_equipo)} onMouseLeave={() => setHoveredRow(null)} >
                   {columns.map((column) => (
                     <TableCell key={column.id} sx={{borderBottom: '1px solid #ddd'}}>{row[column.id]}</TableCell>
                   ))}

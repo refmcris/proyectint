@@ -23,7 +23,7 @@ function Usuarios() {
   const [orderBy, setOrderBy] = useState("nombre");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
