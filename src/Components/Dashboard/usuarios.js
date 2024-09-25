@@ -122,7 +122,7 @@ function Usuarios() {
             Agregar Registro
           </Button>
         </Box>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>
               <TableRow>
