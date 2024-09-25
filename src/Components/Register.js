@@ -40,6 +40,7 @@ const Register = () => {
 
     try {
       await axios.post('http://localhost:3001/api/register', data);
+      console.log(data);
       alert("Registro exitoso");
     } catch (error) {
       console.error('Error al registrar:', error.message);

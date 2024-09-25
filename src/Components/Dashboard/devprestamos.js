@@ -108,23 +108,22 @@ function Devprestamos() {
       }
       return 0;
     });
+
+    function getrowcolor(estado_prestamo){
+      
+      switch(estado_prestamo){
+        case 'pendiente':
+          return '#feac54';
+        case 'devuelto':
+          return '#3df27b';
+      }
+    }
   return (
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
-          <Button
-            variant="contained"
-            onClick={handleOpenModal}
-            sx={{ backgroundColor: "#d01c35" }}
-          >
+        <Box sx={{ display: "flex",justifyContent: "flex-end", alignItems: "center", mb: 2,}}>
+          <Button variant="contained"onClick={handleOpenModal}sx={{ backgroundColor: "#d01c35" }}>
             Agregar Registro
           </Button>
         </Box>
@@ -148,33 +147,34 @@ function Devprestamos() {
             </TableHead>
             <TableBody>
             {sortedData.map((row) => (
-            <TableRow key={row.id_equipo}> 
+              <TableRow key={row.id_equipo}>
                 {columns.map((column) => (
-                <TableCell key={column.id}>
-                    {column.id === "fecha_prestamo" || column.id === "fecha_devolucion"
-                    ? new Date(row[column.id]).toLocaleDateString()
-                    : row[column.id]}
-                </TableCell>
+                  <TableCell key={column.id}>
+                    {column.id === "estado_prestamo" ? (
+                      <Box sx={{
+                          border: `1px solid ${getrowcolor(row.estado_prestamo)}`, 
+                          borderRadius: "4px", padding: "4px 8px",display: "inline-block",backgroundColor: getrowcolor(row.estado_prestamo)
+                        }}
+                      >
+                        {row[column.id]} 
+                      </Box>
+                    ) : column.id === "fecha_prestamo" || column.id === "fecha_devolucion" ? (
+                      new Date(row[column.id]).toLocaleDateString()
+                    ) : (
+                      row[column.id]
+                    )}
+                  </TableCell>
                 ))}
                 <TableCell>
-                <Button
-                    variant="outlined"
-                    onClick={() => handleEditRecord(row)}  
-                    sx={{
-                    color: "#f56c6c",
-                    borderColor: "#f56c6c",
-                    "&:hover": {
-                        borderColor: "#f56c6c",
-                        backgroundColor: "#fbe8e8",
-                    },
-                    }}
-                >
+                  <Button variant="outlined" onClick={() => handleEditRecord(row)}  
+                    sx={{color: "#f56c6c",borderColor: "#f56c6c","&:hover": {borderColor: "#f56c6c",backgroundColor: "#fbe8e8",},
+                    }} >
                     Editar
-                </Button>
+                  </Button>
                 </TableCell>
-            </TableRow>
+              </TableRow>
             ))}
-            </TableBody>
+          </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
@@ -188,13 +188,7 @@ function Devprestamos() {
         />
         <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
         <Box
-            sx={{
-            width: { xs: "90%", sm: "80%", md: "60%", lg: "40%" },
-            bgcolor: "background.paper",
-            p: { xs: 2, sm: 3, md: 4 },
-            mx: "auto",
-            mt: { xs: "20%", sm: "15%", md: "10%" },
-            borderRadius: 1,
+            sx={{ width: { xs: "90%", sm: "80%", md: "60%", lg: "40%" },bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 }, mx: "auto", mt: { xs: "20%", sm: "15%", md: "10%" },borderRadius: 1,
             }}
         >
             <Typography variant="h5" id="modal-title" gutterBottom>
@@ -203,34 +197,19 @@ function Devprestamos() {
             <form>
             <FormControl sx={{ mb: 2 }} fullWidth>
                 <InputLabel id="estado-label">Estado</InputLabel>
-                <Select
-                labelId="estado-label"
-                id="estado-select"
-                name="estado"
-                value={editRecord.estado || ""}
-                onChange={handleInputChange}
-                label="Estado"
-                >
+                <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
                 <MenuItem value="devuelto">Devuelto</MenuItem>
                 <MenuItem value="pendiente">Pendiente</MenuItem>
                 </Select>
             </FormControl>
             <Grid container spacing={2}>
                 <Grid item>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={handleCloseModal}
-                >
+                <Button variant="outlined" color="secondary" onClick={handleCloseModal}>
                     Cancelar
                 </Button>
                 </Grid>
                 <Grid item>
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: "#d01c35" }}
-                    onClick={handleSaveChanges} 
-                >
+                <Button variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSaveChanges}  >
                     Guardar Cambios
                 </Button>
                 </Grid>

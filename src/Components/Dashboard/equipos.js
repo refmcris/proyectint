@@ -168,14 +168,7 @@
                       <TableCell key={column.id}>
                       {column.id === "estado" ? (
                         <span
-                          style={{
-                            backgroundColor: getEstadoColor(row[column.id]), 
-                            color: "white", 
-                            padding: "5px 10px", 
-                            borderRadius: "5px", 
-                            fontWeight: "bold",
-                            display: "inline-block"
-                          }}
+                          style={{  backgroundColor: getEstadoColor(row[column.id]),  padding: "5px 10px",   borderRadius: "5px",    display: "inline-block" }}
                         >
                           {row[column.id]}
                         </span>
@@ -207,11 +200,7 @@
             <Box
               sx={{
                 width: { xs: '90%', sm: '80%', md: '60%', lg: '40%' }, 
-                bgcolor: 'background.paper',
-                p: { xs: 2, sm: 3, md: 4 },  
-                mx: 'auto',
-                mt: { xs: '20%', sm: '15%', md: '10%' },  
-                borderRadius: 1,
+                bgcolor: 'background.paper', p: { xs: 2, sm: 3, md: 4 }, mx: 'auto', mt: { xs: '20%', sm: '15%', md: '10%' }, borderRadius: 1,
               }}
             >
               <Typography variant="h5" id="modal-title" gutterBottom>

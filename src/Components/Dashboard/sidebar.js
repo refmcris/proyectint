@@ -114,16 +114,9 @@ export default function SideBar() {
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar sx={{ backgroundColor: '#d01c35' }}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
+          <IconButton color="inherit" aria-label="open drawer" onClick={handleDrawerOpen} edge="start"
             sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
+              marginRight: 5, ...(open && { display: 'none' }), }} >
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
@@ -144,19 +137,10 @@ export default function SideBar() {
         <List>
           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/home") }}>
             <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,
+              }} >
               <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
+                sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',  }} >
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
@@ -164,19 +148,12 @@ export default function SideBar() {
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/equipos") }}>
             <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center',  px: 2.5,
               }}
             >
               <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
+                sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',
+                }} >
                 <ComputerIcon />
               </ListItemIcon>
               <ListItemText primary="Registro equipos" sx={{ opacity: open ? 1 : 0 }} />
@@ -184,19 +161,9 @@ export default function SideBar() {
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/usuarios"); }}>
             <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,  }} >
               <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
+                sx={{  minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', }} >
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText primary="Usuarios" sx={{ opacity: open ? 1 : 0 }} />
@@ -204,39 +171,16 @@ export default function SideBar() {
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { alert('Nueva funcionalidad ASAP'); }}>
             <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
+              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }} >
+              <ListItemIcon sx={{ minWidth: 0,  mr: open ? 3 : 'auto', justifyContent: 'center', }}  >
                 <SupervisorAccountIcon />
               </ListItemIcon>
               <ListItemText primary="Supervisores" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/prestamos"); }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
+            <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }} >
+            <ListItemIcon sx={{ minWidth: 0,  mr: open ? 3 : 'auto', justifyContent: 'center', }}  >
                 <HandshakeIcon />
               </ListItemIcon>
               <ListItemText primary="Prestamos" sx={{ opacity: open ? 1 : 0 }} />

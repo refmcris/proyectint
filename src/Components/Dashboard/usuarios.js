@@ -117,10 +117,7 @@ function Usuarios() {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
-        <Box
-          sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center",  mb: 2,
-          }}
-        >
+        <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center",  mb: 2,}} >
           <Button variant="contained" onClick={handleOpenModal} sx={{ backgroundColor: "#d01c35" }}>
             Agregar Registro
           </Button>
@@ -146,8 +143,7 @@ function Usuarios() {
                   ))}
                   <TableCell>
                     <Button variant="outlined"  onClick={() => handleEditRecord(row)} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': {  borderColor: '#f56c6c', backgroundColor: '#fbe8e8', },
-                      }}
-                    >
+                      }}>
                       Editar
                     </Button>
                   </TableCell>
@@ -159,15 +155,8 @@ function Usuarios() {
         <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={data.length}  rowsPerPage={rowsPerPage}  page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
         <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
           <Box
-            sx={{
-              width: { xs: '90%', sm: '80%', md: '60%', lg: '40%' },
-              bgcolor: 'background.paper',
-              p: { xs: 2, sm: 3, md: 4 },
-              mx: 'auto',
-              mt: { xs: '20%', sm: '15%', md: '10%' },
-              borderRadius: 1,
-            }}
-          >
+            sx={{width: { xs: '90%', sm: '80%', md: '60%', lg: '40%' },
+              bgcolor: 'background.paper', p: { xs: 2, sm: 3, md: 4 }, mx: 'auto',  mt: { xs: '20%', sm: '15%', md: '10%' },borderRadius: 1, }} >
             <Typography variant="h5" id="modal-title" gutterBottom>
               {editMode ? "Editar Usuario" : "Agregar Nuevo Usuario"}
             </Typography>

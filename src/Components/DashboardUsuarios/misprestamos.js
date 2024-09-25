@@ -62,7 +62,15 @@ function Misprestamos() {
       }
       return 0;
     });
-
+    function getrowcolor(estado_prestamo){
+      
+      switch(estado_prestamo){
+        case 'pendiente':
+          return '#feac54';
+        case 'devuelto':
+          return '#3df27b';
+      }
+    }
   return (
     <Box>
       <Navbar />
@@ -76,11 +84,7 @@ function Misprestamos() {
               <TableRow>
                 {columns.map((column) => (
                   <TableCell key={column.id} align="center" sx={{ fontWeight: 'bold', padding: '20px', borderBottom: '2px solid #ddd' }}>
-                    <TableSortLabel
-                      active={orderBy === column.id}
-                      direction={orderBy === column.id ? order : "asc"}
-                      onClick={() => handleSort(column.id)}
-                    >
+                    <TableSortLabel  active={orderBy === column.id}  direction={orderBy === column.id ? order : "asc"}  onClick={() => handleSort(column.id)} >
                       {column.label}
                     </TableSortLabel>
                   </TableCell>
@@ -94,16 +98,7 @@ function Misprestamos() {
                     <TableCell key={column.id} align="center" sx={{ borderBottom: '1px solid #ddd' }}>
                     {column.id === 'estado_prestamo' ? (
                         <Typography 
-                        sx={{ 
-                            display: 'inline-block', 
-                            backgroundColor: row[column.id] === 'pendiente' ? '#feac54' : row[column.id] === 'devuelto' ? '#3df27b' : 'inherit',
-                            color: 'white', 
-                            fontWeight: 'bold',
-                            borderRadius: '4px',
-                            padding: '4px 8px',
-                            textAlign: 'center'
-                          }}
-                        >
+                        sx={{ display: 'inline-block',  backgroundColor: row[column.id] === 'pendiente' ? '#feac54' : row[column.id] === 'devuelto' ? '#3df27b' : 'inherit', borderRadius: '4px', padding: '4px 8px', textAlign: 'center' }} >
                         {row[column.id]}
                         </Typography>
                     ) : column.id === 'fecha_devolucion' ? (
