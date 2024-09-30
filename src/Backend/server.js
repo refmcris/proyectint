@@ -45,6 +45,10 @@ app.post('/api/sendEmail', async (req, res) => {
       auth: {
           type: 'OAuth2',
           user: 'univentory1@gmail.com', 
+          clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com', 
+          clientSecret: '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', 
+          refreshToken: '1//04H149qzClLXUCgYIARAAGAQSNwF-L9Ir__xjhwOVwCAvoiogDhNXgVSH56xA61LBi1d8lm_ywijsE3hdOqeEy1U4htKdSuMWBww', 
+          accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
       }
   });
 
