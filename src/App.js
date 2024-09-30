@@ -15,6 +15,7 @@ import SideBarus from './Components/DashboardUsuarios/sidebarus';
 import Prestamos from './Components/DashboardUsuarios/prestamos';
 import Misprestamos from './Components/DashboardUsuarios/misprestamos';
 import Devprestamos from './Components/Dashboard/devprestamos';
+import Recupcontra from './Components/DashboardUsuarios/recupcontra';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/usuarios/home" element={<Usuarioequip/>}/>
           <Route path="/area-prestamos" element ={<Prestamos/>}/>
           <Route path="/mis-prestamos" element ={<Misprestamos/>}/>
+          <Route path="/recupcontra" element ={<Recupcontra/>}/>
           
           
         </Routes>

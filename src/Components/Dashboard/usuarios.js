@@ -20,16 +20,18 @@ function Usuarios() {
   const [editMode, setEditMode] = useState(false);
   const [editRecord, setEditRecord] = useState({});
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [orderBy, setOrderBy] = useState("nombre");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const [searchTerm, setSearchTerm] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:3001/api/usuarios"); 
         setData(response.data);
+        setFilteredData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -75,7 +77,7 @@ function Usuarios() {
     setPage(0);
   };
 
-  const sortedData = data
+  const sortedData = filteredData
     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     .sort((a, b) => {
       if (a[orderBy] < b[orderBy]) {
@@ -112,7 +114,14 @@ function Usuarios() {
       alert("Error al guardar registro");
     }
   };
-
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    const filtered = data.filter((item) =>
+      columns.some((column) => item[column.id].toLowerCase().includes(event.target.value.toLowerCase()))
+    );
+    setFilteredData(filtered);
+    setPage(0);
+  };
   return (
     <Box sx={{ display: "flex" }}>
       <SideBar />
@@ -122,6 +131,13 @@ function Usuarios() {
             Agregar Registro
           </Button>
         </Box>
+        <TextField
+          label="Buscar Usuarios"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          sx={{ mb: 3, width: '300px' }}
+        />
         <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>

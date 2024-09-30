@@ -69,6 +69,8 @@ function Misprestamos() {
           return '#feac54';
         case 'devuelto':
           return '#3df27b';
+        case 'retrasado':
+          return '#f56c6c';
       }
     }
   return (
@@ -97,10 +99,13 @@ function Misprestamos() {
                 {columns.map((column) => (
                     <TableCell key={column.id}  sx={{ borderBottom: '1px solid #ddd' }}>
                     {column.id === 'estado_prestamo' ? (
-                        <Typography 
-                        sx={{ display: 'inline-block',  backgroundColor: row[column.id] === 'pendiente' ? '#feac54' : row[column.id] === 'devuelto' ? '#3df27b' : 'inherit', borderRadius: '4px', padding: '4px 8px', textAlign: 'center' }} >
-                        {row[column.id]}
-                        </Typography>
+                        <Box sx={{
+                          border: `1px solid ${getrowcolor(row.estado_prestamo)}`, 
+                          borderRadius: "4px", padding: "4px 8px",display: "inline-block",backgroundColor: getrowcolor(row.estado_prestamo)
+                        }}
+                      >
+                        {row[column.id]} 
+                      </Box>
                     ) : column.id === 'fecha_devolucion' ? (
                         new Date(row[column.id]).toLocaleDateString()
                     ) : (

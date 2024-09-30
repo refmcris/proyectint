@@ -21,13 +21,16 @@ function Prestamos() {
   const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [orderBy, setOrderBy] = useState("id_equipo");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [hoveredRow, setHoveredRow] = useState(null);
   const [reservationDate, setReservationDate] = useState(dayjs());
+  const [searchTerm, setSearchTerm] = useState('');
   const today = dayjs();
+  const maxDate = today.add(7, 'day');
 
 
   const id_usuario = Cookies.get('id_usuario') || '';
@@ -52,6 +55,7 @@ function Prestamos() {
         const response = await axios.get("http://localhost:3001/api/equipos");
         const availableData = response.data.filter(item => item.estado === "disponible");
         setData(availableData);
+        setFilteredData(availableData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -75,17 +79,14 @@ function Prestamos() {
     setPage(0);
   };
 
-  const sortedData = data
+  const sortedData = filteredData
     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     .sort((a, b) => {
-      if (orderBy === "fecha_ingreso") {
-        return new Date(a[orderBy]) - new Date(b[orderBy]);
-      }
       if (a[orderBy] < b[orderBy]) {
-        return order === "asc" ? -1 : 1;
+        return order === 'asc' ? -1 : 1;
       }
       if (a[orderBy] > b[orderBy]) {
-        return order === "asc" ? 1 : -1;
+        return order === 'asc' ? 1 : -1;
       }
       return 0;
     });
@@ -94,7 +95,9 @@ function Prestamos() {
         const payload = {
           id_usuario: id_usuario, 
           id_equipo: selectedRow.id_equipo, 
+          serial: selectedRow.serial,
           fecha_devolucion: reservationDate.format('YYYY-MM-DD'), 
+          
         };
     
         const response = await axios.post("http://localhost:3001/api/prestamos", payload);
@@ -108,6 +111,15 @@ function Prestamos() {
         alert("Hubo un error al registrar el préstamo");
       }
     };
+    const handleSearchChange = (event) => {
+      setSearchTerm(event.target.value);
+      const filtered = data.filter((item) =>
+        columns.some((column) => item[column.id].toLowerCase().includes(event.target.value.toLowerCase()))
+      );
+      setFilteredData(filtered);
+      setPage(0);
+    };
+   
   return (
     <Box sx={{}}>
       <Navbar />
@@ -115,6 +127,13 @@ function Prestamos() {
       <Typography variant="h4" gutterBottom>
           Lista de Equipos
         </Typography>
+        <TextField
+          label="Buscar equipos"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          sx={{ mb: 3, width: '300px' }}
+        />
         <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)', maxWidth: '1800px',border: '1px solid #ddd' }}>
           <Table>
             <TableHead>
@@ -172,6 +191,7 @@ function Prestamos() {
                   value={reservationDate}
                   onChange={handleDateChange}
                   minDate={today}
+                  maxDate={maxDate}
                   renderInput={(params) => <TextField {...params} fullWidth variant="outlined" sx={{ maxWidth: '400px' }} />}
                 />
               </LocalizationProvider>

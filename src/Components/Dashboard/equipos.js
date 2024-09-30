@@ -9,6 +9,7 @@
   const columns = [
     { id: "id_equipo", label: "ID Equipo" },
     { id: "nombre_equipo", label: "Nombre Equipo" },
+    { id: "serial", label: "Serial" },
     { id: "tipo", label: "Tipo" },
     { id: "marca", label: "Marca" },
     { id: "modelo", label: "Modelo" },
@@ -22,16 +23,19 @@
     const [editMode, setEditMode] = useState(false);
     const [editRecord, setEditRecord] = useState({});
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [orderBy, setOrderBy] = useState("id_equipo");
     const [order, setOrder] = useState("asc");
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
       const fetchData = async () => {
         try {
           const response = await axios.get("http://localhost:3001/api/equipos");
           setData(response.data);
+          setFilteredData(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -77,7 +81,7 @@
       setPage(0);
     };
 
-    const sortedData = data
+    const sortedData = filteredData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .sort((a, b) => {
         if (orderBy === "fecha_ingreso") {
@@ -99,7 +103,9 @@
           case "en_préstamo":
             return "#feac54"; 
           case "en_reparación":
-            return "#f8646d"; 
+            return "#f8646d";
+          case "retrasado":
+            return "#f56c6c"; 
           default:
             return "black";
         }
@@ -129,7 +135,20 @@
           alert("Error al guardar registro");
         }
       };
-
+      const handleSearchChange = (event) => {
+        const searchValue = event.target.value.toLowerCase();
+        setSearchTerm(searchValue);
+      
+        const filtered = data.filter((item) =>
+          columns.some((column) => {
+            const value = item[column.id];
+            return typeof value === 'string' && value.toLowerCase().includes(searchValue);
+          })
+        );
+      
+        setFilteredData(filtered);
+        setPage(0);
+      };
     return (
       <Box sx={{ display: "flex" }}>
         <SideBar />
@@ -146,6 +165,13 @@
               Agregar Registro
             </Button>
           </Box>
+          <TextField
+          label="Buscar equipos"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          sx={{ mb: 3, width: '300px' }}
+        />
           <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
             <Table>
               <TableHead>
@@ -208,6 +234,8 @@
               </Typography>
               <form onSubmit={handleSubmit}>
                 <TextField name="nombre_equipo" label="Nombre Equipo" value={editRecord.nombre_equipo || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
+                />
+                <TextField name="serial" label="Serial" value={editRecord.serial || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
                 />
                 <TextField name="tipo" label="Tipo"  value={editRecord.tipo || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
                 />

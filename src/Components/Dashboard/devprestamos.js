@@ -12,6 +12,7 @@ const columns = [
   { id: "nombre_usuario", label: "Nombre Usuario" },
   { id: "apellido_usuario", label: "Apellido Usuario" },
   { id: "nombre_equipo", label: "Nombre Equipo" },
+  { id: "serial", label: "Serial" },
   { id: "tipo", label: "Tipo" },
   { id: "marca", label: "Marca" },
   { id: "modelo", label: "Modelo" },
@@ -24,15 +25,18 @@ function Devprestamos() {
   const [editMode, setEditMode] = useState(false);
   const [editRecord, setEditRecord] = useState({});
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [orderBy, setOrderBy] = useState("nombre_usuario");
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:3001/api/prestamos-equipos");
       setData(response.data);
+      setFilteredData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -94,7 +98,7 @@ function Devprestamos() {
     }
   };
 
-  const sortedData = data
+  const sortedData = filteredData
     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     .sort((a, b) => {
       if (orderBy === "fecha_prestamo") {
@@ -116,8 +120,18 @@ function Devprestamos() {
           return '#feac54';
         case 'devuelto':
           return '#3df27b';
+        case 'retrasado':
+          return '#f56c6c';
       }
     }
+    const handleSearchChange = (event) => {
+      setSearchTerm(event.target.value);
+      const filtered = data.filter((item) =>
+        columns.some((column) => item[column.id].toLowerCase().includes(event.target.value.toLowerCase()))
+      );
+      setFilteredData(filtered);
+      setPage(0);
+    };
   return (
     <Box sx={{ display: "flex" }}>
       <SideBar />
@@ -127,6 +141,13 @@ function Devprestamos() {
             Agregar Registro
           </Button>
         </Box>
+        <TextField
+          label="Buscar Prestamos"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          sx={{ mb: 3, width: '300px' }}
+        />
         <TableContainer component={Paper}sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>

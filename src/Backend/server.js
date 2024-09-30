@@ -1,9 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
+const mg = require('nodemailer-mailgun-transport');
+
 
 const app = express();
 const port = 3001; 
+const axios = require('axios');
 
 const mysql = require('mysql2');
 
@@ -22,8 +26,49 @@ connection.connect((err) => {
   console.log('Conexión a la base de datos establecida con éxito.');
 });
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Permitir solo tu frontend
+}));
 app.use(bodyParser.json());
+app.use(express.json());
+
+
+
+
+
+
+app.post('/api/sendEmail', async (req, res) => {
+  const { from, to, subject, content } = req.body;
+
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          type: 'OAuth2',
+          user: 'univentory1@gmail.com', 
+          clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com', 
+          clientSecret: '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', 
+          refreshToken: '1//04H149qzClLXUCgYIARAAGAQSNwF-L9Ir__xjhwOVwCAvoiogDhNXgVSH56xA61LBi1d8lm_ywijsE3hdOqeEy1U4htKdSuMWBww', 
+          accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
+      }
+  });
+
+  const mailOptions = {
+      from,
+      to,
+      subject,
+      text: content, 
+  };
+
+  try {
+      const info = await transporter.sendMail(mailOptions);
+      res.status(200).json({ message: 'Correo enviado con éxito', info });
+  } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      res.status(500).json({ error: 'Error al enviar el correo', details: error });
+  }
+});
+
+
 
 app.post('/api/login', (req, res) => {
   const { email, password } = req.body;
@@ -76,12 +121,12 @@ app.post('/api/register', (req, res) => {
     console.log(`Servidor escuchando en el puerto ${port}`);
   });
   app.post('/api/registro', (req, res) => {
-    const { nombre_equipo, tipo, marca, modelo, estado, ubicación } = req.body;
+    const { nombre_equipo, serial, tipo, marca, modelo, estado, ubicación } = req.body;
   
-    const query = `INSERT INTO equipos (nombre_equipo, tipo, marca, modelo, estado, ubicación) 
-                   VALUES (?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO equipos (nombre_equipo, serial, tipo, marca, modelo, estado, ubicación) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?)`;
   
-    const values = [nombre_equipo, tipo, marca, modelo, estado, ubicación];
+    const values = [nombre_equipo,serial,tipo, marca, modelo, estado, ubicación];
   
     connection.query(query, values, (err, result) => {
       if (err) {
@@ -94,13 +139,13 @@ app.post('/api/register', (req, res) => {
 
   app.put('/api/registro/:id', (req, res) => {
     const { id } = req.params;
-    const { nombre_equipo, tipo, marca, modelo, estado, ubicación } = req.body;
+    const { nombre_equipo, serial, tipo, marca, modelo, estado, ubicación } = req.body;
   
     const query = `UPDATE equipos 
-                   SET nombre_equipo = ?, tipo = ?, marca = ?, modelo = ?, estado = ?, ubicación = ? 
+                   SET nombre_equipo = ?, serial = ?, tipo = ?, marca = ?, modelo = ?, estado = ?, ubicación = ? 
                    WHERE id_equipo = ?`;
   
-    const values = [nombre_equipo, tipo, marca, modelo, estado, ubicación, id];
+    const values = [nombre_equipo, serial, tipo, marca, modelo, estado, ubicación, id];
   
     connection.query(query, values, (err, result) => {
       if (err) {
@@ -125,14 +170,14 @@ app.get('/api/usuarios', (req, res) => {
     });
   });
   app.post('/api/prestamos', (req, res) => {
-    const { id_usuario, id_equipo, fecha_devolucion } = req.body;
+    const { id_usuario, id_equipo, serial, fecha_devolucion } = req.body;
     const fecha_prestamo = new Date(); 
     const estado = 'pendiente';
 
-    const queryPrestamo = `INSERT INTO préstamos(id_usuario, id_equipo, fecha_prestamo, fecha_devolucion, estado_prestamo)
-                           VALUES (?, ?, ?, ?, ?)`;
+    const queryPrestamo = `INSERT INTO préstamos(id_usuario, id_equipo, serial, fecha_prestamo, fecha_devolucion, estado_prestamo)
+                           VALUES (?, ?, ?, ?, ?, ?)`;
     
-    const prestamoValues = [id_usuario, id_equipo, fecha_prestamo, fecha_devolucion,estado];
+    const prestamoValues = [id_usuario, id_equipo, serial, fecha_prestamo, fecha_devolucion,estado];
     
   
     connection.query(queryPrestamo, prestamoValues, (err, result) => {
@@ -142,10 +187,10 @@ app.get('/api/usuarios', (req, res) => {
       } 
       else {
         const id_prestamo = result.insertId;
-        const queryHistorial = `INSERT INTO historialpréstamos(id_prestamo, id_usuario, id_equipo, fecha_prestamo, fecha_devolucion)
-                              VALUES (?, ?, ?, ?, ?)`;
+        const queryHistorial = `INSERT INTO historialpréstamos(id_prestamo, id_usuario, id_equipo, serial, fecha_prestamo, fecha_devolucion)
+                              VALUES (?, ?, ?, ?, ?, ?)`;
 
-        const historialValues = [id_prestamo, id_usuario, id_equipo, fecha_prestamo, fecha_devolucion];
+        const historialValues = [id_prestamo, id_usuario, id_equipo, serial, fecha_prestamo, fecha_devolucion];
         connection.query(queryHistorial, historialValues);
           
         const queryEquipo = `UPDATE equipos SET estado = ? WHERE id_equipo = ?`;
@@ -185,7 +230,7 @@ app.get('/api/usuarios', (req, res) => {
   app.get('/api/prestamos-equipos', (req, res) => {
     const query = `
       SELECT p.id_prestamo, u.nombre AS nombre_usuario, u.apellido AS apellido_usuario, 
-             e.nombre_equipo, e.tipo, e.marca, e.modelo, 
+             e.nombre_equipo, e.tipo, e.marca, e.modelo,e.serial, 
              p.estado_prestamo, p.fecha_prestamo, p.fecha_devolucion
       FROM préstamos p
       JOIN equipos e ON p.id_equipo = e.id_equipo
