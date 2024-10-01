@@ -16,6 +16,7 @@ import Prestamos from './Components/DashboardUsuarios/prestamos';
 import Misprestamos from './Components/DashboardUsuarios/misprestamos';
 import Devprestamos from './Components/Dashboard/devprestamos';
 import Recupcontra from './Components/DashboardUsuarios/recupcontra';
+import Contrarecupe from './Components/DashboardUsuarios/contrarecupe';
 
 
 function App() {
@@ -34,6 +35,8 @@ function App() {
           <Route path="/area-prestamos" element ={<Prestamos/>}/>
           <Route path="/mis-prestamos" element ={<Misprestamos/>}/>
           <Route path="/recupcontra" element ={<Recupcontra/>}/>
+          <Route path="/contrarecupera" element ={<Contrarecupe/>}/>
+          
           
           
         </Routes>

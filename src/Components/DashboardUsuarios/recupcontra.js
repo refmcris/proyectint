@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, TextField, Button, Grid } from '@mui/material';
 import Logo from './logo.png';
 import Logo2 from './logo2.PNG';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Recupcontra = () => {
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState('');
-  
+  const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
     const email = event.target.value;
@@ -28,21 +28,34 @@ const Recupcontra = () => {
       return;
     }
   
-    const emailData = {
-      to: emailInput, 
-      subject: "Recuperación de Contraseña",
-      content: "Contenido del correo: Para recuperar tu contraseña, haz clic en el siguiente enlace: [enlace]" 
-    };
-    console.log('Datos del correo:', emailData);
-  
     try {
-      const response = await axios.post('http://localhost:3001/api/sendEmail', emailData);
-      console.log('Correo enviado:', response.data);
-      setEmailInput(''); 
-    } catch (error) {
-      console.error('Error al enviar el mensaje:', error);
-      setEmailError('Error al enviar el mensaje. Intenta nuevamente más tarde.');
+      const checkResponse = await axios.post('http://localhost:3001/api/checkEmail', { email: emailInput });
+      if (checkResponse.status === 200) {
+        const { token } = checkResponse.data;
+        
+        
+        
+        const emailData = {
+            to: emailInput,
+            subject: "Recuperación de Contraseña",
+            token,
+        };
+
+        const response = await axios.post('http://localhost:3001/api/sendEmail', emailData);
+        console.log('Correo enviado:', response.data);
+        alert("Recibira un correo pronto, revise su bandeja de entrada");
+        navigate('/');
+        setEmailInput('');
     }
+} catch (error) {
+    if (error.response && error.response.status === 404) {
+        setEmailError('Correo electrónico no encontrado.');
+        
+    } else {
+        console.error('Error al enviar el mensaje:', error);
+        setEmailError('Error al enviar el mensaje. Intenta nuevamente más tarde.');
+    }
+}
 };
 
   return (

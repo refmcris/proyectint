@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
-const mg = require('nodemailer-mailgun-transport');
+const crypto = require('crypto');
+const moment = require('moment');
+
 
 
 const app = express();
@@ -10,6 +12,7 @@ const port = 3001;
 const axios = require('axios');
 
 const mysql = require('mysql2');
+const EmailTemplate = require('../Components/DashboardUsuarios/emailtemplate');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -27,18 +30,42 @@ connection.connect((err) => {
 });
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Permitir solo tu frontend
+  origin: 'http://localhost:3000', 
 }));
 app.use(bodyParser.json());
 app.use(express.json());
 
 
 
+app.post('/api/checkEmail', async (req, res) => {
+  const { email } = req.body;
+  
+
+  try {
+      const [user] = await connection.promise().query('SELECT * FROM usuarios WHERE correo_electronico = ?', [email]);
+      
+      if (user.length === 0) {
+          return res.status(404).json({ error: 'Correo electrónico no encontrado.' });
+      }
+      const token = crypto.randomBytes(32).toString('hex');
+      expirationTime = moment().add(15, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+
+      await connection.promise().query(
+        'INSERT INTO usuariostokens (correo_electronico, token, expiration_time) VALUES (?, ?, ?)',
+        [email, token, expirationTime]
+      );
+
+      res.status(200).json({ message: 'Correo electrónico encontrado.', token });
+  } catch (error) {
+      console.error('Error al verificar el correo:', error);
+      res.status(500).json({ error: 'Error al verificar el correo.' });
+  }
+});
 
 
 
 app.post('/api/sendEmail', async (req, res) => {
-  const { from, to, subject, content } = req.body;
+  const { from, to, subject,token } = req.body;
 
   const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -51,20 +78,53 @@ app.post('/api/sendEmail', async (req, res) => {
           accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
       }
   });
+  const resetLink = `http://localhost:3000/contrarecupera?token=${token}`;
+  const htmlcontent = EmailTemplate(resetLink);
 
   const mailOptions = {
       from,
       to,
       subject,
-      text: content, 
+      html: htmlcontent, 
   };
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Correo enviado con éxito', info });
+} catch (error) {
+    console.error('Error al enviar el correo:', error);
+    res.status(500).json({ error: 'Error al enviar el correo', details: error });
+}
+});
+  
+app.put('/api/resetPassword', async (req, res) => {
+  const { token, newPassword } = req.body;
 
   try {
-      const info = await transporter.sendMail(mailOptions);
-      res.status(200).json({ message: 'Correo enviado con éxito', info });
+    const [tokenData] = await connection.promise().query(
+      'SELECT * FROM usuariostokens WHERE token = ?',
+      [token]
+    );
+
+    if (tokenData.length === 0) {
+      return res.status(404).json({ error: 'Token no válido o expirado.' });
+    }
+
+    const { correo_electronico } = tokenData[0]; 
+    console.log(correo_electronico);
+    await connection.promise().query(
+      'UPDATE usuarios SET contraseña = ? WHERE correo_electronico = ?',
+      [newPassword, correo_electronico]
+    );
+
+    await connection.promise().query(
+      'DELETE FROM usuariostokens WHERE token = ?',
+      [token]
+    );
+
+    res.status(200).json({ message: 'Contraseña actualizada con éxito.' });
   } catch (error) {
-      console.error('Error al enviar el correo:', error);
-      res.status(500).json({ error: 'Error al enviar el correo', details: error });
+    console.error('Error al restablecer la contraseña:', error);
+    res.status(500).json({ error: 'Error al restablecer la contraseña.' });
   }
 });
 
