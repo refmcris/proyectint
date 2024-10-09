@@ -124,7 +124,6 @@ function Prestamos() {
    
   return (
     <Box sx={{}}>
-
       <Navbar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "100px" }}>
       <Typography variant="h4" gutterBottom>

@@ -210,7 +210,7 @@ function Externos() {
             </Typography>
             <form>
             <FormControl sx={{ mb: 2 }} fullWidth>
-                <InputLabel id="estados-label">Estado</InputLabel>
+                <InputLabel id="estado-label">Estado</InputLabel>
                 <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
                 <MenuItem value="devuelto">Devuelto</MenuItem>
                 <MenuItem value="pendiente">Pendiente</MenuItem>
