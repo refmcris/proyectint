@@ -271,6 +271,36 @@ app.get('/api/usuarios', (req, res) => {
       }
     });
   });
+  app.post('/api/prestamos-externos', (req, res) => {
+    const { id_usuario, nombre, apellido, id_equipo,serial,fecha_devolucion } = req.body;
+    const fecha_prestamo = new Date(); 
+    const estado = 'pendiente';
+
+    const queryPrestamo = `INSERT INTO préstamos(id_usuario, nombre, apellido, id_equipo, serial, fecha_prestamo, fecha_devolucion, estado_prestamo)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    
+    const prestamoValues = [id_usuario, nombre, apellido, id_equipo, serial, fecha_prestamo, fecha_devolucion, estado];
+  
+    connection.query(queryPrestamo, prestamoValues, (err, result) => {
+        if (err) {
+            console.error('Error al registrar el préstamo:', err);
+            res.status(500).send('Error al registrar el préstamo');
+        } else {
+            const queryEquipo = `UPDATE equipos SET estado = ? WHERE id_equipo = ?`;
+            const equipoValues = ['en_préstamo', id_equipo];
+
+            connection.query(queryEquipo, equipoValues, (err, result) => {
+                if (err) {
+                    console.error('Error al actualizar el estado del equipo:', err);
+                    res.status(500).send('Error al actualizar el estado del equipo');
+                } else {
+                    res.status(201).send('Préstamo registrado y estado del equipo actualizado a "en_préstamo"');
+                }
+            });
+        }
+    });
+});
+  
 
   app.get('/api/prestamos-equipos/:id_usuario', (req, res) => {
     const { id_usuario } = req.params;

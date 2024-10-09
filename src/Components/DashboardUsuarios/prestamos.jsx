@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect,useRef} from 'react'
 import Navbar from './sidebarus'
 import {Button,Box,TextField,Typography,Table,TableContainer,TableHead,TableRow,TableCell,TableBody,Paper,TablePagination, TableSortLabel
 ,Dialog, DialogActions, DialogContent,
@@ -9,7 +9,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
-const initialData = [];
+
+
 
 const columns = [
   { id: "nombre_equipo", label: "Nombre Equipo" },
@@ -32,6 +33,7 @@ function Prestamos() {
   const today = dayjs();
   const maxDate = today.add(7, 'day');
 
+ 
 
   const id_usuario = Cookies.get('id_usuario') || '';
   const handleOpen = (row) => {
@@ -122,6 +124,7 @@ function Prestamos() {
    
   return (
     <Box sx={{}}>
+
       <Navbar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "100px" }}>
       <Typography variant="h4" gutterBottom>
@@ -134,7 +137,7 @@ function Prestamos() {
           onChange={handleSearchChange}
           sx={{ mb: 3, width: '300px' }}
         />
-        <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)', maxWidth: '1800px',border: '1px solid #ddd' }}>
+        <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)', width: '100%', border: '1px solid #ddd' }}>
           <Table>
             <TableHead>
               <TableRow >
@@ -158,9 +161,9 @@ function Prestamos() {
                   {columns.map((column) => (
                     <TableCell key={column.id} sx={{borderBottom: '1px solid #ddd'}}>{row[column.id]}</TableCell>
                   ))}
-                  <TableCell sx={{textAlign: 'right', width: 150 }}>
+                  <TableCell sx={{ textAlign: 'right', width: '150px', overflow: 'hidden' }}>
                     {hoveredRow === row.id_equipo && (
-                      <Button variant="contained" color="primary" onClick={() => handleOpen(row)}>
+                      <Button variant="contained" color="primary" sx={{ padding: '5px 10px', minWidth: '80px' }} onClick={() => handleOpen(row)}>
                         Reservar
                       </Button>
                     )}

@@ -71,7 +71,7 @@ const Login = () => {
         backgroundColor: '#f0f0f0',
       }}
     >
-      <Box sx={{ backgroundColor: '#0B508E', padding: '15px', color: 'white' }}>
+      <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit' }}>
@@ -154,7 +154,7 @@ const Login = () => {
                   fullWidth
                   variant="contained"
                   onClick={handleLogin}
-                  sx={{ backgroundColor: '#2A5FFE', fontSize: '1.2rem', padding: '15px' }}
+                  sx={{ backgroundColor: '#d01c34', fontSize: '1.2rem', padding: '15px' }}
                 >
                   Iniciar sesión
                 </Button>
@@ -169,7 +169,7 @@ const Login = () => {
         </Paper>
       </Box>
 
-      <Box sx={{ backgroundColor: '#0B508E', padding: '80px', color: 'white', textAlign: 'center' }}>
+      <Box sx={{ backgroundColor: '#d01c34', padding: '80px', color: 'white', textAlign: 'center' }}>
         <Typography>
         Vicerrectoría Académica
         Dirección de Nuevas Tecnologías y Educación Virtual - DINTEV

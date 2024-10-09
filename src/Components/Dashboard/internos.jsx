@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid} from "@mui/material";
-import SideBar from "./sidebar";
 
-
-
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"; 
+import dayjs from 'dayjs';
 
 
 
@@ -31,6 +31,15 @@ function Internos() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
+  const [equipos, setEquipos] = useState([]); 
+  const [fechaDevolucion, setFechaDevolucion] = useState(null); 
+  const today = dayjs();
+  const maxDate = today.add(7, 'day');
+
+
+
+
+
 
   const fetchData = async () => {
     try {
@@ -41,31 +50,52 @@ function Internos() {
       console.error("Error fetching data:", error);
     }
   };
+  const fetchEquipos = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/equipos"); 
+      setEquipos(response.data);
+    } catch (error) {
+      console.error("Error fetching equipos:", error);
+    }
+  };
 
   useEffect(() => {
-    fetchData(); 
+    fetchData();
+    fetchEquipos(); 
   }, []);
 
   const handleOpenModal = () => {
     setOpenModal(true);
     setEditMode(false);
     setEditRecord({});
+    setFechaDevolucion(null); 
   };
-
   const handleCloseModal = () => {
     setOpenModal(false);
     setEditRecord({});
+    setFechaDevolucion(null);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditRecord({ ...editRecord, [name]: value });
+    if (name === "id_equipo") {
+      const equipoSeleccionado = equipos.find((equipo) => equipo.id_equipo === value);
+      if (equipoSeleccionado) {
+        setEditRecord((prevRecord) => ({
+          ...prevRecord,
+          serial: equipoSeleccionado.serial, 
+        }));
+      }
+    }
   };
+
 
   const handleEditRecord = (record) => {
     setEditMode(true);
     setEditRecord(record);
     setOpenModal(true);
+    
   };
 
   const handleSort = (columnId) => {
@@ -85,7 +115,8 @@ function Internos() {
   const handleSaveChanges = async () => {
     try {
         const response = await axios.put(`http://localhost:3001/api/prestamos-equipos/${editRecord.id_prestamo}`, {
-          estado: editRecord.estado 
+          estado: editRecord.estado,
+          fecha_devolucion: fechaDevolucion, 
         });
   
       if (response.status === 200) {
@@ -136,11 +167,7 @@ function Internos() {
     
     <Box sx={{ display: "flex" }}>
       <Box component="main" sx={{ flexGrow: 1, p: 1, marginTop: "0px" }}>
-        <Box sx={{ display: "flex",justifyContent: "flex-end", alignItems: "center"}}>
-          <Button variant="contained"onClick={handleOpenModal}sx={{ backgroundColor: "#d01c35" }}>
-            Agregar Registro
-          </Button>
-        </Box>
+        <Box sx={{ display: "flex",justifyContent: "space-between", alignItems: "center"}}>
         <TextField
           label="Buscar Prestamos"
           variant="outlined"
@@ -148,6 +175,12 @@ function Internos() {
           onChange={handleSearchChange}
           sx={{ mb: 1, width: '300px' }}
         />
+          <Button variant="contained"onClick={handleOpenModal}sx={{ backgroundColor: "#d01c35" }}>
+            Agregar Registro
+          </Button>
+          
+        </Box>
+        
         <TableContainer component={Paper}sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>
@@ -215,29 +248,75 @@ function Internos() {
             <Typography variant="h5" id="modal-title" gutterBottom>
             {editMode ? "Editar Registro" : "Ver Registro"}
             </Typography>
-            <form>
-            <FormControl sx={{ mb: 2 }} fullWidth>
-                <InputLabel id="estado-label">Estado</InputLabel>
-                <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
-                <MenuItem value="devuelto">Devuelto</MenuItem>
-                <MenuItem value="pendiente">Pendiente</MenuItem>
-                </Select>
-            </FormControl>
             <Grid container spacing={2}>
-                <Grid item>
-                <Button variant="outlined" color="secondary" onClick={handleCloseModal}>
-                    Cancelar
-                </Button>
-                </Grid>
-                <Grid item>
-                <Button variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSaveChanges}  >
-                    Guardar Cambios
-                </Button>
-                </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="select-equipo-label">ID Equipo</InputLabel>
+                <Select
+                  labelId="select-equipo-label"
+                  value={editRecord.id_equipo || ""}
+                  name="id_equipo"
+                  onChange={handleInputChange}
+                >
+                  {equipos.map((equipo) => (
+                    <MenuItem key={equipo.id_equipo} value={equipo.id_equipo}>
+                      {equipo.nombre_equipo}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
-            </form>
+            <Grid item xs={12}>
+              <TextField
+                label="Serial"
+                name="serial"
+                value={editRecord.serial || ""}
+                onChange={handleInputChange}
+                fullWidth
+                disabled 
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Nombre"
+                name="nombre"
+                value={editRecord.nombre || ""}
+                onChange={handleInputChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Apellido"
+                name="apellido"
+                value={editRecord.apellido || ""}
+                onChange={handleInputChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Fecha de Devolución"
+                  value={fechaDevolucion}
+                  onChange={(newValue) => setFechaDevolucion(newValue)}
+                  minDate={today}
+                  maxDate={maxDate}
+                  renderInput={(params) => (
+                    <TextField {...params} variant="outlined" required fullWidth sx={{ mb: 2 }} />
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button variant="contained" onClick={handleSaveChanges}>
+                {editMode ? "Guardar Cambios" : "Agregar Registro"}
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
-        </Modal>
+      </Modal>
 
       </Box>
     </Box>

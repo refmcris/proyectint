@@ -10,7 +10,7 @@ function Example() {
     return (
         <Box
             sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f0f0f0' }}>
-            <Box sx={{ backgroundColor: '#0B508E', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center',position:'fixed',top:'0',width:'calc(100% - 20px)',zIndex:1000}}>
+            <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center',position:'fixed',top:'0',width:'calc(100% - 20px)',zIndex:1000}}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit' }}>
@@ -82,7 +82,7 @@ function Example() {
 
             </Box>
 
-            <Box sx={{ backgroundColor: '#0B508E', padding: '80px', color: 'white', textAlign: 'center' }}>
+            <Box sx={{ backgroundColor: '#d01c34', padding: '80px', color: 'white', textAlign: 'center' }}>
             </Box>
         </Box>
     );

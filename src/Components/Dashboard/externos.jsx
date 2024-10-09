@@ -134,8 +134,13 @@ function Externos() {
   return (
     <Box sx={{ display: "flex" }}>
       <Box component="main" sx={{ flexGrow: 1, p: 1, marginTop: "0px"}}>
-        
-        
+      <TextField
+          label="Buscar Prestamos"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          sx={{ mb: 1, width: '300px' }}
+        />
         <TableContainer component={Paper}sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>
@@ -205,7 +210,7 @@ function Externos() {
             </Typography>
             <form>
             <FormControl sx={{ mb: 2 }} fullWidth>
-                <InputLabel id="estado-label">Estado</InputLabel>
+                <InputLabel id="estados-label">Estado</InputLabel>
                 <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
                 <MenuItem value="devuelto">Devuelto</MenuItem>
                 <MenuItem value="pendiente">Pendiente</MenuItem>

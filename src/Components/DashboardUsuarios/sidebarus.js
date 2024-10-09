@@ -36,7 +36,7 @@ const Navbar = () => {
   return (
     <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center',position:'fixed',top:'0',width:'calc(100% - 20px)',zIndex:1000}}>
       <Box sx={{ display: 'flex', alignItems: 'center',gap:'20px' }}>
-        <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
+      <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
         <NavLink to="/usuarios/home" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit' }}>
             Uninventory
