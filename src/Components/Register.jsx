@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [usernameInput, setUsernameInput] = useState('');
+  const [correoinput, setCorreoinput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [nameInput, setNameInput] = useState('');
   const [lastnameInput, setLastnameInput] = useState('');
@@ -29,13 +29,15 @@ const Register = () => {
     event.preventDefault(); 
     
     const data = {
-      username: usernameInput,
+      correo: correoinput,
       name: nameInput,
       lastname: lastnameInput,
       document: documentInput,
       documentType: documentTypeInput,
       phone: phoneInput,
-      password: passwordInput
+      password: passwordInput,
+      rol : 'Estudiante',
+      
     };
 
     try {
@@ -79,11 +81,7 @@ const Register = () => {
         >
           <form onSubmit={handleSubmit}>
             <Grid container spacing={4}>
-              <Grid item xs={12} sm={6}>
-                <TextField id="username" label="Username" value={usernameInput} onChange={(event) => setUsernameInput(event.target.value)} variant="outlined" fullWidth size="large" sx={{ marginBottom: '24px', fontSize: '1.2rem' }}required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
                 <TextField id="name" label="Nombre" value={nameInput} onChange={(event) => setNameInput(event.target.value)} variant="outlined" fullWidth size="large" sx={{ marginBottom: '24px', fontSize: '1.2rem' }} required
                 />
               </Grid>
@@ -93,19 +91,6 @@ const Register = () => {
                   label="Apellido"
                   value={lastnameInput}
                   onChange={(event) => setLastnameInput(event.target.value)}
-                  variant="outlined"
-                  fullWidth
-                  size="large"
-                  sx={{ marginBottom: '24px', fontSize: '1.2rem' }}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="document"
-                  label="Documento"
-                  value={documentInput}
-                  onChange={(event) => setDocumentInput(event.target.value)}
                   variant="outlined"
                   fullWidth
                   size="large"
@@ -130,6 +115,24 @@ const Register = () => {
                     <MenuItem value="C.C">CC</MenuItem>
                   </Select>
                 </FormControl>
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id="document"
+                  label="Documento"
+                  value={documentInput}
+                  onChange={(event) => setDocumentInput(event.target.value)}
+                  variant="outlined"
+                  fullWidth
+                  size="large"
+                  sx={{ marginBottom: '24px', fontSize: '1.2rem' }}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField id="correoelectronico" label="Correo Electronico" value={correoinput} onChange={(event) => setCorreoinput(event.target.value)} variant="outlined" fullWidth size="large" sx={{ marginBottom: '24px', fontSize: '1.2rem' }}required
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField

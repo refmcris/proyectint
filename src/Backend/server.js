@@ -151,18 +151,22 @@ app.post('/api/login', (req, res) => {
   );
 });
 app.post('/api/register', (req, res) => {
-    const { username, name, lastname, document, documentType, phone, password } = req.body;
+    const { correo, name, lastname, document, documentType, phone, password } = req.body;
+    console.log('Datos recibidos para registro:', req.body);
   
-    const query = `INSERT INTO usuarios (correo_electronico, nombre, apellido, documento, tipo_documento, telefono, contraseña) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const values = [correo, name, lastname, document, documentType, phone, password,'estudiante'];
+
+    const query = `INSERT INTO usuarios (correo_electronico, nombre, apellido, documento, tipo_documento, telefono, contraseña,rol) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
   
-    const values = [username, name, lastname, document, documentType, phone, password];
+   
     
     connection.query(query, values, (err, result) => {
       if (err) {
         res.status(500).send(err);
+        
       } else {
-        res.status(201).send('User registered successfully');
+        res.status(201).send('Registrado correctamente');
       }
     });
   });
@@ -345,3 +349,141 @@ app.get('/api/usuarios', (req, res) => {
       }
     });
 });
+
+// const checkForDelayedLoans = () => {
+//   const updateQuery = `
+//     UPDATE préstamos
+//     SET estado_prestamo = 'retrasado'
+//     WHERE fecha_devolucion < CURDATE() AND estado_prestamo = 'pendiente';
+//   `;
+
+//   connection.query(updateQuery, (err, result) => {
+//     if (err) {
+//       console.error('Error al actualizar préstamos a retrasado:', err);
+//       return;
+//     }
+
+//     if (result.affectedRows > 0) {
+//       console.log(`Préstamos actualizados a "retrasado": ${result.affectedRows}`);
+
+//       const selectQuery = `
+//         SELECT u.correo_electronico, p.id_prestamo
+//         FROM préstamos p
+//         INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+//         WHERE p.estado_prestamo = 'retrasado' AND p.fecha_devolucion < CURDATE();
+//       `;
+
+//       connection.query(selectQuery, (err, delayedLoans) => {
+//         if (err) {
+//           console.error('Error al seleccionar correos de préstamos retrasados:', err);
+//           return;
+//         }
+//         delayedLoans.forEach((loan) => {
+//           sendDelayEmail(loan.correo_electronico, loan.id_prestamo);
+//           console.log(loan.correo_electronico);
+//         });
+//       });
+//     } else {
+//       console.log('No se encontraron préstamos pendientes que estén retrasados.');
+//     }
+//   });
+// };
+
+
+// const sendDelayEmail = (to, loanId) => {
+//   const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//       type: 'OAuth2',
+//       user: 'univentory1@gmail.com',
+//       clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com',
+//       clientSecret: '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',
+//       refreshToken: '1//04H149qzClLXUCgYIARAAGAQSNwF-L9Ir__xjhwOVwCAvoiogDhNXgVSH56xA61LBi1d8lm_ywijsE3hdOqeEy1U4htKdSuMWBww', 
+//       accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
+//     },
+//   });
+
+//   const subject = 'Notificación de Préstamo Retrasado';
+//   const htmlcontent = `<p>Tu préstamo con ID ${loanId} está retrasado. Por favor, ponte en contacto para devolver el equipo.</p>`;
+
+//   const mailOptions = {
+//     from: 'univentory1@gmail.com',
+//     to,
+//     subject,
+//     html: htmlcontent,
+//   };
+
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.error('Error al enviar el correo:', error);
+//     } else {
+//       console.log(`Correo enviado con éxito a ${to} para el préstamo ID: ${loanId}`);
+//     }
+//   });
+// };
+// const checkForUpcomingReturns = () => {
+//   const selectQuery = `
+//     SELECT u.correo_electronico, p.id_prestamo, p.fecha_devolucion, e.nombre_equipo
+//     FROM préstamos p
+//     INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+//     INNER JOIN equipos e ON p.id_equipo = e.id_equipo
+//     WHERE p.fecha_devolucion = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND p.estado_prestamo = 'pendiente';
+//   `;
+
+//   connection.query(selectQuery, (err, upcomingLoans) => {
+//     if (err) {
+//       console.error('Error al seleccionar correos de préstamos próximos a vencerse:', err);
+//       return;
+//     }
+
+//     if (upcomingLoans.length > 0) {
+//       upcomingLoans.forEach((loan) => {
+//         sendUpcomingReturnEmail(loan.correo_electronico, loan.id_prestamo, loan.fecha_devolucion, loan.nombre_equipo);
+       
+//       });
+//     } else {
+//       console.log('No se encontraron préstamos que venzan mañana.');
+//     }
+//   });
+// };
+
+// const sendUpcomingReturnEmail = (to, loanId, dueDate, equipmentName) => {
+//   const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//       type: 'OAuth2',
+//       user: 'univentory1@gmail.com',
+//       clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com',
+//       clientSecret: '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',
+//       refreshToken: '1//04H149qzClLXUCgYIARAAGAQSNwF-L9Ir__xjhwOVwCAvoiogDhNXgVSH56xA61LBi1d8lm_ywijsE3hdOqeEy1U4htKdSuMWBww', 
+//       accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
+//     },
+//   });
+
+//   const subject = 'Recordatorio de Devolución de Préstamo';
+//   const htmlcontent = `
+//     <p>Tu préstamo  <strong>${equipmentName}</strong> vence el ${dueDate}. Por favor, asegúrate de devolver el equipo a tiempo.</p>
+//     <p>Gracias,</p>
+//     <p>Equipo Uninventory</p>
+//   `;
+
+//   const mailOptions = {
+//     from: process.env.GMAIL_USER,
+//     to,
+//     subject,
+//     html: htmlcontent,
+//   };
+
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.error('Error al enviar el correo de recordatorio:', error);
+//     } else {
+//       console.log(`Correo de recordatorio enviado con éxito a ${to} para el préstamo ID: ${loanId}, Equipo: ${equipmentName}`);
+//     }
+//   });
+// };
+
+// checkForUpcomingReturns();
+
+
+// checkForDelayedLoans();
