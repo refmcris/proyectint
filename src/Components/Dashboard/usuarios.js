@@ -120,7 +120,7 @@ function Usuarios() {
       columns.some((column) => item[column.id].toLowerCase().includes(event.target.value.toLowerCase()))
     );
     setFilteredData(filtered);
-    setPage(0);
+    setPage(0); // Metodo buscar
   };
   return (
     <Box sx={{ display: "flex" }}>
