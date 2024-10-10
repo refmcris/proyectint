@@ -40,6 +40,8 @@ function Internos() {
 
 
 
+  // Prestamos internos- backend not connected yet 
+
 
   const fetchData = async () => {
     try {
