@@ -380,6 +380,9 @@ app.get('/api/usuarios', (req, res) => {
     });
 });
 
+
+// Envio de correos de reportes 
+
 const checkForDelayedLoans = () => {
   const updateQuery = `
     UPDATE préstamos
