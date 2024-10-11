@@ -12,7 +12,7 @@ const port = 3001;
 const axios = require('axios');
 
 const mysql = require('mysql2');
-const EmailTemplate = require('../src/Components/DashboardUsuarios/emailtemplate');
+const EmailTemplate = require('../Components/DashboardUsuarios/emailtemplate');
 
 const connection = mysql.createConnection({
   host: 'localhost',
