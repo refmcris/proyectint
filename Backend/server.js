@@ -12,7 +12,7 @@ const port = 3001;
 const axios = require('axios');
 
 const mysql = require('mysql2');
-const EmailTemplate = require('../Components/DashboardUsuarios/emailtemplate');
+const EmailTemplate = require('../src/Components/DashboardUsuarios/emailtemplate');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -274,9 +274,9 @@ app.get('/api/usuarios', (req, res) => {
   app.post('/api/prestamos-externos', (req, res) => {
     const { id_usuario, nombre, apellido, id_equipo,serial,fecha_devolucion } = req.body;
     const fecha_prestamo = new Date(); 
-    const estado = 'pendiente';
+    const estado = 'en préstamo';
 
-    const queryPrestamo = `INSERT INTO préstamos(id_usuario, nombre, apellido, id_equipo, serial, fecha_prestamo, fecha_devolucion, estado_prestamo)
+    const queryPrestamo = `INSERT INTO préstamosinternos(id_usuario, nombre, apellido, id_equip, serial, fecha_prestamo, fecha_devolucion, estado_prestamo)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     
     const prestamoValues = [id_usuario, nombre, apellido, id_equipo, serial, fecha_prestamo, fecha_devolucion, estado];
@@ -299,6 +299,24 @@ app.get('/api/usuarios', (req, res) => {
             });
         }
     });
+});
+app.get('/api/prestamos-internos', (req, res) => {
+  const query = `
+    SELECT pi.id_prestamo, pi.id_usuario, pi.Nombre AS nombre_usuario, pi.Apellido AS apellido_usuario, 
+           e.nombre_equipo, e.serial, e.tipo, e.marca, e.modelo, 
+           pi.estado_prestamo, pi.fecha_prestamo, pi.fecha_devolucion
+    FROM préstamosinternos pi
+    JOIN equipos e ON pi.id_equip = e.id_equipo
+  `;
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los préstamos internos:', err);
+      res.status(500).send('Error al obtener los préstamos internos');
+    } else {
+      res.status(200).json(results);
+    }
+  });
 });
   
 
@@ -355,29 +373,85 @@ app.get('/api/usuarios', (req, res) => {
         console.error('Error al actualizar el préstamo:', err);
         res.status(500).send('Error al actualizar el préstamo');
       } else {
+       let updateEquipoQuery;
+      let newEquipoStatus;
 
-        if (estado === 'devuelto') {
-          const updateEquipoQuery = `
-            UPDATE equipos 
-            SET estado = 'disponible' 
-            WHERE id_equipo = (
-              SELECT id_equipo 
-              FROM préstamos 
-              WHERE id_prestamo = ?)`;
-
-          connection.query(updateEquipoQuery, [id_prestamo], (err, results) => {
-            if (err) {
-              console.error('Error al actualizar el estado del equipo:', err);
-              res.status(500).send('Error al actualizar el estado del equipo');
-            } else {
-              res.status(200).send('Préstamo y equipo actualizados correctamente');
-            }
-          });
-        } else {
-          res.status(200).send('Préstamo actualizado correctamente');
-        }
+      if (estado === 'devuelto') {
+        newEquipoStatus = 'disponible';
+      } else if (estado === 'en préstamo') {
+        newEquipoStatus = 'en préstamo';
+      } else {
+        res.status(200).send('Préstamo actualizado correctamente');
+        return;
       }
-    });
+
+      updateEquipoQuery = `
+        UPDATE equipos 
+        SET estado = ? 
+        WHERE id_equipo = (
+          SELECT id_equipo
+          FROM préstamos 
+          WHERE id_prestamo = ?)`;
+
+      connection.query(updateEquipoQuery, [newEquipoStatus, id_prestamo], (err, results) => {
+        if (err) {
+          console.error('Error al actualizar el estado del equipo:', err);
+          res.status(500).send('Error al actualizar el estado del equipo');
+        } else {
+          res.status(200).send('Préstamo y equipo actualizados correctamente');
+        }
+      });
+    }
+  });
+});
+
+app.put('/api/prestamos-equipos-internos/:id_prestamo', (req, res) => {
+  const { id_prestamo } = req.params;
+  const { estado } = req.body;
+
+  console.log('ID de préstamo recibido:', id_prestamo);
+  console.log('Estado recibido:', estado);
+
+  const updatePrestamoQuery = `
+    UPDATE préstamosinternos 
+    SET estado_prestamo = ? 
+    WHERE id_prestamo = ?`;
+
+  connection.query(updatePrestamoQuery, [estado, id_prestamo], (err, results) => {
+    if (err) {
+      console.error('Error al actualizar el préstamo:', err);
+      res.status(500).send('Error al actualizar el préstamo');
+    } else {
+      let updateEquipoQuery;
+      let newEquipoStatus;
+
+      if (estado === 'devuelto') {
+        newEquipoStatus = 'disponible';
+      } else if (estado === 'en préstamo') {
+        newEquipoStatus = 'en préstamo';
+      } else {
+        res.status(200).send('Préstamo actualizado correctamente');
+        return;
+      }
+
+      updateEquipoQuery = `
+        UPDATE equipos 
+        SET estado = ? 
+        WHERE id_equipo = (
+          SELECT id_equip
+          FROM préstamosinternos 
+          WHERE id_prestamo = ?)`;
+
+      connection.query(updateEquipoQuery, [newEquipoStatus, id_prestamo], (err, results) => {
+        if (err) {
+          console.error('Error al actualizar el estado del equipo:', err);
+          res.status(500).send('Error al actualizar el estado del equipo');
+        } else {
+          res.status(200).send('Préstamo y equipo actualizados correctamente');
+        }
+      });
+    }
+  });
 });
 
 const checkForDelayedLoans = () => {
