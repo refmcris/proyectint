@@ -40,6 +40,8 @@ function Internos() {
 
 
 
+  // Prestamos internos- backend not connected yet 
+
 
   const fetchData = async () => {
     try {
@@ -161,7 +163,7 @@ function Internos() {
         columns.some((column) => item[column.id].toLowerCase().includes(event.target.value.toLowerCase()))
       );
       setFilteredData(filtered);
-      setPage(0);
+      setPage(0);  // Metodo buscar
     };
   return (
     
