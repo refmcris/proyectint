@@ -100,9 +100,9 @@
         switch (estado) {
           case "disponible":
             return "#3df27b"; 
-          case "en préstamo":
+          case "en_préstamo":
             return "#feac54"; 
-          case "en reparación":
+          case "en_reparación":
             return "#f8646d";
           case "retrasado":
             return "#f56c6c"; 

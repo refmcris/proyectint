@@ -40,10 +40,12 @@ function Internos() {
 
 
 
+  // Prestamos internos- backend not connected yet 
+
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/prestamos-internos");
+      const response = await axios.get("http://localhost:3001/api/prestamos-equipos");
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
@@ -113,40 +115,19 @@ function Internos() {
     setPage(0);
   };
   const handleSaveChanges = async () => {
-    if (editMode) {
-      try {
-       
-        const response = await axios.put(`http://localhost:3001/api/prestamos-equipos-internos/${editRecord.id_prestamo}`, {
+    try {
+        const response = await axios.put(`http://localhost:3001/api/prestamos-equipos/${editRecord.id_prestamo}`, {
           estado: editRecord.estado,
+          fecha_devolucion: fechaDevolucion, 
         });
-        if (response.status === 200) {
-          alert("Préstamo actualizado correctamente");
-          handleCloseModal();
-          fetchData();
-        }
-      } catch (error) {
-        console.error("Error actualizando el préstamo:", error);
+  
+      if (response.status === 200) {
+        alert("Préstamo actualizado correctamente");
+        handleCloseModal();
+        fetchData();
       }
-    } else {
-      try {
-        const newPrestamo = {
-          id_usuario: editRecord.idestudiante,
-          nombre: editRecord.nombre,
-          apellido: editRecord.apellido,
-          id_equipo: editRecord.id_equipo,
-          serial: editRecord.serial,
-          fecha_devolucion: fechaDevolucion,
-        };
-
-        const response = await axios.post("http://localhost:3001/api/prestamos-externos", newPrestamo);
-        if (response.status === 201) {
-          alert("Préstamo registrado correctamente");
-          handleCloseModal();
-          fetchData();
-        }
-      } catch (error) {
-        console.error("Error registrando el préstamo:", error);
-      }
+    } catch (error) {
+      console.error("Error actualizando el préstamo:", error);
     }
   };
 
@@ -168,7 +149,7 @@ function Internos() {
     function getrowcolor(estado_prestamo){
       
       switch(estado_prestamo){
-        case 'en préstamo':
+        case 'pendiente':
           return '#feac54';
         case 'devuelto':
           return '#3df27b';
@@ -182,7 +163,7 @@ function Internos() {
         columns.some((column) => item[column.id].toLowerCase().includes(event.target.value.toLowerCase()))
       );
       setFilteredData(filtered);
-      setPage(0);
+      setPage(0);  // Metodo buscar
     };
   return (
     
@@ -270,92 +251,65 @@ function Internos() {
             {editMode ? "Editar Registro" : "Ver Registro"}
             </Typography>
             <Grid container spacing={2}>
-            {!editMode && (
-        <>
-          <Grid item xs={12}>
-            <TextField
-              label="Código Estudiante"
-              name="idestudiante"
-              value={editRecord.idestudiante || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="select-equipo-label">ID Equipo</InputLabel>
-              <Select
-                labelId="select-equipo-label"
-                value={editRecord.id_equipo || ""}
-                name="id_equipo"
-                onChange={handleInputChange}
-              >
-                {equipos.map((equipo) => (
-                  <MenuItem key={equipo.id_equipo} value={equipo.id_equipo}>
-                    {equipo.nombre_equipo}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Serial"
-              name="serial"
-              value={editRecord.serial || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Nombre"
-              name="nombre"
-              value={editRecord.nombre || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Apellido"
-              name="apellido"
-              value={editRecord.apellido || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Fecha de Devolución"
-                value={fechaDevolucion}
-                onChange={(newValue) => setFechaDevolucion(newValue)}
-                minDate={today}
-                maxDate={maxDate}
-                renderInput={(params) => (
-                  <TextField {...params} variant="outlined" required fullWidth sx={{ mb: 2 }} />
-                )}
-              />
-            </LocalizationProvider>
-          </Grid>
-        </>
-      )}
-            {editMode && (
-              <Grid item xs={12}>
-                <FormControl sx={{ mb: 2 }} fullWidth>
-                <InputLabel id="estado-label">Estado</InputLabel>
-                <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
-                <MenuItem value="devuelto">Devuelto</MenuItem>
-                <MenuItem value="en préstamo">En préstamo</MenuItem>
-                <MenuItem value="en reparación">Necesita reparacion</MenuItem>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="select-equipo-label">ID Equipo</InputLabel>
+                <Select
+                  labelId="select-equipo-label"
+                  value={editRecord.id_equipo || ""}
+                  name="id_equipo"
+                  onChange={handleInputChange}
+                >
+                  {equipos.map((equipo) => (
+                    <MenuItem key={equipo.id_equipo} value={equipo.id_equipo}>
+                      {equipo.nombre_equipo}
+                    </MenuItem>
+                  ))}
                 </Select>
-            </FormControl>
-              </Grid>
-            )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Serial"
+                name="serial"
+                value={editRecord.serial || ""}
+                onChange={handleInputChange}
+                fullWidth
+                disabled 
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Nombre"
+                name="nombre"
+                value={editRecord.nombre || ""}
+                onChange={handleInputChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Apellido"
+                name="apellido"
+                value={editRecord.apellido || ""}
+                onChange={handleInputChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Fecha de Devolución"
+                  value={fechaDevolucion}
+                  onChange={(newValue) => setFechaDevolucion(newValue)}
+                  minDate={today}
+                  maxDate={maxDate}
+                  renderInput={(params) => (
+                    <TextField {...params} variant="outlined" required fullWidth sx={{ mb: 2 }} />
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
 
             <Grid item xs={12}>
               <Button variant="contained" onClick={handleSaveChanges}>
@@ -365,6 +319,7 @@ function Internos() {
           </Grid>
         </Box>
       </Modal>
+
       </Box>
     </Box>
   );

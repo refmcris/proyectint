@@ -115,7 +115,7 @@ function Externos() {
     function getrowcolor(estado_prestamo){
       
       switch(estado_prestamo){
-        case 'en préstamo':
+        case 'pendiente':
           return '#feac54';
         case 'devuelto':
           return '#3df27b';
@@ -213,8 +213,7 @@ function Externos() {
                 <InputLabel id="estado-label">Estado</InputLabel>
                 <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
                 <MenuItem value="devuelto">Devuelto</MenuItem>
-                <MenuItem value="en préstamo">En préstamo</MenuItem>
-                <MenuItem value="en reparación">Necesita reparación</MenuItem>
+                <MenuItem value="pendiente">Pendiente</MenuItem>
                 </Select>
             </FormControl>
             <Grid container spacing={2}>
