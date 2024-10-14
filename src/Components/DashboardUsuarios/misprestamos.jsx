@@ -65,7 +65,7 @@ function Misprestamos() {
     function getrowcolor(estado_prestamo){
       
       switch(estado_prestamo){
-        case 'pendiente':
+        case 'en préstamo':
           return '#feac54';
         case 'devuelto':
           return '#3df27b';

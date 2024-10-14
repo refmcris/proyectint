@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, TextField, FormControl, InputLabel, IconButton, Button, InputAdornment, OutlinedInput, Grid } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Logo from './logo.png'
-import Logo2 from './logo2.PNG';
+import Logo from '../Components/logo.png'
+import Logo2 from '../Components/logo2.PNG';
 import { Link, NavLink, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';

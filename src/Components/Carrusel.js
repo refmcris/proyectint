@@ -60,7 +60,7 @@ function Example() {
                         Ayudas rápidas
                     </Typography>
                     <Box sx={{ textAlign: 'left', paddingLeft: '30px' }}>
-                        <Link href="#" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>
+                        <Link href="/recupcontra" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>
                             + Recuperar contraseña
                         </Link>
                         <Link href="#" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>

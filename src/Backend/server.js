@@ -74,8 +74,8 @@ app.post('/api/sendEmail', async (req, res) => {
           user: 'univentory1@gmail.com', 
           clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com', 
           clientSecret: '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', 
-          refreshToken: '1//04H149qzClLXUCgYIARAAGAQSNwF-L9Ir__xjhwOVwCAvoiogDhNXgVSH56xA61LBi1d8lm_ywijsE3hdOqeEy1U4htKdSuMWBww', 
-          accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
+          refreshToken: '1//04uSWwU2wQsExCgYIARAAGAQSNwF-L9IrFLVJaO-Pt4C94rfw0Z9Rl2FrpfeSEuOArE1khj8T2FvOedggXa9GPwTx2ihZuczLuec', 
+          accessToken: 'ya29.a0AcM612z_CT1RJ-ddkuzEGo7I74uzgo4LIZp1T1CDl06OjKxGOLOtgYE7DGOkCGJAwXpEFfqfjKrfglX2dM1eB4anBilflPzMyHoUNUutPYb6Y6e9kVkfuj2yIXu7V-kTjs4I0EwxvB3kM0FkRCWpSAo74JpVrstZ8VSlCzXHaCgYKAVASARASFQHGX2Mi2bVjSytjM2nVnt1VUWSuSw0175'
       }
   });
   const resetLink = `http://localhost:3000/contrarecupera?token=${token}`;
@@ -236,7 +236,7 @@ app.get('/api/usuarios', (req, res) => {
   app.post('/api/prestamos', (req, res) => {
     const { id_usuario, id_equipo, serial, fecha_devolucion } = req.body;
     const fecha_prestamo = new Date(); 
-    const estado = 'pendiente';
+    const estado = 'en préstamo';
 
     const queryPrestamo = `INSERT INTO préstamos(id_usuario, id_equipo, serial, fecha_prestamo, fecha_devolucion, estado_prestamo)
                            VALUES (?, ?, ?, ?, ?, ?)`;
@@ -458,7 +458,7 @@ const checkForDelayedLoans = () => {
   const updateQuery = `
     UPDATE préstamos
     SET estado_prestamo = 'retrasado'
-    WHERE fecha_devolucion < CURDATE() AND estado_prestamo = 'pendiente';
+    WHERE fecha_devolucion < CURDATE() AND estado_prestamo = 'en préstamo';
   `;
 
   connection.query(updateQuery, (err, result) => {
@@ -502,8 +502,8 @@ const sendDelayEmail = (to, loanId) => {
       user: 'univentory1@gmail.com',
       clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04H149qzClLXUCgYIARAAGAQSNwF-L9Ir__xjhwOVwCAvoiogDhNXgVSH56xA61LBi1d8lm_ywijsE3hdOqeEy1U4htKdSuMWBww', 
-      accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
+      refreshToken: '1//04uSWwU2wQsExCgYIARAAGAQSNwF-L9IrFLVJaO-Pt4C94rfw0Z9Rl2FrpfeSEuOArE1khj8T2FvOedggXa9GPwTx2ihZuczLuec', 
+      accessToken: 'ya29.a0AcM612z_CT1RJ-ddkuzEGo7I74uzgo4LIZp1T1CDl06OjKxGOLOtgYE7DGOkCGJAwXpEFfqfjKrfglX2dM1eB4anBilflPzMyHoUNUutPYb6Y6e9kVkfuj2yIXu7V-kTjs4I0EwxvB3kM0FkRCWpSAo74JpVrstZ8VSlCzXHaCgYKAVASARASFQHGX2Mi2bVjSytjM2nVnt1VUWSuSw0175'
     },
   });
 
@@ -531,7 +531,7 @@ const checkForUpcomingReturns = () => {
     FROM préstamos p
     INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
     INNER JOIN equipos e ON p.id_equipo = e.id_equipo
-    WHERE p.fecha_devolucion = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND p.estado_prestamo = 'pendiente';
+    WHERE p.fecha_devolucion = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND p.estado_prestamo = 'en préstamo';
   `;
 
   connection.query(selectQuery, (err, upcomingLoans) => {
@@ -559,8 +559,8 @@ const sendUpcomingReturnEmail = (to, loanId, dueDate, equipmentName) => {
       user: 'univentory1@gmail.com',
       clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04H149qzClLXUCgYIARAAGAQSNwF-L9Ir__xjhwOVwCAvoiogDhNXgVSH56xA61LBi1d8lm_ywijsE3hdOqeEy1U4htKdSuMWBww', 
-      accessToken: 'ya29.a0AcM612wOTiP2C6pFSl-dDw2e0DPmf-U8-c83QSkJybMn5-5m_2dcePTiRihZrfe15JNF6lIOG2uMqZU4coa_H0K5Wvn80-4es8BX5k4c-dUNLgO_HN6jywyjZiJlFqyIspyTENUhzYeO-Qup1YCFTZiyF48BiPmRfKnxB5-3aCgYKAb0SARASFQHGX2MiwK3bWYWvspSWoaiPIp8-hw0175'
+      refreshToken: '1//04uSWwU2wQsExCgYIARAAGAQSNwF-L9IrFLVJaO-Pt4C94rfw0Z9Rl2FrpfeSEuOArE1khj8T2FvOedggXa9GPwTx2ihZuczLuec', 
+      accessToken: 'ya29.a0AcM612z_CT1RJ-ddkuzEGo7I74uzgo4LIZp1T1CDl06OjKxGOLOtgYE7DGOkCGJAwXpEFfqfjKrfglX2dM1eB4anBilflPzMyHoUNUutPYb6Y6e9kVkfuj2yIXu7V-kTjs4I0EwxvB3kM0FkRCWpSAo74JpVrstZ8VSlCzXHaCgYKAVASARASFQHGX2Mi2bVjSytjM2nVnt1VUWSuSw0175'
     },
   });
 
