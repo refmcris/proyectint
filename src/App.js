@@ -2,10 +2,10 @@ import logo from './logo.svg';
 import React from 'react';
 import './App.css';
 
-import Register from './Components/Register';
+
 import Landpage from './Components/Landpage';
 import Carrusel from './Components/Carrusel';
-import Login from './Components/Login';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SideBar from './Components/Dashboard/sidebar';
 import Equipos from './Components/Dashboard/equipos';
@@ -18,6 +18,8 @@ import Devprestamos from './Components/Dashboard/devprestamos';
 import Recupcontra from './Components/DashboardUsuarios/recupcontra';
 import Contrarecupe from './Components/DashboardUsuarios/contrarecupe';
 import TabbedTable from './Components/Dashboard/devprestamos';
+import Login from './Auth/Login';
+import Register from './Auth/Register';
 
 
 function App() {

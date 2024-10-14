@@ -119,7 +119,7 @@ function Prestamos() {
         columns.some((column) => item[column.id].toLowerCase().includes(event.target.value.toLowerCase()))
       );
       setFilteredData(filtered);
-      setPage(0);  // Metodo buscar
+      setPage(0);
     };
    
   return (
