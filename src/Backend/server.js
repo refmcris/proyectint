@@ -455,37 +455,40 @@ app.put('/api/prestamos-equipos-internos/:id_prestamo', (req, res) => {
 });
 
 const checkForDelayedLoans = () => {
-  const updateQuery = `
-    UPDATE préstamos
-    SET estado_prestamo = 'retrasado'
-    WHERE fecha_devolucion < CURDATE() AND estado_prestamo = 'en préstamo';
+  const selectQuery = `
+    SELECT u.correo_electronico, p.id_prestamo, p.fecha_devolucion, e.nombre_equipo
+    FROM préstamos p
+    INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+    INNER JOIN equipos e ON p.id_equipo = e.id_equipo
+    WHERE p.estado_prestamo = 'en préstamo' AND p.fecha_devolucion < CURDATE();
   `;
 
-  connection.query(updateQuery, (err, result) => {
+  connection.query(selectQuery, (err, delayedLoans) => {
     if (err) {
-      console.error('Error al actualizar préstamos a retrasado:', err);
+      console.error('Error al seleccionar correos de préstamos pendientes:', err);
       return;
     }
 
-    if (result.affectedRows > 0) {
-      console.log(`Préstamos actualizados a "retrasado": ${result.affectedRows}`);
-
-      const selectQuery = `
-        SELECT u.correo_electronico, p.id_prestamo
-        FROM préstamos p
-        INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
-        WHERE p.estado_prestamo = 'retrasado' AND p.fecha_devolucion < CURDATE();
+    if (delayedLoans.length > 0) {
+      console.log(`Préstamos encontrados en retraso: ${delayedLoans.length}`);
+      
+      delayedLoans.forEach((loan) => {
+        sendDelayEmail(loan.correo_electronico, loan.nombre_equipo);
+        console.log(`Correo enviado a: ${loan.correo_electronico}`);
+      });
+      const updateQuery = `
+        UPDATE préstamos
+        SET estado_prestamo = 'retrasado'
+        WHERE fecha_devolucion < CURDATE() AND estado_prestamo = 'en préstamo';
       `;
 
-      connection.query(selectQuery, (err, delayedLoans) => {
+      connection.query(updateQuery, (err, result) => {
         if (err) {
-          console.error('Error al seleccionar correos de préstamos retrasados:', err);
+          console.error('Error al actualizar préstamos a retrasado:', err);
           return;
         }
-        delayedLoans.forEach((loan) => {
-          sendDelayEmail(loan.correo_electronico, loan.id_prestamo);
-          console.log(loan.correo_electronico);
-        });
+
+        console.log(`Préstamos actualizados a "retrasado": ${result.affectedRows}`);
       });
     } else {
       console.log('No se encontraron préstamos pendientes que estén retrasados.');
@@ -494,7 +497,8 @@ const checkForDelayedLoans = () => {
 };
 
 
-const sendDelayEmail = (to, loanId) => {
+
+const sendDelayEmail = (to, teamName) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -502,13 +506,13 @@ const sendDelayEmail = (to, loanId) => {
       user: 'univentory1@gmail.com',
       clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04uSWwU2wQsExCgYIARAAGAQSNwF-L9IrFLVJaO-Pt4C94rfw0Z9Rl2FrpfeSEuOArE1khj8T2FvOedggXa9GPwTx2ihZuczLuec', 
-      accessToken: 'ya29.a0AcM612z_CT1RJ-ddkuzEGo7I74uzgo4LIZp1T1CDl06OjKxGOLOtgYE7DGOkCGJAwXpEFfqfjKrfglX2dM1eB4anBilflPzMyHoUNUutPYb6Y6e9kVkfuj2yIXu7V-kTjs4I0EwxvB3kM0FkRCWpSAo74JpVrstZ8VSlCzXHaCgYKAVASARASFQHGX2Mi2bVjSytjM2nVnt1VUWSuSw0175'
+      refreshToken: '1//04jfvESrZDyN9CgYIARAAGAQSNwF-L9Irud8StNE2c1mdzYc1Y9192wexlVCZhHVtUD8IZVLVbKNeODExybWTZRbMs4B0MR5rsXY', 
+      accessToken: 'ya29.a0AcM612yTLq89hCKd-ci6iZPNGYicRx2Z1D6f3pXLRASxrTRLgquBOO3mGG10Cn1cX0HdWC_S6AheSGz9JCQtyGV9yhGFw4-BP8YfSJ3eKNS-UTsC8a_0UC7SwAUC7bBfmalZA211bKtISODmVGwQqYfz-HWzNjRxmN0KBrlXaCgYKAf0SARASFQHGX2Mixrd3pBB8w2MkYVeGC8g_Tg0175'
     },
   });
 
   const subject = 'Notificación de Préstamo Retrasado';
-  const htmlcontent = `<p>Tu préstamo con ID ${loanId} está retrasado. Por favor, ponte en contacto para devolver el equipo.</p>`;
+  const htmlcontent = `<p>Tu préstamo con del equipo  ${teamName} está retrasado. Por favor, ponte en contacto para devolver el equipo.</p>`;
 
   const mailOptions = {
     from: 'univentory1@gmail.com',
@@ -559,8 +563,8 @@ const sendUpcomingReturnEmail = (to, loanId, dueDate, equipmentName) => {
       user: 'univentory1@gmail.com',
       clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04uSWwU2wQsExCgYIARAAGAQSNwF-L9IrFLVJaO-Pt4C94rfw0Z9Rl2FrpfeSEuOArE1khj8T2FvOedggXa9GPwTx2ihZuczLuec', 
-      accessToken: 'ya29.a0AcM612z_CT1RJ-ddkuzEGo7I74uzgo4LIZp1T1CDl06OjKxGOLOtgYE7DGOkCGJAwXpEFfqfjKrfglX2dM1eB4anBilflPzMyHoUNUutPYb6Y6e9kVkfuj2yIXu7V-kTjs4I0EwxvB3kM0FkRCWpSAo74JpVrstZ8VSlCzXHaCgYKAVASARASFQHGX2Mi2bVjSytjM2nVnt1VUWSuSw0175'
+      refreshToken: '1//04jfvESrZDyN9CgYIARAAGAQSNwF-L9Irud8StNE2c1mdzYc1Y9192wexlVCZhHVtUD8IZVLVbKNeODExybWTZRbMs4B0MR5rsXY', 
+      accessToken: 'ya29.a0AcM612yTLq89hCKd-ci6iZPNGYicRx2Z1D6f3pXLRASxrTRLgquBOO3mGG10Cn1cX0HdWC_S6AheSGz9JCQtyGV9yhGFw4-BP8YfSJ3eKNS-UTsC8a_0UC7SwAUC7bBfmalZA211bKtISODmVGwQqYfz-HWzNjRxmN0KBrlXaCgYKAf0SARASFQHGX2Mixrd3pBB8w2MkYVeGC8g_Tg0175'
     },
   });
 
