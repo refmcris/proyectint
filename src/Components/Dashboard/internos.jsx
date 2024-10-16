@@ -174,6 +174,8 @@ function Internos() {
           return '#3df27b';
         case 'retrasado':
           return '#f56c6c';
+        case 'en reparación':
+          return '#f56c6c';
       }
     }
     const handleSearchChange = (event) => {

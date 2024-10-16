@@ -380,7 +380,9 @@ app.get('/api/prestamos-internos', (req, res) => {
         newEquipoStatus = 'disponible';
       } else if (estado === 'en préstamo') {
         newEquipoStatus = 'en préstamo';
-      } else {
+      }else if (estado === 'en reparación') {
+        newEquipoStatus = 'en reparación';
+      }  else {
         res.status(200).send('Préstamo actualizado correctamente');
         return;
       }
@@ -429,7 +431,9 @@ app.put('/api/prestamos-equipos-internos/:id_prestamo', (req, res) => {
         newEquipoStatus = 'disponible';
       } else if (estado === 'en préstamo') {
         newEquipoStatus = 'en préstamo';
-      } else {
+      }else if (estado === 'en reparación') {
+        newEquipoStatus = 'en reparación';
+      }else {
         res.status(200).send('Préstamo actualizado correctamente');
         return;
       }
