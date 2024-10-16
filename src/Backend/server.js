@@ -74,8 +74,8 @@ app.post('/api/sendEmail', async (req, res) => {
           user: 'univentory1@gmail.com', 
           clientId: '738690101223-sehppvhn9qapplbestmra3aar6gmmhig.apps.googleusercontent.com', 
           clientSecret: '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', 
-          refreshToken: '1//04uSWwU2wQsExCgYIARAAGAQSNwF-L9IrFLVJaO-Pt4C94rfw0Z9Rl2FrpfeSEuOArE1khj8T2FvOedggXa9GPwTx2ihZuczLuec', 
-          accessToken: 'ya29.a0AcM612z_CT1RJ-ddkuzEGo7I74uzgo4LIZp1T1CDl06OjKxGOLOtgYE7DGOkCGJAwXpEFfqfjKrfglX2dM1eB4anBilflPzMyHoUNUutPYb6Y6e9kVkfuj2yIXu7V-kTjs4I0EwxvB3kM0FkRCWpSAo74JpVrstZ8VSlCzXHaCgYKAVASARASFQHGX2Mi2bVjSytjM2nVnt1VUWSuSw0175'
+          refreshToken: '1//04Gzz8REnqThzCgYIARAAGAQSNwF-L9IrnfYfQhpLn9ZyNZNGD5ODHMU0kfZU540KipetDxhb5dtbj6VsacCjkfyTnwmW3yinq9U', 
+          accessToken: 'ya29.a0AcM612wBHdlgVcBmFj38EQoDTRMgA8vJI9_7F_293itj_i4dbXIrlGn7bi8dMIQkgzwOSb1gOrkDeXoDO4lnSDdvAxxQIdsRJiv_76AdslZjBYErpEJSHZF6BzQzs7D400iWEhAsTGgKWBKyB_IEwBEWeN6LXhwMAeaz1orpaCgYKASISARASFQHGX2MiQ1i3mSL40R2jSt2KpNfOgw0175'
       }
   });
   const resetLink = `http://localhost:3000/contrarecupera?token=${token}`;
@@ -258,14 +258,14 @@ app.get('/api/usuarios', (req, res) => {
         connection.query(queryHistorial, historialValues);
           
         const queryEquipo = `UPDATE equipos SET estado = ? WHERE id_equipo = ?`;
-        const equipoValues = ['en_préstamo', id_equipo];
+        const equipoValues = ['en préstamo', id_equipo];
   
         connection.query(queryEquipo, equipoValues, (err, result) => {
           if (err) {
             console.error('Error al actualizar el estado del equipo:', err);
             res.status(500).send('Error al actualizar el estado del equipo');
           } else {
-            res.status(201).send('Préstamo registrado y estado del equipo actualizado a "en_préstamo"');
+            res.status(201).send('Préstamo registrado y estado del equipo actualizado a "en préstamo"');
           }
         });
       }
@@ -287,14 +287,14 @@ app.get('/api/usuarios', (req, res) => {
             res.status(500).send('Error al registrar el préstamo');
         } else {
             const queryEquipo = `UPDATE equipos SET estado = ? WHERE id_equipo = ?`;
-            const equipoValues = ['en_préstamo', id_equipo];
+            const equipoValues = ['en préstamo', id_equipo];
 
             connection.query(queryEquipo, equipoValues, (err, result) => {
                 if (err) {
                     console.error('Error al actualizar el estado del equipo:', err);
                     res.status(500).send('Error al actualizar el estado del equipo');
                 } else {
-                    res.status(201).send('Préstamo registrado y estado del equipo actualizado a "en_préstamo"');
+                    res.status(201).send('Préstamo registrado y estado del equipo actualizado a "en préstamo"');
                 }
             });
         }

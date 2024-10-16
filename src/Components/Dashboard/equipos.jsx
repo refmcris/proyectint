@@ -100,9 +100,9 @@
         switch (estado) {
           case "disponible":
             return "#3df27b"; 
-          case "en_préstamo":
+          case "en préstamo":
             return "#feac54"; 
-          case "en_reparación":
+          case "en reparación":
             return "#f8646d";
           case "retrasado":
             return "#f56c6c"; 
@@ -226,8 +226,9 @@
             <Box
               sx={{
                 width: { xs: '90%', sm: '80%', md: '60%', lg: '40%' }, 
-                bgcolor: 'background.paper', p: { xs: 2, sm: 3, md: 4 }, mx: 'auto', mt: { xs: '20%', sm: '15%', md: '10%' }, borderRadius: 1,
-              }}
+                bgcolor: 'background.paper', p: { xs: 2, sm: 3, md: 4 }, mx: 'auto', mt: { xs: '20%', sm: '15%', md: '10%' }, borderRadius: 1,maxHeight: "90vh", 
+                overflowY: "auto"    
+            }}
             >
               <Typography variant="h5" id="modal-title" gutterBottom>
                 {editMode ? "Editar Registro" : "Agregar Nuevo Registro"}
@@ -247,8 +248,8 @@
                   <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange} label="Estado"
                   >
                     <MenuItem value="disponible">Disponible</MenuItem>
-                    <MenuItem value="en_préstamo">En Préstamo</MenuItem>
-                    <MenuItem value="en_reparación">En Reparación</MenuItem>
+                    <MenuItem value="en préstamo">En Préstamo</MenuItem>
+                    <MenuItem value="en reparación">En Reparación</MenuItem>
                   </Select>
                 </FormControl>
                 <TextField name="ubicación" label="Ubicación" value={editRecord.ubicación || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}/>

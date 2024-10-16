@@ -51,17 +51,19 @@ function Prestamos() {
     setReservationDate(newDate);
   };
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/equipos");
+      const availableData = response.data.filter(item => item.estado === "disponible");
+      setData(availableData);
+      setFilteredData(availableData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/api/equipos");
-        const availableData = response.data.filter(item => item.estado === "disponible");
-        setData(availableData);
-        setFilteredData(availableData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    
   
     fetchData();
   }, []);
@@ -107,6 +109,7 @@ function Prestamos() {
         if (response.status === 201) {
           alert('Préstamo registrado con éxito');
           handleClose(); 
+          fetchData();
         }
       } catch (error) {
         console.error("Error al registrar el préstamo:", error);

@@ -244,8 +244,9 @@ function Internos() {
         />
         <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
         <Box
-            sx={{ width: { xs: "90%", sm: "80%", md: "60%", lg: "40%" },bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 }, mx: "auto", mt: { xs: "20%", sm: "15%", md: "10%" },borderRadius: 1,
-            }}
+            sx={{ width: { xs: "90%", sm: "80%", md: "60%", lg: "40%" },bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 }, mx: "auto", mt: { xs: "20%", sm: "15%", md: "10%" },borderRadius: 1,maxHeight: "90vh",  
+            overflowY: "auto"   
+        }}
         >
             <Typography variant="h5" id="modal-title" gutterBottom>
             {editMode ? "Editar Registro" : "Ver Registro"}
