@@ -1,9 +1,9 @@
   import React, { useState, useEffect } from "react";
   import axios from "axios";
-  import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell,TableBody,Paper,TablePagination, TableSortLabel,Grid
-  } from "@mui/material";
+  import {Button, Box, Dialog, DialogTitle, DialogContent, DialogActions,TextField, FormControl, InputLabel, Select, MenuItem, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel, Grid} from "@mui/material";
   import SideBar from "./sidebar";
-
+  import Draggable from "react-draggable";
+  import { exportExcel } from "../../Common/exportExcel";
   const initialData = [];
 
   const columns = [
@@ -19,7 +19,7 @@
   ];
 
   function Equipos() {
-    const [openModal, setOpenModal] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [editRecord, setEditRecord] = useState({});
     const [data, setData] = useState([]);
@@ -44,14 +44,14 @@
       fetchData();
     }, []);
 
-    const handleOpenModal = () => {
-      setOpenModal(true);
+    const handleOpenDialog = () => {
+      setOpenDialog(true);
       setEditMode(false);
       setEditRecord({});
     };
-
-    const handleCloseModal = () => {
-      setOpenModal(false);
+  
+    const handleCloseDialog = () => {
+      setOpenDialog(false);
       setEditRecord({});
     };
 
@@ -63,7 +63,7 @@
     const handleEditRecord = (record) => {
       setEditMode(true);
       setEditRecord(record);
-      setOpenModal(true);
+      setOpenDialog(true);
     };
 
     const handleSort = (columnId) => {
@@ -79,6 +79,30 @@
     const handleChangeRowsPerPage = (event) => {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
+    };
+
+    const handleExport = () => {
+      const cols = [
+        { header: "ID Equipo", key: "id_equipo", width: 15 },
+        { header: "Nombre Equipo", key: "nombre_equipo", width: 30 },
+        { header: "Serial", key: "serial", width: 20 },
+        { header: "Tipo", key: "tipo", width: 20 },
+        { header: "Marca", key: "marca", width: 20 },
+        { header: "Modelo", key: "modelo", width: 20 },
+        { header: "Estado", key: "estado", width: 20 },
+        { header: "Ubicación", key: "ubicación", width: 20 },
+        { header: "Fecha de Ingreso", key: "fecha_ingreso", width: 20 },
+      ];
+  
+      exportExcel({
+        cols,
+        data,
+        sheetName: "Equipos",
+        creator: "Tu Nombre", 
+        handleLoading: (loadingState) => {
+
+        },
+      });
     };
 
     const sortedData = filteredData
@@ -129,7 +153,7 @@
             alert("Registro agregado con éxito");
             setData((prevData) => [...prevData, postData]);
           }
-          handleCloseModal();
+          handleCloseDialog();
         } catch (error) {
           console.error("Error al guardar registro", error);
           alert("Error al guardar registro");
@@ -153,25 +177,21 @@
       <Box sx={{ display: "flex" }}>
         <SideBar />
         <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              mb: 2,
-            }}
-          >
-            <Button variant="contained" onClick={handleOpenModal} sx={{ backgroundColor: "#d01c35" }}>
-              Agregar Registro
-            </Button>
-          </Box>
-          <TextField
+          <Box sx={{display: "flex",justifyContent: "space-between",alignItems: "center", mb: 2,}}><TextField
           label="Buscar equipos"
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchChange}
-          sx={{ mb: 3, width: '300px' }}
+          sx={{ mb: 3, md: '300px' }}
         />
+            <Button variant="contained" onClick={handleOpenDialog} sx={{ backgroundColor: "#d01c35" }}>
+              Agregar Equipo
+            </Button>
+            <Button variant="contained" onClick={handleExport}>
+            Exportar a Excel
+          </Button>
+          </Box>
+          
           <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
             <Table>
               <TableHead>
@@ -222,55 +242,34 @@
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
-            <Box
-              sx={{
-                width: { xs: '90%', sm: '80%', md: '60%', lg: '40%' }, 
-                bgcolor: 'background.paper', p: { xs: 2, sm: 3, md: 4 }, mx: 'auto', mt: { xs: '20%', sm: '15%', md: '10%' }, borderRadius: 1,maxHeight: "90vh", 
-                overflowY: "auto"    
-            }}
-            >
-              <Typography variant="h5" id="modal-title" gutterBottom>
-                {editMode ? "Editar Registro" : "Agregar Nuevo Registro"}
-              </Typography>
-              <form onSubmit={handleSubmit}>
-                <TextField name="nombre_equipo" label="Nombre Equipo" value={editRecord.nombre_equipo || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
-                />
-                <TextField name="serial" label="Serial" value={editRecord.serial || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
-                />
-                <TextField name="tipo" label="Tipo"  value={editRecord.tipo || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
-                />
-                <TextField name="marca" label="Marca" value={editRecord.marca || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}/>
-                <TextField name="modelo" label="Modelo" value={editRecord.modelo || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
-                />
-                <FormControl sx={{ mb: 2 }} fullWidth>
-                  <InputLabel id="estado-label">Estado</InputLabel>
-                  <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange} label="Estado"
-                  >
-                    <MenuItem value="disponible">Disponible</MenuItem>
-                    <MenuItem value="en préstamo">En Préstamo</MenuItem>
-                    <MenuItem value="en reparación">En Reparación</MenuItem>
-                  </Select>
-                </FormControl>
-                <TextField name="ubicación" label="Ubicación" value={editRecord.ubicación || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}/>
-                <Grid container spacing={2}>
-                  <Grid item>
-                    <Button variant="outlined" color="secondary" onClick={handleCloseModal}>
-                      Cancelar
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button variant="contained" type="submit" sx={{ backgroundColor: "#d01c35" }}>
-                      {editMode ? "Guardar Cambios" : "Agregar"}
-                    </Button>
-                  </Grid>
-                </Grid>
-              </form>
-            </Box>
-          </Modal>
-        </Box>
+           <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth >
+          <DialogTitle>{editMode ? "Editar Registro" : "Agregar Nuevo Registro"}</DialogTitle>
+          <form onSubmit={handleSubmit}>
+            <DialogContent>
+              <TextField name="nombre_equipo" label="Nombre Equipo" value={editRecord.nombre_equipo || ""} onChange={handleInputChange} fullWidth required sx={{ mb: 2 }} />
+              <TextField name="serial" label="Serial" value={editRecord.serial || ""} onChange={handleInputChange} fullWidth required sx={{ mb: 2 }} />
+              <TextField name="tipo" label="Tipo" value={editRecord.tipo || ""} onChange={handleInputChange} fullWidth required sx={{ mb: 2 }} />
+              <TextField name="marca" label="Marca" value={editRecord.marca || ""} onChange={handleInputChange} fullWidth required sx={{ mb: 2 }} />
+              <TextField name="modelo" label="Modelo" value={editRecord.modelo || ""} onChange={handleInputChange} fullWidth required sx={{ mb: 2 }} />
+              <FormControl sx={{ mb: 2 }} fullWidth required>
+                <InputLabel id="estado-label">Estado</InputLabel>
+                <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange} label="Estado">
+                  <MenuItem value="disponible">Disponible</MenuItem>
+                  <MenuItem value="en préstamo">En Préstamo</MenuItem>
+                  <MenuItem value="en reparación">En Reparación</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField name="ubicación" label="Ubicación" value={editRecord.ubicación || ""} onChange={handleInputChange} fullWidth required sx={{ mb: 2 }} />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="secondary">Cancelar</Button>
+              <Button type="submit" variant="contained" sx={{ backgroundColor: "#d01c35" }}>{editMode ? "Guardar Cambios" : "Agregar"}</Button>
+            </DialogActions>
+          </form>
+        </Dialog>
       </Box>
-    );
-  }
+    </Box>
+  );
+}
 
-  export default Equipos;
+export default Equipos;
