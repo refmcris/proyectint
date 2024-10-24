@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, TextField, FormControl, InputLabel, IconButton, Button, InputAdornment, OutlinedInput, Grid } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
 import { Link, NavLink, useNavigate} from 'react-router-dom';
+import Logo from './logo3.PNG'
+import Logo1 from './logo1.png'
+
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -73,6 +75,7 @@ const Login = () => {
     >
       <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
               Uninventory
@@ -91,9 +94,7 @@ const Login = () => {
 
       
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
-            <Typography variant="h2" color="0A0F1D">
-              Inicio
-            </Typography>
+          <img src={Logo1} alt="logo" style={{ width: '180', height: '100px' }} />
           </Box>
           <Box sx={{ marginTop: '30px' }}>
             <Grid container spacing={3} alignItems="center" justifyContent="center">

@@ -6,7 +6,10 @@
   import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
   import { ToastContainer, toast } from 'react-toastify'; 
   import 'react-toastify/dist/ReactToastify.css';
-
+  import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+  import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+  import BuildIcon from '@mui/icons-material/Build';
+  import ErrorIcon from '@mui/icons-material/Error';
 
   import { Cloudinary } from 'cloudinary-core';
 
@@ -167,18 +170,18 @@
         return 0;
       });
 
-      const getEstadoColor = (estado) => {
+      const getEstadoIconAndColor = (estado) => {
         switch (estado) {
           case "disponible":
-            return "#3df27b"; 
+            return {  icon: <CheckCircleIcon sx={{ color: "#3df27b", verticalAlign: 'middle' }} /> }; 
           case "en préstamo":
-            return "#feac54"; 
+            return {  icon: <HourglassEmptyIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
           case "en reparación":
-            return "#f8646d";
+            return {  icon: <BuildIcon sx={{ color: "#f8646d", verticalAlign: 'middle' }} /> };
           case "retrasado":
-            return "#f56c6c"; 
+            return { icon: <ErrorIcon sx={{ color: "#f56c6c", verticalAlign: 'middle' }} /> };
           default:
-            return "black";
+            return { color: "black", icon: null };
         }
       };
       const handleSubmit = async (event) => {
@@ -269,21 +272,23 @@
                 </TableRow>
               </TableHead>
               <TableBody>
-              {sortedData.map((row) => (
-                <TableRow key={row.id_equipo}>
-                  {columns.map((column) => (
-                    <TableCell key={column.id}>
-                      {column.id === "estado" ? (
-                        <span
-                          style={{
-                            backgroundColor: getEstadoColor(row[column.id]),
-                            padding: "5px 10px",
-                            borderRadius: "5px",
-                            display: "inline-block"
-                          }}
-                        >
-                          {row[column.id]}
-                        </span>
+                {sortedData.map((row) => (
+                  <TableRow key={row.id_equipo}>
+                    {columns.map((column) => (
+                      <TableCell key={column.id}>
+                        {column.id === "estado" ? (
+                          <Tooltip title={row[column.id]}>
+                            <span
+                              style={{
+                                backgroundColor: getEstadoIconAndColor(row[column.id]).color,
+                                padding: "5px 10px",
+                                borderRadius: "5px",
+                                display: "inline-block"
+                              }}
+                            >
+                              {getEstadoIconAndColor(row[column.id]).icon}
+                            </span>
+                          </Tooltip>
                       ) : column.id === "imagen" ? (
                         <>
                           {row[column.id] ? (

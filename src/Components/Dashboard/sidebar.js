@@ -182,7 +182,7 @@ export default function SideBar() {
               <ListItemText primary="Usuarios" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { alert('Nueva funcionalidad ASAP'); }}>
+          {/* <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { alert('Nueva funcionalidad ASAP'); }}>
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -195,7 +195,7 @@ export default function SideBar() {
               </ListItemIcon>
               <ListItemText primary="Supervisores" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleNavigation('prestamos')}>
             <ListItemButton
               sx={{

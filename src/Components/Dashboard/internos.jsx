@@ -9,6 +9,10 @@ import { exportExcel } from "../../Common/exportExcel";
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import BuildIcon from '@mui/icons-material/Build';
+import ErrorIcon from '@mui/icons-material/Error';
 
 
 
@@ -148,7 +152,6 @@ function Internos() {
         });
         if (response.status === 200) {
           toast.success("Prestamo actualizado con éxito!",{autoClose:2000});
-
           handleCloseModal();
           fetchData();
         }
@@ -193,19 +196,20 @@ function Internos() {
       return 0;
     });
 
-    function getrowcolor(estado_prestamo){
-      
-      switch(estado_prestamo){
-        case 'en préstamo':
-          return '#feac54';
-        case 'devuelto':
-          return '#3df27b';
-        case 'retrasado':
-          return '#f56c6c';
-        case 'en reparación':
-          return '#f56c6c';
+    const getEstadoIconAndColor = (estado_prestamo) => {
+      switch (estado_prestamo) {
+        case "devuelto":
+          return {  icon: <CheckCircleIcon sx={{ color: "#3df27b", verticalAlign: 'middle' }} /> }; 
+        case "en préstamo":
+          return {  icon: <HourglassEmptyIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
+        case "en reparación":
+          return {  icon: <BuildIcon sx={{ color: "#f8646d", verticalAlign: 'middle' }} /> };
+        case "retrasado":
+          return { icon: <ErrorIcon sx={{ color: "#f56c6c", verticalAlign: 'middle' }} /> };
+        default:
+          return { color: "black", icon: null };
       }
-    }
+    };
     const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
       const filtered = data.filter((item) =>
@@ -259,18 +263,23 @@ function Internos() {
               </TableRow>
             </TableHead>
             <TableBody>
-            {sortedData.map((row) => (
-              <TableRow key={row.id_equipo}>
-                {columns.map((column) => (
-                  <TableCell key={column.id}>
-                    {column.id === "estado_prestamo" ? (
-                      <Box sx={{
-                          border: `1px solid ${getrowcolor(row.estado_prestamo)}`, 
-                          borderRadius: "4px", padding: "4px 8px",display: "inline-block",backgroundColor: getrowcolor(row.estado_prestamo)
-                        }}
-                      >
-                        {row[column.id]} 
-                      </Box>
+              {sortedData.map((row) => (
+                <TableRow key={row.id_equipo}>
+                  {columns.map((column) => (
+                    <TableCell key={column.id}>
+                      {column.id === "estado_prestamo" ? (
+                        <Tooltip title={row[column.id]}>
+                          <span
+                            style={{
+                              backgroundColor: getEstadoIconAndColor(row[column.id]).color,
+                              padding: "5px 10px",
+                              borderRadius: "5px",
+                              display: "inline-block"
+                            }}
+                          >
+                            {getEstadoIconAndColor(row[column.id]).icon}
+                          </span>
+                        </Tooltip>
                     ) : column.id === "fecha_prestamo" || column.id === "fecha_devolucion" ? (
                       new Date(row[column.id]).toLocaleDateString()
                     ) : (
@@ -413,6 +422,7 @@ function Internos() {
         
         </DialogActions>
       </Dialog>
+      <ToastContainer />
       </Box>
     </Box>
   );
