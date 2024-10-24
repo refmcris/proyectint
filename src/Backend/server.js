@@ -4,6 +4,7 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const moment = require('moment');
+const admin = require('firebase-admin');
 
 
 
@@ -35,7 +36,8 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(express.json());
 
-
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.post('/api/checkEmail', async (req, res) => {
   const { email } = req.body;
@@ -135,7 +137,7 @@ app.post('/api/login', (req, res) => {
   const values = [email, password];
 
   connection.query(
-    "SELECT id_usuario, nombre, apellido, rol, correo_electronico FROM usuarios WHERE correo_electronico = ? AND contraseña = ?",
+    "SELECT id_usuario, nombre, apellido, rol, correo_electronico, imagen FROM usuarios WHERE correo_electronico = ? AND contraseña = ?",
     values,
     (err, result) => {
       if (err) {
@@ -172,25 +174,24 @@ app.post('/api/register', (req, res) => {
   });
   app.get('/api/equipos', (req, res) => {
     const query = `SELECT * FROM equipos`;
-  
+
     connection.query(query, (err, results) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
+        if (err) {
+            return res.status(500).send(err);
+        }
         res.status(200).json(results);
-      }
     });
-  });
+});
   app.listen(port, () => {
     console.log(`Servidor escuchando en el puerto ${port}`);
   });
   app.post('/api/registro', (req, res) => {
-    const { nombre_equipo, serial, tipo, marca, modelo, estado, ubicación } = req.body;
+    const { nombre_equipo, serial, tipo, marca, modelo, estado, ubicación, descripcion, imagen} = req.body;
   
-    const query = `INSERT INTO equipos (nombre_equipo, serial, tipo, marca, modelo, estado, ubicación) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO equipos (nombre_equipo, serial, tipo, marca, modelo, estado, ubicación, descripcion, imagen) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   
-    const values = [nombre_equipo,serial,tipo, marca, modelo, estado, ubicación];
+    const values = [nombre_equipo,serial,tipo, marca, modelo, estado, ubicación, descripcion, imagen];
   
     connection.query(query, values, (err, result) => {
       if (err) {
@@ -203,13 +204,13 @@ app.post('/api/register', (req, res) => {
 
   app.put('/api/registro/:id', (req, res) => {
     const { id } = req.params;
-    const { nombre_equipo, serial, tipo, marca, modelo, estado, ubicación } = req.body;
+    const { nombre_equipo, serial, tipo, marca, modelo, estado, ubicación, descripcion, imagen } = req.body;
   
     const query = `UPDATE equipos 
-                   SET nombre_equipo = ?, serial = ?, tipo = ?, marca = ?, modelo = ?, estado = ?, ubicación = ? 
-                   WHERE id_equipo = ?`;
+                   SET nombre_equipo = ?, serial = ?, tipo = ?, marca = ?, modelo = ?, estado = ?, ubicación = ?, descripcion = ?, 
+                   imagen = ? WHERE id_equipo = ?`;
   
-    const values = [nombre_equipo, serial, tipo, marca, modelo, estado, ubicación, id];
+    const values = [nombre_equipo, serial, tipo, marca, modelo, estado, ubicación, descripcion, imagen, id];
   
     connection.query(query, values, (err, result) => {
       if (err) {
@@ -222,7 +223,7 @@ app.post('/api/register', (req, res) => {
   });
 
 app.get('/api/usuarios', (req, res) => {
-    const query = 'SELECT nombre, apellido, tipo_documento, documento, correo_electronico, telefono, rol FROM usuarios';
+    const query = 'SELECT id_usuario, nombre, apellido, tipo_documento, documento, correo_electronico, telefono, imagen, rol FROM usuarios';
   
     connection.query(query, (err, results) => {
       if (err) {
@@ -233,6 +234,28 @@ app.get('/api/usuarios', (req, res) => {
       res.json(results); 
     });
   });
+  app.put('/api/usuarios/:id',(req,res)=>{
+    const{id} = req.params;
+    const { nombre, apellido, tipo_documento, documento, correo_electronico, telefono, imagen, rol } = req.body;
+
+    const query= `
+    UPDATE usuarios 
+    SET nombre = ?, apellido = ?, tipo_documento = ?, documento = ?, correo_electronico = ?, telefono = ?, imagen = ?, rol = ? WHERE id_usuario = ? `;
+    connection.query(query,[nombre, apellido, tipo_documento, documento, correo_electronico, telefono, imagen, rol, id],(err,results)=>{
+      if (err) {
+        console.error('Error ejecutando la consulta:', err);
+        res.status(500).send('Error al actualizar el usuario');
+        return;
+      }
+
+      if (results.affectedRows === 0) {
+        res.status(404).send('Usuario no encontrado'); 
+        return;
+      }
+
+      res.status(200).send('Usuario actualizado correctamente'); 
+    });
+});
   app.post('/api/prestamos', (req, res) => {
     const { id_usuario, id_equipo, serial, fecha_devolucion } = req.body;
     const fecha_prestamo = new Date(); 
@@ -302,7 +325,7 @@ app.get('/api/usuarios', (req, res) => {
 });
 app.get('/api/prestamos-internos', (req, res) => {
   const query = `
-    SELECT pi.id_prestamo, pi.id_usuario, pi.Nombre AS nombre_usuario, pi.Apellido AS apellido_usuario, 
+    SELECT pi.id_usuario, pi.id_prestamo, pi.id_usuario, pi.Nombre AS nombre_usuario, pi.Apellido AS apellido_usuario, 
            e.nombre_equipo, e.serial, e.tipo, e.marca, e.modelo, 
            pi.estado_prestamo, pi.fecha_prestamo, pi.fecha_devolucion
     FROM préstamosinternos pi
@@ -595,10 +618,117 @@ const sendUpcomingReturnEmail = (to, loanId, dueDate, equipmentName) => {
   });
 };
 
-checkForUpcomingReturns();
 
 
-checkForDelayedLoans();
+// charts
 
+app.get('/api/equipos/utilizados', (req, res) => {
+  const query = `
+      SELECT e.id_equipo, e.nombre_equipo, COUNT(*) AS cantidad
+        FROM (
+            SELECT id_equipo FROM préstamos
+            UNION ALL
+            SELECT id_equip FROM préstamosinternos
+        ) AS todos_los_prestamos
+        JOIN equipos e ON e.id_equipo = todos_los_prestamos.id_equipo
+        GROUP BY e.id_equipo, e.nombre_equipo
+        ORDER BY cantidad DESC
+  `;
+
+  connection.query(query, (error, results) => {
+      if (error) {
+          return res.status(500).json({ error: 'Error en la consulta de la base de datos.' });
+      }
+      res.json(results);
+  });
+});
+
+// notificaciones para el usuario en su perfil
+
+app.get('/api/notificaciones/:id_usuario', (req, res) => {
+  const { id_usuario } = req.params;
+  const selectQuery = `
+    SELECT * FROM notificaciones
+    WHERE id_usuario = ? 
+  `;
+
+  connection.query(selectQuery, [id_usuario], (err, results) => {
+    if (err) {
+      console.error('Error al obtener notificaciones:', err);
+      return res.status(500).json({ error: 'Error al obtener notificaciones' });
+    }
+    res.json(results);
+  });
+});
+  app.delete('/api/notificaciones/:id', (req, res) => {
+    const { id } = req.params;
+    const deleteQuery = `
+      DELETE FROM notificaciones
+      WHERE id_notificacion = ?
+    `;
+
+  connection.query(deleteQuery, [id], (err, results) => {
+    if (err) {
+      console.error('Error al eliminar la notificación:', err);
+      return res.status(500).json({ error: 'Error al eliminar la notificación' });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'Notificación no encontrada' });
+    }
+
+    res.status(200).json({ message: 'Notificación eliminada con éxito' });
+  });
+});
+
+const addNotificationToDB = (id_usuario, message) => {
+  const insertQuery = `
+    INSERT INTO notificaciones (id_usuario, mensaje)
+    VALUES (?, ?);
+  `;
+
+  connection.query(insertQuery, [id_usuario, message], (err, result) => {
+    if (err) {
+      console.error('Error al agregar notificación a la base de datos:', err);
+      return;
+    }
+    console.log(`Notificación agregada a la base de datos con ID: ${result.insertId}`);
+  });
+};
+
+const checkForLoansReminder = () => {
+  const selectQuery = `
+    SELECT u.id_usuario, p.id_prestamo, p.fecha_devolucion, e.nombre_equipo
+    FROM préstamos p
+    INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+    INNER JOIN equipos e ON p.id_equipo = e.id_equipo
+    WHERE p.estado_prestamo = 'en préstamo' AND p.fecha_devolucion = CURDATE() + INTERVAL 1 DAY;
+  `;
+
+  connection.query(selectQuery, (err, upcomingLoans) => {
+    if (err) {
+      console.error('Error al seleccionar préstamos a punto de vencer:', err);
+      return;
+    }
+
+    if (upcomingLoans.length > 0) {
+      console.log(`Préstamos a punto de vencer encontrados: ${upcomingLoans.length}`);
+      
+      upcomingLoans.forEach((loan) => {
+        const notificationMessage = `Su préstamo está por vencerse: ${loan.nombre_equipo} debe ser devuelto mañana.`;
+        addNotificationToDB(loan.id_usuario, notificationMessage);
+        console.log(`Notificación agregada para el usuario ID: ${loan.id_usuario}`);
+      });
+    } else {
+      console.log('No se encontraron préstamos a punto de vencer.');
+    }
+  });
+};
+
+checkForLoansReminder();
+
+//correos 
+// checkForUpcomingReturns();
+// checkForDelayedLoans();
 
 // new try

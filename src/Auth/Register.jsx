@@ -58,12 +58,12 @@ const Register = () => {
         minHeight: '100vh',
         backgroundColor: '#f0f0f0',
       }}
-    >
-      <Box sx={{ backgroundColor: '#d01c35', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    > 
+      <Box sx={{ backgroundColor: '#d01c35', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit' }}>
+            <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700 }}>
               Uninventory
             </Typography>
           </NavLink>

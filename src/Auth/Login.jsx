@@ -39,6 +39,7 @@ const Login = () => {
       Cookies.set('userName', response.data.nombre);
       Cookies.set('userLastName', response.data.apellido);
       Cookies.set('userRole', response.data.rol);
+      Cookies.set('imagen',response.data.imagen);
 
       alert('Inicio de sesión exitoso');
       const userRole = response.data.rol;
@@ -73,7 +74,7 @@ const Login = () => {
       <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit' }}>
+          <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
               Uninventory
           </Typography>
           </NavLink>

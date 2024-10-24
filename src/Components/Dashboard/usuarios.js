@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button, Box, Modal, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel, Grid } from "@mui/material";
+import { Button, Box, Modal, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel, Grid, Tooltip, IconButton, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
 import axios from "axios";
 import SideBar from './sidebar';
+import { exportExcel } from "../../Common/exportExcel";
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const initialData = [];
 
@@ -26,19 +30,41 @@ function Usuarios() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/api/usuarios"); 
-        setData(response.data);
-        setFilteredData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/usuarios"); 
+      setData(response.data);
+      setFilteredData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
     fetchData();
-  }, []);
+
+  const handleExport = () => {
+    const cols = [
+      { header: "Nombre", key: "nombre", width: 15 },
+      { header: "Apellido", key: "apellido", width: 30 },
+      { header: "Tipo Documento", key: "tipo_documento", width: 20 },
+      { header: "Documento", key: "documento", width: 20 },
+      { header: "Correo", key: "correo_electronico", width: 20 },
+      { header: "Telefono", key: "telefono", width: 20 },
+      { header: "Rol", key: "rol", width: 20 },
+    ];
+
+    exportExcel({
+      cols,
+      data,
+      sheetName: "Usuarios",
+      creator: "Uninventory", 
+      handleLoading: (loadingState) => {
+
+      },
+    });
+  };
+
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -96,8 +122,9 @@ function Usuarios() {
 
     try {
       if (editMode) {
-        await axios.put(`${url}/${editRecord.id}`, postData); 
-        alert("Registro actualizado con éxito");
+        await axios.put(`${url}/${editRecord.id_usuario}`, postData);
+        toast.success("Registro actualizado con éxito!",{autoClose:2000});
+        fetchData();
         setData((prevData) =>
           prevData.map((item) =>
             item.id === editRecord.id ? postData : item
@@ -105,13 +132,13 @@ function Usuarios() {
         );
       } else {
         await axios.post(url, postData);
-        alert("Registro agregado con éxito");
+        toast.success("Registro agregado con éxito!",{autoClose:2000});
+        fetchData();
         setData((prevData) => [...prevData, postData]);
       }
       handleCloseModal();
     } catch (error) {
-      console.error("Error al guardar registro", error);
-      alert("Error al guardar registro");
+      toast.error("Error al guardar registro!",{autoClose:2000});
     }
   };
   const handleSearchChange = (event) => {
@@ -126,18 +153,30 @@ function Usuarios() {
     <Box sx={{ display: "flex" }}>
       <SideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center",  mb: 2,}} >
+      <Typography variant="h4" sx={{ marginBottom: 2, color: '#333' }}>
+          Informacion de usuarios
+        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center"}} >
+          
+          <TextField
+            label="Buscar Usuarios"
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            sx={{ mb: 3, width: '300px' }}
+          />
           <Button variant="contained" onClick={handleOpenModal} sx={{ backgroundColor: "#d01c35" }}>
             Agregar Registro
           </Button>
         </Box>
-        <TextField
-          label="Buscar Usuarios"
-          variant="outlined"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          sx={{ mb: 3, width: '300px' }}
-        />
+        <Box sx ={{display:"flex",justifyContent:"flex-end"}}>
+            <Tooltip title="Exportar a excel">
+                <IconButton onClick={handleExport}   sx={{backgroundColor: '#2e7d32','&:hover': {backgroundColor: '#1b5e20',}}}>
+                  <InsertDriveFileIcon sx={{ color: '#eef5f1' }}/>
+                </IconButton>
+            </Tooltip>
+
+        </Box>
         <TableContainer component={Paper} sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>
@@ -169,42 +208,84 @@ function Usuarios() {
           </Table>
         </TableContainer>
         <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={data.length}  rowsPerPage={rowsPerPage}  page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
-        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
-          <Box
-            sx={{width: { xs: '90%', sm: '80%', md: '60%', lg: '40%' },
-              bgcolor: 'background.paper', p: { xs: 2, sm: 3, md: 4 }, mx: 'auto',  mt: { xs: '20%', sm: '15%', md: '10%' },borderRadius: 1, }} >
-            <Typography variant="h5" id="modal-title" gutterBottom>
-              {editMode ? "Editar Usuario" : "Agregar Nuevo Usuario"}
-            </Typography>
+        <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
+          <DialogTitle>
+            {editMode ? "Editar Usuario" : "Agregar Nuevo Usuario"}
+          </DialogTitle>
+          <DialogContent>
             <form onSubmit={handleSubmit}>
-              <TextField name="nombre" label="Nombre" value={editRecord.nombre || ""} onChange={handleInputChange} fullWidth  sx={{ mb: 2 }}
+              <TextField
+                name="nombre"
+                label="Nombre"
+                value={editRecord.nombre || ""}
+                onChange={handleInputChange}
+                fullWidth
+                sx={{ mb: 2 }}
               />
-              <TextField  name="apellido" label="Apellido" value={editRecord.apellido || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
+              <TextField
+                name="apellido"
+                label="Apellido"
+                value={editRecord.apellido || ""}
+                onChange={handleInputChange}
+                fullWidth
+                sx={{ mb: 2 }}
               />
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel id="tipo-documento-label">Tipo Documento</InputLabel>
-                <Select labelId="tipo-documento-label" name="tipo_documento" value={editRecord.tipo_documento || ""} onChange={handleInputChange} label="Tipo Documento">
-                  <MenuItem value="DNI">DNI</MenuItem>
-                  <MenuItem value="Pasaporte">Pasaporte</MenuItem>
+                <Select
+                  labelId="tipo-documento-label"
+                  name="tipo_documento"
+                  value={editRecord.tipo_documento || ""}
+                  onChange={handleInputChange}
+                  label="Tipo Documento"
+                >
+                  <MenuItem value="CC">CC</MenuItem>
+                  <MenuItem value="T.I">T.I</MenuItem>
                   <MenuItem value="Otro">Otro</MenuItem>
                 </Select>
               </FormControl>
-              <TextField name="documento" label="Documento" value={editRecord.documento || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
+              <TextField
+                name="documento"
+                label="Documento"
+                value={editRecord.documento || ""}
+                onChange={handleInputChange}
+                fullWidth
+                sx={{ mb: 2 }}
               />
-              <TextField name="correo_electronico" label="Correo Electrónico" value={editRecord.correo_electronico || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
+              <TextField
+                name="correo_electronico"
+                label="Correo Electrónico"
+                value={editRecord.correo_electronico || ""}
+                onChange={handleInputChange}
+                fullWidth
+                sx={{ mb: 2 }}
               />
-              <TextField name="telefono" label="Teléfono" value={editRecord.telefono || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
+              <TextField
+                name="telefono"
+                label="Teléfono"
+                value={editRecord.telefono || ""}
+                onChange={handleInputChange}
+                fullWidth
+                sx={{ mb: 2 }}
               />
-              <TextField name="rol" label="Rol" value={editRecord.rol || ""} onChange={handleInputChange} fullWidth sx={{ mb: 2 }}
+              <TextField
+                name="rol"
+                label="Rol"
+                value={editRecord.rol || ""}
+                onChange={handleInputChange}
+                fullWidth
+                sx={{ mb: 2 }}
               />
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button type="submit" variant="contained" sx={{ backgroundColor: "#d01c35" }}>
-                  {editMode ? "Guardar Cambios" : "Agregar Usuario"}
-                </Button>
-              </Box>
             </form>
-          </Box>
-        </Modal>
+          </DialogContent>
+          <DialogActions>
+            <Box sx={{ display: "flex", justifyContent: "center", width: '100%' }}>
+              <Button onClick={handleCloseModal} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' },marginRight:2 }}variant="outlined">Cancelar</Button>
+              <Button type="submit" variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSubmit}>{editMode ? "Guardar Cambios" : "Agregar Usuario"} </Button>
+            </Box>
+          </DialogActions>
+        </Dialog>
+        <ToastContainer />
       </Box>
     </Box>
   );

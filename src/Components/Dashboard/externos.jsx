@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid} from "@mui/material";
+import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid, IconButton, Tooltip, DialogTitle, Dialog, DialogContent, DialogActions} from "@mui/material";
 import SideBar from "./sidebar";
+import { exportExcel } from "../../Common/exportExcel";
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 
 
@@ -30,6 +32,35 @@ function Externos() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
+
+
+  const handleExport = () => {
+    const cols = [
+      { header: "Nombre usuario", key: "nombre_usuario", width: 30 },
+      { header: "Apellido", key: "apellido_usuario", width: 15 },
+      { header: "Nombre equipo", key: "nombre_equipo", width: 20 },
+      { header: "Serial", key: "serial", width: 20 },
+      { header: "Tipo", key: "tipo", width: 20 },
+      { header: "Marca", key: "marca", width: 20 },
+      { header: "Modelo", key: "modelo", width: 20 },
+      { header: "Estado", key: "estado_prestamo", width: 20 },
+      { header: "Fecha de prestamo", key: "fecha_prestamo", width: 20 },
+      { header: "Fecha de devolucion", key: "fecha_devolucion", width: 20 },
+    ];
+
+    exportExcel({
+      cols,
+      data,
+      sheetName: "Equipos",
+      creator: "Uninventory", 
+      handleLoading: (loadingState) => {
+
+      },
+    });
+  };
+
+
+
 
   const fetchData = async () => {
     try {
@@ -136,13 +167,23 @@ function Externos() {
   return (
     <Box sx={{ display: "flex" }}>
       <Box component="main" sx={{ flexGrow: 1, p: 1, marginTop: "0px"}}>
-      <TextField
+        <Box sx={{ display: "flex",justifyContent: "space-between", alignItems: "center"}}>
+        <TextField
           label="Buscar Prestamos"
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchChange}
           sx={{ mb: 1, width: '300px' }}
         />
+        <Tooltip title="Exportar a excel">
+          <IconButton onClick={handleExport}   sx={{backgroundColor: '#2e7d32','&:hover': {backgroundColor: '#1b5e20',}}}>
+            <InsertDriveFileIcon sx={{ color: '#eef5f1' }}/>
+          </IconButton>
+        </Tooltip>
+        
+
+        </Box>
+      
         <TableContainer component={Paper}sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>
@@ -202,38 +243,40 @@ function Externos() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
-        <Box
-            sx={{ width: { xs: "90%", sm: "80%", md: "60%", lg: "40%" },bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 }, mx: "auto", mt: { xs: "20%", sm: "15%", md: "10%" },borderRadius: 1,
-            }}
-        >
-            <Typography variant="h5" id="modal-title" gutterBottom>
-            {editMode ? "Editar Registro" : "Ver Registro"}
-            </Typography>
+        <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+        <DialogTitle id="modal-title">
+          {editMode ? "Editar Préstamo" : "Ver Registro"}
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 } }}>
             <form>
-            <FormControl sx={{ mb: 2 }} fullWidth>
+              <FormControl sx={{ mb: 2 }} fullWidth>
                 <InputLabel id="estado-label">Estado</InputLabel>
-                <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
-                <MenuItem value="devuelto">Devuelto</MenuItem>
-                <MenuItem value="en préstamo">En préstamo</MenuItem>
-                <MenuItem value="en reparación">Necesita reparación</MenuItem>
+                <Select
+                  labelId="estado-label"
+                  id="estado-select"
+                  name="estado"
+                  value={editRecord.estado || ""}
+                  onChange={handleInputChange}
+                  label="Estado"
+                >
+                  <MenuItem value="devuelto">Devuelto</MenuItem>
+                  <MenuItem value="en préstamo">En préstamo</MenuItem>
+                  <MenuItem value="en reparación">Necesita reparación</MenuItem>
                 </Select>
-            </FormControl>
-            <Grid container spacing={2}>
-                <Grid item>
-                <Button variant="outlined" color="secondary" onClick={handleCloseModal}>
-                    Cancelar
-                </Button>
-                </Grid>
-                <Grid item>
-                <Button variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSaveChanges}  >
-                    Guardar Cambios
-                </Button>
-                </Grid>
-            </Grid>
+              </FormControl>
             </form>
-        </Box>
-        </Modal>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Box sx={{display:"flex",justifyContent:"center", width: '100%'}}>
+            <Button variant="outlined"  sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8'},marginRight:2}} onClick={handleCloseModal}>  Cancelar </Button>
+            <Button variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSaveChanges}> Guardar Cambios </Button>
+          </Box>
+              
+          
+        </DialogActions>
+      </Dialog>
 
       </Box>
     </Box>

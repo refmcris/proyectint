@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid} from "@mui/material";
+import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions} from "@mui/material";
 
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"; 
 import dayjs from 'dayjs';
+import { exportExcel } from "../../Common/exportExcel";
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
 const columns = [
+  { id: "id_usuario", label: "Codigo Estudiante" },
   { id: "nombre_usuario", label: "Nombre Usuario" },
-  { id: "apellido_usuario", label: "Apellido Usuario" },
   { id: "nombre_equipo", label: "Nombre Equipo" },
   { id: "serial", label: "Serial" },
   { id: "tipo", label: "Tipo" },
@@ -36,7 +40,30 @@ function Internos() {
   const today = dayjs();
   const maxDate = today.add(7, 'day');
 
+  const handleExport = () => {
+    const cols = [
+      { header: "Codigo estudiante", key: "id_usuario", width: 15 },
+      { header: "Nombre usuario", key: "nombre_usuario", width: 30 },
+      { header: "Nombre equipo", key: "nombre_equipo", width: 30 },
+      { header: "Serial", key: "serial", width: 20 },
+      { header: "Tipo", key: "tipo", width: 20 },
+      { header: "Marca", key: "marca", width: 20 },
+      { header: "Modelo", key: "modelo", width: 20 },
+      { header: "Estado", key: "estado_prestamo", width: 20 },
+      { header: "Fecha de prestamo", key: "fecha_prestamo", width: 20 },
+      { header: "Fecha de devolucion", key: "fecha_devolucion", width: 20 },
+    ];
 
+    exportExcel({
+      cols,
+      data,
+      sheetName: "Equipos",
+      creator: "Tu Nombre", 
+      handleLoading: (loadingState) => {
+
+      },
+    });
+  };
 
 
 
@@ -120,7 +147,8 @@ function Internos() {
           estado: editRecord.estado,
         });
         if (response.status === 200) {
-          alert("Préstamo actualizado correctamente");
+          toast.success("Prestamo actualizado con éxito!",{autoClose:2000});
+
           handleCloseModal();
           fetchData();
         }
@@ -140,7 +168,7 @@ function Internos() {
 
         const response = await axios.post("http://localhost:3001/api/prestamos-externos", newPrestamo);
         if (response.status === 201) {
-          alert("Préstamo registrado correctamente");
+          toast.success("Prestamo registrado con éxito!",{autoClose:2000});
           handleCloseModal();
           fetchData();
         }
@@ -199,10 +227,18 @@ function Internos() {
           sx={{ mb: 1, width: '300px' }}
         />
           <Button variant="contained"onClick={handleOpenModal}sx={{ backgroundColor: "#d01c35" }}>
-            Agregar Registro
+            Agregar Prestamo
           </Button>
-          
         </Box>
+        <Box sx ={{display:"flex",justifyContent:"flex-end"}}>
+        <Tooltip title="Exportar a excel">
+            <IconButton onClick={handleExport}   sx={{backgroundColor: '#2e7d32','&:hover': {backgroundColor: '#1b5e20',}}}>
+              <InsertDriveFileIcon sx={{ color: '#eef5f1' }}/>
+            </IconButton>
+        </Tooltip>
+
+        </Box>
+        
         
         <TableContainer component={Paper}sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
@@ -263,110 +299,120 @@ function Internos() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
-        <Box
-            sx={{ width: { xs: "90%", sm: "80%", md: "60%", lg: "40%" },bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 }, mx: "auto", mt: { xs: "20%", sm: "15%", md: "10%" },borderRadius: 1,
-            }}
-        >
-            <Typography variant="h5" id="modal-title" gutterBottom>
-            {editMode ? "Editar Registro" : "Ver Registro"}
-            </Typography>
+        <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
+        <DialogTitle id="modal-title">
+          {editMode ? "Editar Prestamo" : "Agregar prestamo"}
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ width: '100%', bgcolor: 'background.paper', p: { xs: 2, sm: 3, md: 4 } }}>
             <Grid container spacing={2}>
-            {!editMode && (
-        <>
-          <Grid item xs={12}>
-            <TextField
-              label="Código Estudiante"
-              name="idestudiante"
-              value={editRecord.idestudiante || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
+              {!editMode && (
+                <>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Código Estudiante"
+                      name="idestudiante"
+                      value={editRecord.idestudiante || ""}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
 
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="select-equipo-label">ID Equipo</InputLabel>
-              <Select
-                labelId="select-equipo-label"
-                value={editRecord.id_equipo || ""}
-                name="id_equipo"
-                onChange={handleInputChange}
-              >
-                {equipos.map((equipo) => (
-                  <MenuItem key={equipo.id_equipo} value={equipo.id_equipo}>
-                    {equipo.nombre_equipo}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputLabel id="select-equipo-label">ID Equipo</InputLabel>
+                      <Select
+                        labelId="select-equipo-label"
+                        value={editRecord.id_equipo || ""}
+                        name="id_equipo"
+                        onChange={handleInputChange}
+                      >
+                        {equipos.map((equipo) => (
+                          <MenuItem key={equipo.id_equipo} value={equipo.id_equipo}>
+                            {equipo.nombre_equipo}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              label="Serial"
-              name="serial"
-              value={editRecord.serial || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Serial"
+                      name="serial"
+                      value={editRecord.serial || ""}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              label="Nombre"
-              name="nombre"
-              value={editRecord.nombre || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Apellido"
-              name="apellido"
-              value={editRecord.apellido || ""}
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Fecha de Devolución"
-                value={fechaDevolucion}
-                onChange={(newValue) => setFechaDevolucion(newValue)}
-                minDate={today}
-                maxDate={maxDate}
-                renderInput={(params) => (
-                  <TextField {...params} variant="outlined" required fullWidth sx={{ mb: 2 }} />
-                )}
-              />
-            </LocalizationProvider>
-          </Grid>
-        </>
-      )}
-            {editMode && (
-              <Grid item xs={12}>
-                <FormControl sx={{ mb: 2 }} fullWidth>
-                <InputLabel id="estado-label">Estado</InputLabel>
-                <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
-                <MenuItem value="devuelto">Devuelto</MenuItem>
-                <MenuItem value="en préstamo">En préstamo</MenuItem>
-                <MenuItem value="en reparación">Necesita reparacion</MenuItem>
-                </Select>
-            </FormControl>
-              </Grid>
-            )}
-
-            <Grid item xs={12}>
-              <Button variant="contained" onClick={handleSaveChanges}>
-                {editMode ? "Guardar Cambios" : "Agregar Registro"}
-              </Button>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Nombre"
+                      name="nombre"
+                      value={editRecord.nombre || ""}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Apellido"
+                      name="apellido"
+                      value={editRecord.apellido || ""}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        label="Fecha de Devolución"
+                        value={fechaDevolucion}
+                        onChange={(newValue) => setFechaDevolucion(newValue)}
+                        minDate={today}
+                        maxDate={maxDate}
+                        renderInput={(params) => (
+                          <TextField {...params} variant="outlined" required fullWidth sx={{ mb: 2 }} />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  
+                </>
+              )}
+              {editMode && (
+                <Grid item xs={12}>
+                  <FormControl sx={{ mb: 2 }} fullWidth>
+                    <InputLabel id="estado-label">Estado</InputLabel>
+                    <Select
+                      labelId="estado-label"
+                      id="estado-select"
+                      name="estado"
+                      value={editRecord.estado || ""}
+                      onChange={handleInputChange}
+                      label="Estado"
+                    >
+                      <MenuItem value="devuelto">Devuelto</MenuItem>
+                      <MenuItem value="en préstamo">En préstamo</MenuItem>
+                      <MenuItem value="en reparación">Necesita reparación</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
             </Grid>
-          </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+        <Box sx={{ display: "flex", justifyContent: "center", width: '100%' }}>
+          <Button onClick={handleCloseModal} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' },marginRight:2 }}variant="outlined">Cancelar</Button>
+          <Button variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSaveChanges}>
+            {editMode ? "Guardar Cambios" : "Agregar Registro"}
+          </Button>
         </Box>
-      </Modal>
+        
+        </DialogActions>
+      </Dialog>
       </Box>
     </Box>
   );

@@ -20,30 +20,35 @@ import Contrarecupe from './Components/DashboardUsuarios/contrarecupe';
 import TabbedTable from './Components/Dashboard/devprestamos';
 import Login from './Auth/Login';
 import Register from './Auth/Register';
+import Perfiluser from './Components/DashboardUsuarios/perfiluser';
+import { UserProvider } from './Components/DashboardUsuarios/UserContext';
+import Charts from './Components/Dashboard/charts';
 
 
 function App() {
   return (
     <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Carrusel />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register/>}/>
-          <Route path="/admin/home" element ={<SideBar/>}/>
-          <Route path="/admin/equipos" element={<Equipos/>}/>
-          <Route path="/admin/usuarios" element={<Usuarios/>}/>
-          <Route path="/admin/prestamos" element ={<TabbedTable/>}/>
-          <Route path="/usuarios/home" element={<Usuarioequip/>}/>
-          <Route path="/area-prestamos" element ={<Prestamos/>}/>
-          <Route path="/mis-prestamos" element ={<Misprestamos/>}/>
-          <Route path="/recupcontra" element ={<Recupcontra/>}/>
-          <Route path="/contrarecupera" element ={<Contrarecupe/>}/>
-          
-          
-          
-        </Routes>
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Carrusel />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register/>}/>
+            <Route path="/admin/home" element ={<Charts/>}/>
+            <Route path="/admin/equipos" element={<Equipos/>}/>
+            <Route path="/admin/usuarios" element={<Usuarios/>}/>
+            <Route path="/admin/prestamos" element ={<TabbedTable/>}/>
+            <Route path="/usuarios/home" element={<Usuarioequip/>}/>
+            <Route path="/area-prestamos" element ={<Prestamos/>}/>
+            <Route path="/mis-prestamos" element ={<Misprestamos/>}/>
+            <Route path="/profile" element ={<Perfiluser/>}/>
+            <Route path="/recupcontra" element ={<Recupcontra/>}/>
+            <Route path="/contrarecupera" element ={<Contrarecupe/>}/>
+            
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
+      
     </div>
   );
 }
