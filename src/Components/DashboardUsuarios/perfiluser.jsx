@@ -42,18 +42,20 @@ function Perfiluser() {
       const response = await axios.delete(`http://localhost:3001/api/notificaciones/${selectedNotificationId}`);
   
       if (response.status === 200) {
-        const updatedNotifications = notifications.filter(notification => notification.id !== selectedNotificationId);
-        setNotifications(updatedNotifications);
-        toast.success("Notificación borrada con éxito",{autoClose:2000}); 
-        handleCloseDelete(); 
+          setNotifications(prevNotifications =>
+          prevNotifications.filter(notification => notification.id !== selectedNotificationId)
+          
+        );
+        toast.success("Notificación borrada con éxito", { autoClose: 2000 });
+        handleCloseDelete();
       }
     } catch (error) {
       console.error('Error al eliminar la notificación:', error);
-      toast.error('No se pudo eliminar la notificación. Inténtalo de nuevo más tarde.'); 
+      toast.error('No se pudo eliminar la notificación. Inténtalo de nuevo más tarde.');
     }
   };
-
   const handleFileChange = async (event) => {
+    
     const file = event.target.files[0];
     const MAX_SIZE = 5 * 1024 * 1024;
 
@@ -182,6 +184,7 @@ function Perfiluser() {
             >
               <Avatar
                 src={userData.imagen || ''} 
+                onClick={handleClickOpen}
                 sx={{
                   width: 150,
                   height: 150,

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Avatar, Popover, IconButton, Button, Badge } from '@mui/material';
 import { useNavigate, NavLink } from 'react-router-dom';
-import Logo from './logo2.PNG'; 
 import '@fontsource-variable/open-sans'
 import Cookies from 'js-cookie';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -13,17 +12,12 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState([]);
-  const { userData } = useUserContext();
+  const { notifications, setNotifications, userData } = useUserContext();
   const { logout } = useAuth();
-
   const profileImage = userData?.imagen || '';
 
   const userId = Cookies.get('id_usuario');
   const userimg = Cookies.get('imagen');
-
-
-  
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -54,25 +48,20 @@ const Navbar = () => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/notificaciones/${userId}`);
-        setNotifications(response.data);
-        
+        setNotifications(response.data); 
       } catch (error) {
-        console.error('Error al obtener notificaciones:', error.message);
-        if (error.response) {
-          console.error('Detalles de la respuesta:', error.response.data);
-        }
+        console.error('Error al obtener notificaciones:', error);
       }
     };
 
     if (userId) {
       fetchNotifications();
     }
-  }, [userId]);
+  }, [userId, setNotifications]);
 
   return (
     <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center',position:'fixed',top:'0',width:'calc(100% - 20px)',zIndex:1000}}>
       <Box sx={{ display: 'flex', alignItems: 'center',gap:'20px' }}>
-        <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
         <NavLink to="/usuarios/home" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit', fontFamily: 'Teko, sans-serif',fontWeight: 700  }}>
             Uninventory

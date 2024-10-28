@@ -218,17 +218,20 @@ function Prestamos() {
                   <Typography  sx={{ fontSize: '16px', marginBottom: '8px' }}><strong>Descripcion:</strong> {selectedRow.descripcion}</Typography>
                   <Typography  sx={{ fontSize: '16px', marginBottom: '8px' , fontWeight:'bold'}}>Imagen del equipo: </Typography>
                   <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', my: 2 }}>
-                    <img
-                      src={selectedRow.imagen || 'default-image.jpg'}
-                      alt="Equipo"
-                      style={{
-                        width: '150px',
-                        height: '150px',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-                      }}
-                    />
-                  </Box>
+                    <a href={selectedRow.imagen || 'default-image.jpg'} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={selectedRow.imagen || 'default-image.jpg'}
+                        alt="Equipo"
+                        style={{
+                          width: '150px',
+                          height: '150px',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+                          cursor: 'pointer', 
+                        }}
+                      />
+                    </a>
+                    </Box>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="Fecha de reserva"

@@ -77,7 +77,6 @@ const Login = () => {
     >
       <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
               Uninventory
@@ -164,11 +163,13 @@ const Login = () => {
               </Grid>
             </Grid>
           </Box>
-          <Link to="/register" style={{ textDecoration: 'none' }}>
+          <Box display="flex" justifyContent="center">
+            <Link to="/register" style={{ textDecoration: 'none' }}>
               <Typography variant="caption" sx={{ cursor: 'pointer', color: 'primary', fontWeight: 'bold' }}>
                 Si no estás registrado, haz clic aquí para registrarte.
               </Typography>
             </Link>
+          </Box>
         </Paper>
       </Box>
 

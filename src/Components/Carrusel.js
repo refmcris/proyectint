@@ -4,7 +4,6 @@ import { Box, Button, Link, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';  
 import Item from "./Item";
 import slider from "../Helper/slider.json";
-import Logo from './logo2.PNG';
 
 function Example() {
     return (
@@ -12,7 +11,6 @@ function Example() {
             sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f0f0f0' }}>
             <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center',position:'fixed',top:'0',width:'calc(100% - 20px)',zIndex:1000}}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
                     <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700 }}>
                         Uninventory
