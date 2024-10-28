@@ -23,6 +23,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Auth/AuthContext';
+import Cookies from 'js-cookie';
 
 const drawerWidth = 240;
 
@@ -95,6 +97,7 @@ export default function SideBar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [activeSection, setActiveSection] = React.useState('');
+  const { logout } = useAuth();
   const navigate = useNavigate();
   
   const handleNavigation = (section) => {
@@ -110,7 +113,10 @@ export default function SideBar() {
   };
 
   const handleLogout = () => {
-   
+    Cookies.remove('userName');
+    Cookies.remove('userLastName');
+    Cookies.remove('userRole');
+    logout();
     navigate('/');
   };
 

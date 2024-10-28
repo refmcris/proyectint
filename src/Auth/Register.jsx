@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Grid } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import Logo from './logo3.PNG';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
@@ -14,6 +14,7 @@ const Register = () => {
   const [documentInput, setDocumentInput] = useState('');
   const [documentTypeInput, setDocumentTypeInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -44,6 +45,7 @@ const Register = () => {
       await axios.post('http://localhost:3001/api/register', data);
       console.log(data);
       alert("Registro exitoso");
+      navigate('/login');
     } catch (error) {
       console.error('Error al registrar:', error.message);
       alert("Error al registrar el usuario");

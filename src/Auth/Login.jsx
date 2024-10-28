@@ -5,6 +5,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, NavLink, useNavigate} from 'react-router-dom';
 import Logo from './logo3.PNG'
 import Logo1 from './logo1.png'
+import { useAuth } from './AuthContext'; 
 
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -17,6 +18,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState('');
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth(); 
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -33,8 +35,6 @@ const Login = () => {
         email: emailInput,
         password: passwordInput
       });
-      console.log('Respuesta de la API:', response.data);
-
       setUserInfo(response.data);
       
       Cookies.set('id_usuario',response.data.id_usuario);
@@ -42,9 +42,11 @@ const Login = () => {
       Cookies.set('userLastName', response.data.apellido);
       Cookies.set('userRole', response.data.rol);
       Cookies.set('imagen',response.data.imagen);
-
+      localStorage.setItem('isAuthenticated', 'true');
+      
       alert('Inicio de sesión exitoso');
       const userRole = response.data.rol;
+      login(userRole); 
       if (userRole === 'admin') {
         navigate('/admin/home');
       } else if (userRole === 'estudiante') {
@@ -60,8 +62,8 @@ const Login = () => {
       } else {
         console.error('Error en la configuración de la solicitud:', error.message);
       }
-    }
-  };
+  }
+};
   
 
   return (

@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import axios from 'axios';
 import { useUserContext } from './UserContext';
+import { useAuth } from '../../Auth/AuthContext';
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -14,6 +15,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const { userData } = useUserContext();
+  const { logout } = useAuth();
 
   const profileImage = userData?.imagen || '';
 
@@ -35,6 +37,7 @@ const Navbar = () => {
     Cookies.remove('userName');
     Cookies.remove('userLastName');
     Cookies.remove('userRole');
+    logout();
     handleMenuClose();
     navigate('/');
   };

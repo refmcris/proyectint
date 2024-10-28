@@ -724,9 +724,37 @@ const checkForLoansReminder = () => {
     }
   });
 };
+const checkForOverdueLoans = () => {
+  const selectQuery = `
+    SELECT u.id_usuario, p.id_prestamo, p.fecha_devolucion, e.nombre_equipo
+    FROM préstamos p
+    INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+    INNER JOIN equipos e ON p.id_equipo = e.id_equipo
+    WHERE p.estado_prestamo = 'en préstamo' AND p.fecha_devolucion < CURDATE();
+  `;
+
+  connection.query(selectQuery, (err, overdueLoans) => {
+    if (err) {
+      console.error('Error al seleccionar préstamos vencidos:', err);
+      return;
+    }
+
+    if (overdueLoans.length > 0) {
+      console.log(`Préstamos vencidos encontrados: ${overdueLoans.length}`);
+      
+      overdueLoans.forEach((loan) => {
+        const notificationMessage = `Su préstamo está vencido: ${loan.nombre_equipo} debió ser devuelto ayer. Por favor, devuélvalo lo antes posible.`;
+        addNotificationToDB(loan.id_usuario, notificationMessage);
+        console.log(`Notificación de vencimiento agregada para el usuario ID: ${loan.id_usuario}`);
+      });
+    } else {
+      console.log('No se encontraron préstamos vencidos.');
+    }
+  });
+};
 
 checkForLoansReminder();
-
+checkForOverdueLoans();
 //correos 
 // checkForUpcomingReturns();
 // checkForDelayedLoans();
