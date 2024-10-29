@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Grid } from '@mui/material';
+import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Grid, InputAdornment, IconButton } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import Logo from './logo3.PNG';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -9,11 +11,13 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [correoinput, setCorreoinput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
   const [nameInput, setNameInput] = useState('');
   const [lastnameInput, setLastnameInput] = useState('');
   const [documentInput, setDocumentInput] = useState('');
   const [documentTypeInput, setDocumentTypeInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -28,7 +32,12 @@ const Register = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); 
-    
+    if (passwordInput !== confirmPasswordInput) {
+      setError('Las contraseñas no coinciden');
+      return; 
+    } else {
+      setError(''); 
+    }
     const data = {
       correo: correoinput,
       name: nameInput,
@@ -161,11 +170,50 @@ const Register = () => {
                   type={showPassword ? 'text' : 'password'}
                   sx={{ marginBottom: '24px', fontSize: '1.2rem' }}
                   required
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField id="password-confirm" label="Confirmar contraseña" value={passwordInput} onChange={(event) => setPasswordInput(event.target.value)} variant="outlined" fullWidth size="large" type={showPassword ? 'text' : 'password'} sx={{ marginBottom: '24px', fontSize: '1.2rem' }} required
+                <TextField 
+                  id="password-confirm" 
+                  label="Confirmar contraseña" 
+                  value={confirmPasswordInput} 
+                  onChange={(event) => setConfirmPasswordInput(event.target.value)} 
+                  variant="outlined" 
+                  fullWidth 
+                  size="large" 
+                  type={showPassword ? 'text' : 'password'} 
+                  sx={{ marginBottom: '24px', fontSize: '1.2rem' }} 
+                  required 
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
+                {error && <Typography variant="caption" color="error">{error}</Typography>}
               </Grid>
               <Grid item xs={12}>
               <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '24px' }}>
