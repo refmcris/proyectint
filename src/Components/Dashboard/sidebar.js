@@ -23,6 +23,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Auth/AuthContext';
+import Cookies from 'js-cookie';
 
 const drawerWidth = 240;
 
@@ -94,8 +96,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function SideBar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [activeSection, setActiveSection] = React.useState('');
+  const { logout } = useAuth();
   const navigate = useNavigate();
-
+  
+  const handleNavigation = (section) => {
+    setActiveSection(section); 
+    navigate(`/admin/${section}`);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -105,7 +113,10 @@ export default function SideBar() {
   };
 
   const handleLogout = () => {
-   
+    Cookies.remove('userName');
+    Cookies.remove('userLastName');
+    Cookies.remove('userRole');
+    logout();
     navigate('/');
   };
 
@@ -113,10 +124,9 @@ export default function SideBar() {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ backgroundColor: '#0B508E' }}>
+        <Toolbar sx={{ backgroundColor: '#d01c34' }}>
           <IconButton color="inherit" aria-label="open drawer" onClick={handleDrawerOpen} edge="start"
-            sx={{
-              marginRight: 5, ...(open && { display: 'none' }), }} >
+            sx={{ marginRight: 5, ...(open && { display: 'none' }), }}>
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
@@ -135,52 +145,72 @@ export default function SideBar() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/home") }}>
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleNavigation('home')}>
             <ListItemButton
-              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,
-              }} >
-              <ListItemIcon
-                sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',  }} >
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                borderBottom: activeSection === 'home' ? `2px solid #1976d2` : 'none',
+              }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/equipos") }}>
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleNavigation('equipos')}>
             <ListItemButton
-              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center',  px: 2.5,
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                borderBottom: activeSection === 'equipos' ? `2px solid #secundary` : 'none', 
               }}
             >
-              <ListItemIcon
-                sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',
-                }} >
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                 <ComputerIcon />
               </ListItemIcon>
               <ListItemText primary="Registro equipos" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/usuarios"); }}>
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleNavigation('usuarios')}>
             <ListItemButton
-              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,  }} >
-              <ListItemIcon
-                sx={{  minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', }} >
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                borderBottom: activeSection === 'usuarios' ? `2px solid #1976d2` : 'none', 
+              }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText primary="Usuarios" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { alert('Nueva funcionalidad ASAP'); }}>
+          {/* <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { alert('Nueva funcionalidad ASAP'); }}>
             <ListItemButton
-              sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }} >
-              <ListItemIcon sx={{ minWidth: 0,  mr: open ? 3 : 'auto', justifyContent: 'center', }}  >
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                borderBottom: activeSection === 'supervisores' ? `2px solid #1976d2` : 'none', // Borde inferior para Supervisores
+              }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                 <SupervisorAccountIcon />
               </ListItemIcon>
               <ListItemText primary="Supervisores" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => { navigate("/admin/prestamos"); }}>
-            <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }} >
-            <ListItemIcon sx={{ minWidth: 0,  mr: open ? 3 : 'auto', justifyContent: 'center', }}  >
+          </ListItem> */}
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleNavigation('prestamos')}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                borderBottom: activeSection === 'prestamos' ? `2px solid #1976d2` : 'none', // Borde inferior para Prestamos
+              }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                 <HandshakeIcon />
               </ListItemIcon>
               <ListItemText primary="Prestamos" sx={{ opacity: open ? 1 : 0 }} />
@@ -190,4 +220,5 @@ export default function SideBar() {
       </Drawer>
     </Box>
   );
+ 
 }

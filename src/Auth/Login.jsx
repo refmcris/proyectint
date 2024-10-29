@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, TextField, FormControl, InputLabel, IconButton, Button, InputAdornment, OutlinedInput, Grid } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Logo from './logo.png'
-import Logo2 from './logo2.PNG';
 import { Link, NavLink, useNavigate} from 'react-router-dom';
+import Logo from './logo3.PNG'
+import Logo1 from './logo1.png'
+import { useAuth } from './AuthContext'; 
+
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -16,6 +18,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState('');
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth(); 
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -32,17 +35,18 @@ const Login = () => {
         email: emailInput,
         password: passwordInput
       });
-      console.log('Respuesta de la API:', response.data);
-
       setUserInfo(response.data);
       
       Cookies.set('id_usuario',response.data.id_usuario);
       Cookies.set('userName', response.data.nombre);
       Cookies.set('userLastName', response.data.apellido);
       Cookies.set('userRole', response.data.rol);
-
+      Cookies.set('imagen',response.data.imagen);
+      localStorage.setItem('isAuthenticated', 'true');
+      
       alert('Inicio de sesión exitoso');
       const userRole = response.data.rol;
+      login(userRole); 
       if (userRole === 'admin') {
         navigate('/admin/home');
       } else if (userRole === 'estudiante') {
@@ -58,8 +62,8 @@ const Login = () => {
       } else {
         console.error('Error en la configuración de la solicitud:', error.message);
       }
-    }
-  };
+  }
+};
   
 
   return (
@@ -74,7 +78,7 @@ const Login = () => {
       <Box sx={{ backgroundColor: '#d01c34', padding: '15px', color: 'white' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit' }}>
+          <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
               Uninventory
           </Typography>
           </NavLink>
@@ -91,9 +95,7 @@ const Login = () => {
 
       
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
-            <Typography variant="h2" color="0A0F1D">
-              Inicio
-            </Typography>
+          <img src={Logo1} alt="logo" style={{ width: '180', height: '100px' }} />
           </Box>
           <Box sx={{ marginTop: '30px' }}>
             <Grid container spacing={3} alignItems="center" justifyContent="center">
@@ -161,11 +163,13 @@ const Login = () => {
               </Grid>
             </Grid>
           </Box>
-          <Link to="/register" style={{ textDecoration: 'none' }}>
+          <Box display="flex" justifyContent="center">
+            <Link to="/register" style={{ textDecoration: 'none' }}>
               <Typography variant="caption" sx={{ cursor: 'pointer', color: 'primary', fontWeight: 'bold' }}>
                 Si no estás registrado, haz clic aquí para registrarte.
               </Typography>
             </Link>
+          </Box>
         </Paper>
       </Box>
 

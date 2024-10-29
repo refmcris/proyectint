@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Tabs, Tab } from '@mui/material';
+import { Box, Tabs, Tab, Typography } from '@mui/material';
 import Externos from './externos';
 import Internos from './internos';
 import SideBar from './sidebar';
@@ -34,11 +34,16 @@ function TabbedTable() {
   };
 
   return (
+    <>
     <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#f5f5f5' }}>
       <SideBar />
+      
+      
     
 
       <Box sx={{ flexGrow: 1, p: 3 }}>
+      
+        
         <Tabs
           value={value}
           onChange={handleChange}
@@ -61,6 +66,7 @@ function TabbedTable() {
           <Tab label="Externos" sx={{ minWidth: 120 }} />
           <Tab label="Internos" sx={{ minWidth: 120 }} />
         </Tabs>
+        
 
         <TabPanel value={value} index={0}sx={{ p: 0, mb: 2 }}>
         
@@ -71,6 +77,7 @@ function TabbedTable() {
         </TabPanel>
       </Box>
     </Box>
+    </>
   );
 }
 

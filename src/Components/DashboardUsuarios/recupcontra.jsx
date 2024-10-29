@@ -42,7 +42,6 @@ const Recupcontra = () => {
         };
 
         const response = await axios.post('http://localhost:3001/api/sendEmail', emailData);
-        console.log('Correo enviado:', response.data);
         alert("Recibira un correo pronto, revise su bandeja de entrada");
         navigate('/');
         setEmailInput('');
@@ -136,3 +135,7 @@ const Recupcontra = () => {
 };
 
 export default Recupcontra;
+
+
+
+// contraseña funcional

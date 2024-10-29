@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid} from "@mui/material";
+import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid, IconButton, Tooltip, DialogTitle, Dialog, DialogContent, DialogActions} from "@mui/material";
 import SideBar from "./sidebar";
+import { exportExcel } from "../../Common/exportExcel";
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import BuildIcon from '@mui/icons-material/Build';
+import ErrorIcon from '@mui/icons-material/Error';
 
 
 
@@ -30,6 +38,35 @@ function Externos() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
+
+
+  const handleExport = () => {
+    const cols = [
+      { header: "Nombre usuario", key: "nombre_usuario", width: 30 },
+      { header: "Apellido", key: "apellido_usuario", width: 15 },
+      { header: "Nombre equipo", key: "nombre_equipo", width: 20 },
+      { header: "Serial", key: "serial", width: 20 },
+      { header: "Tipo", key: "tipo", width: 20 },
+      { header: "Marca", key: "marca", width: 20 },
+      { header: "Modelo", key: "modelo", width: 20 },
+      { header: "Estado", key: "estado_prestamo", width: 20 },
+      { header: "Fecha de prestamo", key: "fecha_prestamo", width: 20 },
+      { header: "Fecha de devolucion", key: "fecha_devolucion", width: 20 },
+    ];
+
+    exportExcel({
+      cols,
+      data,
+      sheetName: "Equipos",
+      creator: "Uninventory", 
+      handleLoading: (loadingState) => {
+
+      },
+    });
+  };
+
+
+
 
   const fetchData = async () => {
     try {
@@ -88,7 +125,7 @@ function Externos() {
         });
   
       if (response.status === 200) {
-        alert("Préstamo actualizado correctamente");
+        toast.success("Prestamo actualizado con éxito!",{autoClose:2000});
         handleCloseModal();
         fetchData();
       }
@@ -112,17 +149,20 @@ function Externos() {
       return 0;
     });
 
-    function getrowcolor(estado_prestamo){
-      
-      switch(estado_prestamo){
-        case 'pendiente':
-          return '#feac54';
-        case 'devuelto':
-          return '#3df27b';
-        case 'retrasado':
-          return '#f56c6c';
+    const getEstadoIconAndColor = (estado_prestamo) => {
+      switch (estado_prestamo) {
+        case "devuelto":
+          return {  icon: <CheckCircleIcon sx={{ color: "#3df27b", verticalAlign: 'middle' }} /> }; 
+        case "en préstamo":
+          return {  icon: <HourglassEmptyIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
+        case "en reparación":
+          return {  icon: <BuildIcon sx={{ color: "#f8646d", verticalAlign: 'middle' }} /> };
+        case "retrasado":
+          return { icon: <ErrorIcon sx={{ color: "#f56c6c", verticalAlign: 'middle' }} /> };
+        default:
+          return { color: "black", icon: null };
       }
-    }
+    };
     const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
       const filtered = data.filter((item) =>
@@ -134,13 +174,23 @@ function Externos() {
   return (
     <Box sx={{ display: "flex" }}>
       <Box component="main" sx={{ flexGrow: 1, p: 1, marginTop: "0px"}}>
-      <TextField
+        <Box sx={{ display: "flex",justifyContent: "space-between", alignItems: "center"}}>
+        <TextField
           label="Buscar Prestamos"
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchChange}
           sx={{ mb: 1, width: '300px' }}
         />
+        <Tooltip title="Exportar a excel">
+          <IconButton onClick={handleExport}   sx={{backgroundColor: '#2e7d32','&:hover': {backgroundColor: '#1b5e20',}}}>
+            <InsertDriveFileIcon sx={{ color: '#eef5f1' }}/>
+          </IconButton>
+        </Tooltip>
+        
+
+        </Box>
+      
         <TableContainer component={Paper}sx={{borderRadius: '10px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'}}>
           <Table>
             <TableHead>
@@ -160,18 +210,23 @@ function Externos() {
               </TableRow>
             </TableHead>
             <TableBody>
-            {sortedData.map((row) => (
-              <TableRow key={row.id_equipo}>
-                {columns.map((column) => (
-                  <TableCell key={column.id}>
-                    {column.id === "estado_prestamo" ? (
-                      <Box sx={{
-                          border: `1px solid ${getrowcolor(row.estado_prestamo)}`, 
-                          borderRadius: "4px", padding: "4px 8px",display: "inline-block",backgroundColor: getrowcolor(row.estado_prestamo)
-                        }}
-                      >
-                        {row[column.id]} 
-                      </Box>
+              {sortedData.map((row) => (
+                <TableRow key={row.id_equipo}>
+                  {columns.map((column) => (
+                    <TableCell key={column.id}>
+                      {column.id === "estado_prestamo" ? (
+                        <Tooltip title={row[column.id]}>
+                          <span
+                            style={{
+                              backgroundColor: getEstadoIconAndColor(row[column.id]).color,
+                              padding: "5px 10px",
+                              borderRadius: "5px",
+                              display: "inline-block"
+                            }}
+                          >
+                            {getEstadoIconAndColor(row[column.id]).icon}
+                          </span>
+                        </Tooltip>
                     ) : column.id === "fecha_prestamo" || column.id === "fecha_devolucion" ? (
                       new Date(row[column.id]).toLocaleDateString()
                     ) : (
@@ -200,38 +255,41 @@ function Externos() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-title">
-        <Box
-            sx={{ width: { xs: "90%", sm: "80%", md: "60%", lg: "40%" },bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 }, mx: "auto", mt: { xs: "20%", sm: "15%", md: "10%" },borderRadius: 1,
-            }}
-        >
-            <Typography variant="h5" id="modal-title" gutterBottom>
-            {editMode ? "Editar Registro" : "Ver Registro"}
-            </Typography>
+        <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+        <DialogTitle id="modal-title">
+          {editMode ? "Editar Préstamo" : "Ver Registro"}
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ bgcolor: "background.paper", p: { xs: 2, sm: 3, md: 4 } }}>
             <form>
-            <FormControl sx={{ mb: 2 }} fullWidth>
+              <FormControl sx={{ mb: 2 }} fullWidth>
                 <InputLabel id="estado-label">Estado</InputLabel>
-                <Select labelId="estado-label" id="estado-select" name="estado" value={editRecord.estado || ""} onChange={handleInputChange}label="Estado">
-                <MenuItem value="devuelto">Devuelto</MenuItem>
-                <MenuItem value="pendiente">Pendiente</MenuItem>
+                <Select
+                  labelId="estado-label"
+                  id="estado-select"
+                  name="estado"
+                  value={editRecord.estado || ""}
+                  onChange={handleInputChange}
+                  label="Estado"
+                >
+                  <MenuItem value="devuelto">Devuelto</MenuItem>
+                  <MenuItem value="en préstamo">En préstamo</MenuItem>
+                  <MenuItem value="en reparación">Necesita reparación</MenuItem>
                 </Select>
-            </FormControl>
-            <Grid container spacing={2}>
-                <Grid item>
-                <Button variant="outlined" color="secondary" onClick={handleCloseModal}>
-                    Cancelar
-                </Button>
-                </Grid>
-                <Grid item>
-                <Button variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSaveChanges}  >
-                    Guardar Cambios
-                </Button>
-                </Grid>
-            </Grid>
+              </FormControl>
             </form>
-        </Box>
-        </Modal>
-
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Box sx={{display:"flex",justifyContent:"center", width: '100%'}}>
+            <Button variant="outlined"  sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8'},marginRight:2}} onClick={handleCloseModal}>  Cancelar </Button>
+            <Button variant="contained" sx={{ backgroundColor: "#d01c35" }} onClick={handleSaveChanges}> Guardar Cambios </Button>
+          </Box>
+              
+          
+        </DialogActions>
+      </Dialog>
+      <ToastContainer />
       </Box>
     </Box>
   );

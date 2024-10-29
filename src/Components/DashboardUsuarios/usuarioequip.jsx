@@ -23,10 +23,10 @@ function Usuarioequip() {
                 </Carousel>
             </Box>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', md: 'row' }, gap: '20px', maxWidth: '1200px', margin: '0 auto', padding: '40px', marginBottom: '80px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: { xs: 'column', md: 'row' }, gap: '20px', maxWidth: '1600px', margin: '0 auto', padding: '40px', marginBottom: '80px' }}>
                 <Box sx={{ flex: 1, backgroundColor: 'white', padding: '40px', borderRadius: '8px', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', textAlign: 'justify' }}>
                     <Typography variant="h5" sx={{ marginBottom: '15px', textAlign: 'center', fontWeight: 'bold' }}>
-                        Acerca de
+                    Bienvenido a Uninventory
                     </Typography>
                     <Typography variant="body1" sx={{ fontSize: '18px', marginBottom: '15px' }}>
                         Bienvenido al Sistema Web para el Control de Inventario y Préstamo de Equipos del Laboratorio de Electrónica Industrial. Este proyecto ha sido desarrollado con el objetivo de optimizar la gestión de equipos y componentes en el laboratorio, facilitando tanto el registro como el control de los mismos por parte de estudiantes y docentes.
