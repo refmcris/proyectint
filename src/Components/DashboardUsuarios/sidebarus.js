@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Avatar, Popover, IconButton, Button, Badge } from '@mui/material';
 import { useNavigate, NavLink } from 'react-router-dom';
-import '@fontsource-variable/open-sans'
+import '@fontsource-variable/open-sans';
 import Cookies from 'js-cookie';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import axios from 'axios';
@@ -12,12 +12,13 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const navigate = useNavigate();
-  const { notifications, setNotifications, userData } = useUserContext();
+  const { notifications, setNotifications, userData, resetUserData } = useUserContext();
   const { logout } = useAuth();
-  const profileImage = userData?.imagen || '';
+
+  const userimg = Cookies.get('imagen');
+  const profileImage = userData?.imagen || userimg;
 
   const userId = Cookies.get('id_usuario');
-  const userimg = Cookies.get('imagen');
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -31,6 +32,8 @@ const Navbar = () => {
     Cookies.remove('userName');
     Cookies.remove('userLastName');
     Cookies.remove('userRole');
+    Cookies.remove('imagen');
+    resetUserData();  
     logout();
     handleMenuClose();
     navigate('/');
@@ -88,7 +91,7 @@ const Navbar = () => {
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Badge badgeContent={1} color="error" invisible={notifications.length === 0} sx={{marginRight:3}}>
+        <Badge badgeContent={1} color="error" invisible={notifications.length === 0} sx={{marginRight:3}}>
           <IconButton sx={{ color: 'white' }} onClick={handleNotificationOpen}>
             <NotificationsOutlinedIcon />
           </IconButton>
@@ -114,14 +117,7 @@ const Navbar = () => {
             },
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              marginBottom: '10px',
-              borderBottom: '2px solid #d01c34',
-              paddingBottom: '10px',
-            }}
-          >
+          <Typography variant="h6" sx={{ marginBottom: '10px', borderBottom: '2px solid #d01c34', paddingBottom: '10px' }}>
             Notificaciones
           </Typography>
           {notifications.length > 0 ? (
@@ -138,60 +134,59 @@ const Navbar = () => {
           </Button>
         </Popover>
 
-
         <Avatar
           sx={{ cursor: 'pointer', backgroundColor: 'white', color: '#d01c35' }}
-          src={profileImage || userimg}
+          src={profileImage}
           onClick={handleMenuOpen}
-        >
-        </Avatar>
+        />
+
         <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        sx={{ width: '800',mt: 1.5, }}
-      >
-        <Button
-          onClick={() => navigate('/profile')}
-          sx={{
-            justifyContent:'left',
-            padding: '10px',
-            width: '100%',
-            textTransform: 'none', 
-            color: '#000', 
-            '&:hover': {
-              color: '#fffff',
-              backgroundColor:'#f56c6c' 
-            },
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
           }}
-        >
-          Perfil
-        </Button>
-        <Button
-          onClick={handleLogout}
-          sx={{
-            justifyContent:'left',
-            padding: '10px',
-            width: '100%',
-            textTransform: 'none', 
-            color: '#000', 
-            '&:hover': {
-              color: '#fffff',
-              backgroundColor:'#f56c6c' 
-            },
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
           }}
+          sx={{ width: '800',mt: 1.5, }}
         >
-          Cerrar sesión
-        </Button> 
-     </Popover>
+          <Button
+            onClick={() => navigate('/profile')}
+            sx={{
+              justifyContent:'left',
+              padding: '10px',
+              width: '100%',
+              textTransform: 'none', 
+              color: '#000', 
+              '&:hover': {
+                color: '#fffff',
+                backgroundColor:'#f56c6c' 
+              },
+            }}
+          >
+            Perfil
+          </Button>
+          <Button
+            onClick={handleLogout}
+            sx={{
+              justifyContent:'left',
+              padding: '10px',
+              width: '100%',
+              textTransform: 'none', 
+              color: '#000', 
+              '&:hover': {
+                color: '#fffff',
+                backgroundColor:'#f56c6c' 
+              },
+            }}
+          >
+            Cerrar sesión
+          </Button> 
+       </Popover>
       </Box>
     </Box>
   );
