@@ -2,7 +2,7 @@ import React, {useState, useEffect,useRef} from 'react'
 import Navbar from './sidebarus'
 import {Button,Box,TextField,Typography,Table,TableContainer,TableHead,TableRow,TableCell,TableBody,Paper,TablePagination, TableSortLabel,Dialog, DialogActions, DialogContent, DialogTitle, Popover} from "@mui/material";
 import axios from "axios";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -33,6 +33,13 @@ function Prestamos() {
   const [searchTerm, setSearchTerm] = useState('');
   const [anchorEl, setAnchorEl] = useState(null); 
   const [popoverData, setPopoverData] = useState(null);
+
+
+  const [reservationTime, setReservationTime] = useState(dayjs()); 
+
+  const handleTimeChange = (newTime) => {
+    setReservationTime(newTime); 
+  };
 
   const today = dayjs();
   const maxDate = today.add(7, 'day');
@@ -100,11 +107,16 @@ function Prestamos() {
     });
     const handleConfirmar = async () => {
       try {
+        const fechaHoraDevolucion = reservationDate
+        .hour(reservationTime.hour())
+        .minute(reservationTime.minute());
+
+
         const payload = {
           id_usuario: id_usuario, 
           id_equipo: selectedRow.id_equipo, 
           serial: selectedRow.serial,
-          fecha_devolucion: reservationDate.format('YYYY-MM-DD'), 
+          fecha_devolucion: fechaHoraDevolucion.format('YYYY-MM-DD HH:mm'), 
           
         };
     
@@ -203,7 +215,7 @@ function Prestamos() {
               </TableRow>
             ))}
           </TableBody>
-            <Dialog  open={open} onClose={handleClose} fullWidth maxWidth="md" sx={{'& .MuiDialog-paper': {width: '20%', maxWidth: 'none', padding: '24px',borderRadius: '8px'}}}>
+            <Dialog  open={open} onClose={handleClose} fullWidth maxWidth="lg" sx={{'& .MuiDialog-paper': {width: '30%', maxWidth: 'none', padding: '24px',borderRadius: '8px'}}}>
             <DialogTitle sx={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>
               Reservar equipo
             </DialogTitle>
@@ -232,16 +244,24 @@ function Prestamos() {
                       />
                     </a>
                     </Box>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="Fecha de reserva"
-                      value={reservationDate}
-                      onChange={handleDateChange}
-                      minDate={today}
-                      maxDate={maxDate}
-                      renderInput={(params) => <TextField {...params} fullWidth variant="outlined" sx={{ maxWidth: '400px' }} />}
-                    />
-                  </LocalizationProvider>
+                    <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="Fecha de reserva"
+                          value={reservationDate}
+                          onChange={handleDateChange}
+                          minDate={today}
+                          maxDate={maxDate}
+                          renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
+                        />
+                        <TimePicker
+                          label="Hora de devolución"
+                          value={reservationTime}
+                          onChange={handleTimeChange}
+                          renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
+                        />
+                      </LocalizationProvider>
+                    </Box>
                       
                 </Box>
               )}
