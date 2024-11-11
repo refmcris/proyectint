@@ -622,17 +622,39 @@ const sendUpcomingReturnEmail = (to, loanId, dueDate, equipmentName) => {
 
 // charts
 
-app.get('/api/equipos/utilizados', (req, res) => {
+
+app.get('/api/equipos/utilizadoslineamonth', (req, res) => {
   const query = `
-      SELECT e.id_equipo, e.nombre_equipo, COUNT(*) AS cantidad
-        FROM (
-            SELECT id_equipo FROM préstamos
-            UNION ALL
-            SELECT id_equip FROM préstamosinternos
-        ) AS todos_los_prestamos
-        JOIN equipos e ON e.id_equipo = todos_los_prestamos.id_equipo
-        GROUP BY e.id_equipo, e.nombre_equipo
-        ORDER BY cantidad DESC
+    SELECT DATE_FORMAT(fecha_prestamo, '%Y-%m') AS mes, COUNT(*) AS cantidad 
+    FROM préstamos 
+    GROUP BY mes 
+    ORDER BY mes;
+  `;
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error en la consulta de la base de datos:', error);
+      return res.status(500).json({ error: 'Error en la consulta de la base de datos.' });
+    }
+    res.json(results);
+  });
+});
+
+app.get('/api/equipos/utilizadoslinea', (req, res) => {
+  const query = `
+      SELECT DATE(fecha_prestamo) AS fecha, COUNT(*) AS cantidad
+      FROM préstamos
+      WHERE fecha_prestamo >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+      GROUP BY DATE(fecha_prestamo)
+
+      UNION ALL
+
+      SELECT DATE(fecha_prestamo) AS fecha, COUNT(*) AS cantidad
+      FROM préstamosinternos
+      WHERE fecha_prestamo >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+      GROUP BY DATE(fecha_prestamo)
+
+      ORDER BY fecha ASC;
   `;
 
   connection.query(query, (error, results) => {
@@ -640,6 +662,33 @@ app.get('/api/equipos/utilizados', (req, res) => {
           return res.status(500).json({ error: 'Error en la consulta de la base de datos.' });
       }
       res.json(results);
+  });
+});
+
+app.get('/api/equipos/utilizados', (req, res) => {
+  const { start, end } = req.query;
+
+  if (!start || !end) {
+    return res.status(400).json({ error: 'Se requiere un rango de fechas.' });
+  }
+
+  const query = `
+    SELECT e.id_equipo, e.nombre_equipo, COUNT(*) AS cantidad
+    FROM (
+        SELECT id_equipo, fecha_prestamo FROM préstamos WHERE fecha_prestamo BETWEEN ? AND ?
+        UNION ALL
+        SELECT id_equip, fecha_prestamo FROM préstamosinternos WHERE fecha_prestamo BETWEEN ? AND ?
+    ) AS todos_los_prestamos
+    JOIN equipos e ON e.id_equipo = todos_los_prestamos.id_equipo
+    GROUP BY e.id_equipo, e.nombre_equipo
+    ORDER BY cantidad DESC
+  `;
+
+  connection.query(query, [start, end, start, end], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Error en la consulta de la base de datos.' });
+    }
+    res.json(results);
   });
 });
 
