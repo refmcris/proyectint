@@ -154,7 +154,7 @@ function Usuarios() {
       <SideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
       <Typography variant="h4" sx={{ marginBottom: 2, color: '#333' }}>
-          Informacion de usuarios
+          Información de usuarios
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center"}} >
           
