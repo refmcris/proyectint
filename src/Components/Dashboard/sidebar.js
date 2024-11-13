@@ -25,6 +25,8 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Auth/AuthContext';
 import Cookies from 'js-cookie';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const drawerWidth = 240;
 
@@ -95,14 +97,25 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function SideBar() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
   const [activeSection, setActiveSection] = React.useState('');
   const { logout } = useAuth();
   const navigate = useNavigate();
-  
+  const [open, setOpen] = useState(() => {
+    // Recuperar el estado desde localStorage si está presente
+    const savedState = localStorage.getItem('sidebarOpen');
+    return savedState ? JSON.parse(savedState) : true;
+  });
+  useEffect(() => {
+    localStorage.setItem('sidebarOpen', JSON.stringify(open));
+  }, [open]);
+
   const handleNavigation = (section) => {
+    // Actualizar la sección activa antes de navegar
     setActiveSection(section); 
-    navigate(`/admin/${section}`);
+    // Esperar un ciclo de renderizado para navegar
+    setTimeout(() => {
+      navigate(`/admin/${section}`);
+    }, 100);
   };
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -208,7 +221,7 @@ export default function SideBar() {
                 minHeight: 48,
                 justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
-                borderBottom: activeSection === 'prestamos' ? `2px solid #1976d2` : 'none', // Borde inferior para Prestamos
+                borderBottom: activeSection === 'prestamos' ? `2px solid #1976d2` : 'none', 
               }}>
               <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
                 <HandshakeIcon />
@@ -222,3 +235,4 @@ export default function SideBar() {
   );
  
 }
+  
