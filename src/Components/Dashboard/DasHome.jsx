@@ -4,16 +4,16 @@ import SideBar from './sidebar'
 import Charts from './charts'
 import LineChartComponent from './LineChart'
 import LineChartMonth from './LinechartMonth'
+import Layout from '../../Common/Layout'
 
 function DasHome() {
   return (
-    <>
-    <Box sx={{  display:'flex'}}>
-        <SideBar/>
-        <LineChartMonth/>
+    <Layout>
+      <LineChartMonth/>
+    </Layout>
 
-    </Box>
-    </>
+
+    
     
 
   )
