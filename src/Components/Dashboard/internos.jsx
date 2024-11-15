@@ -11,7 +11,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassFullIcon from '@mui/icons-material/HourglassFull';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import BuildIcon from '@mui/icons-material/Build';
 import ErrorIcon from '@mui/icons-material/Error';
 
@@ -216,7 +216,7 @@ function Internos() {
         case "devuelto":
           return {  icon: <CheckCircleIcon sx={{ color: "#3df27b", verticalAlign: 'middle' }} /> }; 
         case "en préstamo":
-          return {  icon: <HourglassFullIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
+          return {  icon: <HourglassEmptyIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
         case "en reparación":
           return {  icon: <BuildIcon sx={{ color: "#f8646d", verticalAlign: 'middle' }} /> };
         case "retrasado":
@@ -296,7 +296,7 @@ function Internos() {
                           </span>
                         </Tooltip>
                     ) : column.id === "fecha_prestamo" || column.id === "fecha_devolucion" ? (
-                      new Date(row[column.id]).toLocaleString()
+                      new Date(row[column.id]).toLocaleDateString()
                     ) : (
                       row[column.id]
                     )}
