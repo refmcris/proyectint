@@ -6,12 +6,8 @@ export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [notifications, setNotifications] = useState([]); 
 
-  const resetUserData = () => {
-    setUserData(null);
-  };
-
   return (
-    <UserContext.Provider value={{ userData, setUserData, notifications, setNotifications, resetUserData }}>
+    <UserContext.Provider value={{ userData, setUserData, notifications, setNotifications }}>
       {children}
     </UserContext.Provider>
   );
