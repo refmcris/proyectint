@@ -22,3 +22,5 @@ const styles = {
 };
 
 export default LoadingSpinner;
+
+// cambio proyecto integ
