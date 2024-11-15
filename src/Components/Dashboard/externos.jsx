@@ -57,7 +57,7 @@ function Externos() {
     exportExcel({
       cols,
       data,
-      sheetName: "Prestamos-externos",
+      sheetName: "Equipos",
       creator: "Uninventory", 
       handleLoading: (loadingState) => {
 
@@ -176,7 +176,7 @@ function Externos() {
       <Box component="main" sx={{ flexGrow: 1, p: 1, marginTop: "0px"}}>
         <Box sx={{ display: "flex",justifyContent: "space-between", alignItems: "center"}}>
         <TextField
-          label="Buscar Préstamos"
+          label="Buscar Prestamos"
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchChange}
