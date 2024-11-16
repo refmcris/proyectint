@@ -3,7 +3,6 @@ import axios from "axios";
 import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions} from "@mui/material";
 
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"; 
 import dayjs from 'dayjs';
 import { exportExcel } from "../../Common/exportExcel";
@@ -11,7 +10,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassFullIcon from '@mui/icons-material/HourglassFull';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import BuildIcon from '@mui/icons-material/Build';
 import ErrorIcon from '@mui/icons-material/Error';
 
@@ -44,16 +43,6 @@ function Internos() {
   const [fechaDevolucion, setFechaDevolucion] = useState(null); 
   const today = dayjs();
   const maxDate = today.add(7, 'day');
-  const [reservationDate, setReservationDate] = useState(dayjs());
-  
-  const [reservationTime, setReservationTime] = useState(dayjs()); 
-
-  const handleDateChange = (newDate) => {
-    setReservationDate(newDate);
-  };
-  const handleTimeChange = (newTime) => {
-    setReservationTime(newTime); 
-  };
 
   const handleExport = () => {
     const cols = [
@@ -72,7 +61,7 @@ function Internos() {
     exportExcel({
       cols,
       data,
-      sheetName: "Prestamos-internos",
+      sheetName: "Equipos",
       creator: "Tu Nombre", 
       handleLoading: (loadingState) => {
 
@@ -171,17 +160,13 @@ function Internos() {
       }
     } else {
       try {
-        const fechaHoraDevolucion = reservationDate
-        .hour(reservationTime.hour())
-        .minute(reservationTime.minute());
-
         const newPrestamo = {
           id_usuario: editRecord.idestudiante,
           nombre: editRecord.nombre,
           apellido: editRecord.apellido,
           id_equipo: editRecord.id_equipo,
           serial: editRecord.serial,
-          fecha_devolucion: fechaHoraDevolucion.format('YYYY-MM-DD HH:mm'), 
+          fecha_devolucion: fechaDevolucion,
         };
 
         const response = await axios.post("http://localhost:3001/api/prestamos-externos", newPrestamo);
@@ -216,7 +201,7 @@ function Internos() {
         case "devuelto":
           return {  icon: <CheckCircleIcon sx={{ color: "#3df27b", verticalAlign: 'middle' }} /> }; 
         case "en préstamo":
-          return {  icon: <HourglassFullIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
+          return {  icon: <HourglassEmptyIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
         case "en reparación":
           return {  icon: <BuildIcon sx={{ color: "#f8646d", verticalAlign: 'middle' }} /> };
         case "retrasado":
@@ -239,7 +224,7 @@ function Internos() {
       <Box component="main" sx={{ flexGrow: 1, p: 1, marginTop: "0px" }}>
         <Box sx={{ display: "flex",justifyContent: "space-between", alignItems: "center"}}>
         <TextField
-          label="Buscar Préstamos"
+          label="Buscar Prestamos"
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchChange}
@@ -296,7 +281,7 @@ function Internos() {
                           </span>
                         </Tooltip>
                     ) : column.id === "fecha_prestamo" || column.id === "fecha_devolucion" ? (
-                      new Date(row[column.id]).toLocaleString()
+                      new Date(row[column.id]).toLocaleDateString()
                     ) : (
                       row[column.id]
                     )}
@@ -389,16 +374,18 @@ function Internos() {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <TimePicker
-                            label="Hora de devolución"
-                            value={reservationTime}
-                            onChange={handleTimeChange}
-                            renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
-                          />
-                        </LocalizationProvider>
-                      </Box>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        label="Fecha de Devolución"
+                        value={fechaDevolucion}
+                        onChange={(newValue) => setFechaDevolucion(newValue)}
+                        minDate={today}
+                        maxDate={maxDate}
+                        renderInput={(params) => (
+                          <TextField {...params} variant="outlined" required fullWidth sx={{ mb: 2 }} />
+                        )}
+                      />
+                    </LocalizationProvider>
                   </Grid>
                   
                 </>

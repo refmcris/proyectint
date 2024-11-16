@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './sidebarus';
-import { Button, Box, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel, Tooltip } from "@mui/material";
+import { Button, Box, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel } from "@mui/material";
 import axios from "axios";
 import Cookies from 'js-cookie';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassFullIcon from '@mui/icons-material/HourglassFull';
-import BuildIcon from '@mui/icons-material/Build';
-import ErrorIcon from '@mui/icons-material/Error';
 
 const columns = [
   { id: "nombre_equipo", label: "Nombre Equipo" },
@@ -66,20 +62,17 @@ function Misprestamos() {
       }
       return 0;
     });
-    const getEstadoIconAndColor = (estado_prestamo) => {
-      switch (estado_prestamo) {
-        case "devuelto":
-          return {  icon: <CheckCircleIcon sx={{ color: "#3df27b", verticalAlign: 'middle' }} /> }; 
-        case "en préstamo":
-          return {  icon: <HourglassFullIcon sx={{ color: "#feac54", verticalAlign: 'middle' }} /> }; 
-        case "en reparación":
-          return {  icon: <BuildIcon sx={{ color: "#f8646d", verticalAlign: 'middle' }} /> };
-        case "retrasado":
-          return { icon: <ErrorIcon sx={{ color: "#f56c6c", verticalAlign: 'middle' }} /> };
-        default:
-          return { color: "black", icon: null };
+    function getrowcolor(estado_prestamo){
+      
+      switch(estado_prestamo){
+        case 'en préstamo':
+          return '#feac54';
+        case 'devuelto':
+          return '#3df27b';
+        case 'retrasado':
+          return '#f56c6c';
       }
-    };
+    }
   return (
     <Box>
       <Navbar />
@@ -106,20 +99,15 @@ function Misprestamos() {
                 {columns.map((column) => (
                     <TableCell key={column.id}  sx={{ borderBottom: '1px solid #ddd' }}>
                     {column.id === 'estado_prestamo' ? (
-                        <Tooltip title={row[column.id]}>
-                          <span
-                            style={{
-                              backgroundColor: getEstadoIconAndColor(row[column.id]).color,
-                              padding: "5px 10px",
-                              borderRadius: "5px",
-                              display: "inline-block"
-                            }}
-                          >
-                            {getEstadoIconAndColor(row[column.id]).icon}
-                          </span>
-                      </Tooltip>
+                        <Box sx={{
+                          border: `1px solid ${getrowcolor(row.estado_prestamo)}`, 
+                          borderRadius: "4px", padding: "4px 8px",display: "inline-block",backgroundColor: getrowcolor(row.estado_prestamo)
+                        }}
+                      >
+                        {row[column.id]} 
+                      </Box>
                     ) : column.id === 'fecha_devolucion' ? (
-                        new Date(row[column.id]).toLocaleString()
+                        new Date(row[column.id]).toLocaleDateString()
                     ) : (
                         row[column.id]
                     )}

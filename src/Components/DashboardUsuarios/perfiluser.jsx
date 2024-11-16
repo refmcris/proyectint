@@ -284,7 +284,7 @@ function Perfiluser() {
         
       </Box>
       <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle sx={{ textAlign: 'center' }}>Editar Perfil</DialogTitle>
+        <DialogTitle sx={{textAlign:'center'}}>Editar Perfil</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -296,24 +296,18 @@ function Perfiluser() {
             value={newEmail}
             onChange={handleEmailChange}
           />
-          <label htmlFor="file-upload" style={{ cursor: 'pointer', color: '#d01c35', textDecoration: 'underline' }}>
-            Subir Imagen
-          </label>
           <input
-            id="file-upload"
-            accept="image/*"
-            type="file"
-            onChange={handleFileChange}
-            style={{ display: 'none' }}  
-          />
-          {loading && <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />}
+          accept="image/*"
+          type="file"
+          onChange={handleFileChange}
+        />
+        {loading && <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />}
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center' }}>
-          <Button onClick={handleClose} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' } }} variant='outlined'>Cancelar</Button>
-          <Button type='submit' onClick={handleUpdate} sx={{ backgroundColor: "#d01c35", color: "white" }}>Guardar</Button>
+        <DialogActions sx={{justifyContent:'center'}}>
+          <Button onClick={handleClose} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' }}} variant='outlined'>Cancelar</Button>
+          <Button type ='submit' onClick={handleUpdate} sx={{ backgroundColor: "#d01c35",color: "white" }}>Guardar</Button>
         </DialogActions>
       </Dialog>
-
       <ToastContainer />
       
     </>

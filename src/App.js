@@ -26,8 +26,6 @@ import Charts from './Components/Dashboard/charts';
 import RoleRoute from './Auth/RoleRoute';
 import { AuthProvider } from './Auth/AuthContext';
 import AccessDenied from './Common/Accesdenied';
-import DasHome from './Components/Dashboard/DasHome';
-import Layout from './Common/Layout';
 
 
 function App() {
@@ -43,13 +41,12 @@ function App() {
               <Route path="/access-denied" element={<AccessDenied />} />
 
               {/* Rutas protegidas para admin */}
-                <Route element={<RoleRoute requiredRole="admin" />}>
-                  <Route path="/admin/home" element={<DasHome />} />
-                  <Route path="/admin/equipos" element={<Equipos />} />
-                  <Route path="/admin/usuarios" element={<Usuarios />} />
-                  <Route path="/admin/prestamos" element={<TabbedTable />} />
-                </Route>
-
+              <Route element={<RoleRoute requiredRole="admin" />}>
+                <Route path="/admin/home" element={<Charts />} />
+                <Route path="/admin/equipos" element={<Equipos />} />
+                <Route path="/admin/usuarios" element={<Usuarios />} />
+                <Route path="/admin/prestamos" element={<TabbedTable />} />
+              </Route>
 
               {/* Rutas protegidas para usuarios */}
               <Route element={<RoleRoute requiredRole="estudiante" />}>

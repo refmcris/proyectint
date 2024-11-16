@@ -95,10 +95,7 @@ const Login = () => {
 
       
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
-          {/* <img src={Logo1} alt="logo" style={{ width: '180', height: '100px' }} /> */}
-          <Typography variant="h2" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: '#d01c34',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
-              Uninventory
-          </Typography>
+          <img src={Logo1} alt="logo" style={{ width: '180', height: '100px' }} />
           </Box>
           <Box sx={{ marginTop: '30px' }}>
             <Grid container spacing={3} alignItems="center" justifyContent="center">
