@@ -137,7 +137,7 @@ export default function SideBar() {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ backgroundColor: '#d01c34' }}>
+        <Toolbar sx={{ backgroundColor: '#C20E1A' }}>
           <IconButton color="inherit" aria-label="open drawer" onClick={handleDrawerOpen} edge="start"
             sx={{ marginRight: 5, ...(open && { display: 'none' }), }}>
             <MenuIcon />

@@ -71,7 +71,7 @@ function Usuarioequip() {
 
             </Box>
 
-            <Box sx={{ backgroundColor: '#d01c35', padding: '80px', color: 'white', textAlign: 'center' }}>
+            <Box sx={{ backgroundColor: '#cd1f32', padding: '80px', color: 'white', textAlign: 'center' }}>
             </Box>
         </Box>
   )

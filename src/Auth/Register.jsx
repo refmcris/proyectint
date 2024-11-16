@@ -70,7 +70,7 @@ const Register = () => {
         backgroundColor: '#f0f0f0',
       }}
     > 
-      <Box sx={{ backgroundColor: '#d01c35', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+      <Box sx={{ backgroundColor: '#cd1f32', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -245,7 +245,7 @@ const Register = () => {
         </Paper>
       </Box>
 
-      <Box sx={{ backgroundColor: '#d01c35', padding: '15px', color: 'white', textAlign: 'center' }}>
+      <Box sx={{ backgroundColor: '#cd1f32', padding: '15px', color: 'white', textAlign: 'center' }}>
         <Typography variant="body1">
           © 2024 Uninventory. Todos los derechos reservados.
         </Typography>
