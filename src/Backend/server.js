@@ -4,13 +4,12 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const moment = require('moment');
-const admin = require('firebase-admin');
 
+const bcrypt = require('bcrypt');
 
 
 const app = express();
 const port = 3001; 
-const axios = require('axios');
 
 const mysql = require('mysql2');
 const EmailTemplate = require('../Components/DashboardUsuarios/emailtemplate');
@@ -132,46 +131,64 @@ app.put('/api/resetPassword', async (req, res) => {
 
 
 
+
 app.post('/api/login', (req, res) => {
   const { email, password } = req.body;
-  const values = [email, password];
 
   connection.query(
-    "SELECT id_usuario, nombre, apellido, rol, correo_electronico, imagen FROM usuarios WHERE correo_electronico = ? AND contraseña = ?",
-    values,
-    (err, result) => {
+    "SELECT id_usuario, nombre, apellido, rol, correo_electronico, imagen, contraseña FROM usuarios WHERE correo_electronico = ?",
+    [email],
+    async (err, results) => {
       if (err) {
-        res.status(500).send(err);
+        console.error('Error al buscar el usuario:', err);
+        res.status(500).send('Error interno del servidor');
       } else {
-        if (result.length > 0) {
-          res.status(200).json(result[0]);
+        if (results.length > 0) {
+          const user = results[0];
+          const hashedPassword = user.contraseña;
+
+          const isMatch = await bcrypt.compare(password, hashedPassword);
+          if (isMatch) {
+
+            delete user.contraseña;
+            res.status(200).json(user);
+          } else {
+            res.status(401).send('Credenciales incorrectas');
+          }
         } else {
-          res.status(400).send('Not Found');
+          res.status(404).send('Usuario no encontrado');
         }
       }
     }
   );
 });
-app.post('/api/register', (req, res) => {
-    const { correo, name, lastname, document, documentType, phone, password } = req.body;
-    console.log('Datos recibidos para registro:', req.body);
-  
-    const values = [correo, name, lastname, document, documentType, phone, password,'estudiante'];
 
-    const query = `INSERT INTO usuarios (correo_electronico, nombre, apellido, documento, tipo_documento, telefono, contraseña,rol) 
+app.post('/api/register', async (req, res) => {
+  const { correo, name, lastname, document, documentType, phone, password } = req.body;
+  console.log('Datos recibidos para registro:', req.body);
+
+  try {
+
+    const hashedPassword = await bcrypt.hash(password, 10); 
+
+    const values = [correo, name, lastname, document, documentType, phone, hashedPassword, 'estudiante'];
+
+    const query = `INSERT INTO usuarios (correo_electronico, nombre, apellido, documento, tipo_documento, telefono, contraseña, rol) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-  
-   
-    
+
     connection.query(query, values, (err, result) => {
       if (err) {
-        res.status(500).send(err);
-        
+        console.error('Error al registrar el usuario:', err);
+        res.status(500).send('Error al registrar el usuario');
       } else {
         res.status(201).send('Registrado correctamente');
       }
     });
-  });
+  } catch (error) {
+    console.error('Error al encriptar la contraseña:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+});
   app.get('/api/equipos', (req, res) => {
     const query = `SELECT * FROM equipos`;
 

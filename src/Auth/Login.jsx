@@ -16,6 +16,8 @@ const Login = () => {
   const [passwordInput, setPasswordInput] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth(); 
@@ -36,6 +38,7 @@ const Login = () => {
         password: passwordInput
       });
       setUserInfo(response.data);
+      setErrorMessage('');
       
       Cookies.set('id_usuario',response.data.id_usuario);
       Cookies.set('userName', response.data.nombre);
@@ -44,7 +47,6 @@ const Login = () => {
       Cookies.set('imagen',response.data.imagen);
       localStorage.setItem('isAuthenticated', 'true');
       
-      alert('Inicio de sesión exitoso');
       const userRole = response.data.rol;
       login(userRole); 
       if (userRole === 'admin') {
@@ -56,14 +58,27 @@ const Login = () => {
       }
     } catch (error) {
       if (error.response) {
-        console.error('Error al iniciar sesión:', error.response.data.message);
+        switch (error.response.status) {
+          case 401:
+            setErrorMessage('Credenciales incorrectas. Verifica tu correo y contraseña.');
+            break;
+          case 404:
+            setErrorMessage('Usuario no encontrado. Verifica tu correo.');
+            break;
+          case 500:
+            setErrorMessage('Error interno del servidor. Intenta más tarde.');
+            break;
+          default:
+            setErrorMessage('Ocurrió un error inesperado. Intenta de nuevo.');
+        }
       } else if (error.request) {
-        console.error('Error en la solicitud:', error.request);
+        setErrorMessage('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
       } else {
-        console.error('Error en la configuración de la solicitud:', error.message);
+        setErrorMessage('Ocurrió un error inesperado. Intenta de nuevo.');
       }
-  }
-};
+    }
+  };
+
   
 
   return (
@@ -90,16 +105,26 @@ const Login = () => {
         sx={{display: 'flex',flex: 1,justifyContent: 'center',alignItems: 'center',backgroundSize: 'cover',backgroundPosition: 'center'}}
 
       >
-        <Paper elevation={3} sx={{ padding: '50px', paddingBottom: '50px', maxWidth: '600px', width: '100%',height: '400px', backdropFilter: 'blur(8px)',borderRadius: '8px' ,backgroundColor: 'rgba(255,255,255,255)', opacity: 0.9, boxShadow:'0px 4px 12px rgba(0, 0, 0, 0.2)'}}>
-          
-
-      
+        <Paper elevation={3} sx={{ padding: '50px', paddingBottom: '50px', maxWidth: '600px', width: '100%',height: '400px', borderRadius: '8px' ,backgroundColor: 'rgba(255,255,255,255)', opacity: 0.9, boxShadow:'0px 4px 12px rgba(0, 0, 0, 0.2)'}}>
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
           {/* <img src={Logo1} alt="logo" style={{ width: '180', height: '100px' }} /> */}
           <Typography variant="h2" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: '#d01c34',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
               Uninventory
           </Typography>
           </Box>
+          {errorMessage && (
+          <Box 
+            sx={{
+              color: '#b71c1c',
+              padding: 1,
+              borderRadius: 1,
+              marginBottom: 2,
+              textAlign:'center'
+            }}
+          >
+            <Typography variant="body2">{errorMessage}</Typography>
+          </Box>
+        )}
           <Box sx={{ marginTop: '30px' }}>
             <Grid container spacing={3} alignItems="center" justifyContent="center">
               <Grid item xs={12}>
