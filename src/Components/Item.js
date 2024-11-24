@@ -1,12 +1,23 @@
 import React from 'react';
-import { Paper, Button } from '@mui/material';
+import { Paper } from '@mui/material';
 
 function Item({ item }) {
     return (
-        <Paper style={{ textAlign: 'center' }}>
+        <Paper 
+            style={{ 
+                textAlign: 'center', 
+                overflow: 'hidden' // Evita que las imágenes se salgan del contenedor
+            }}
+        >
             <img 
                 src={item.image} 
-                style={{ width: '100%', height: '70vh'}} 
+                alt={item.alt || 'Imagen de carrusel'}
+                style={{ 
+                    width: '100%', 
+                    height: 'auto', // Cambia la altura para que se adapte automáticamente
+                    maxHeight: '70vh', // Limita la altura máxima en pantallas grandes
+                    objectFit: 'cover' // Asegura que la imagen se ajuste bien al contenedor
+                }} 
             />
         </Paper>
     );

@@ -148,21 +148,22 @@ function Perfiluser() {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          alignContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column', // Para que cambie automáticamente a columna si no cabe
           marginTop: '150px',
+          padding: { xs: 2, sm: 4 }, // Ajusta el padding para pantallas pequeñas
         }}
       >
         <Paper
           elevation={3}
           sx={{
             display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' }, // Cambia a columna en pantallas pequeñas
             justifyContent: 'flex-start',
-            padding: '50px',
-            paddingBottom: '50px',
+            padding: { xs: '20px', sm: '30px', md: '50px' },
             maxWidth: '1300px',
             width: '100%',
-            height: '500px',
-            backdropFilter: 'blur(8px)',
+            height: { xs: 'auto', md: '500px' }, // Altura flexible para pantallas pequeñas
             borderRadius: '8px',
             backgroundColor: 'rgba(255,255,255,255)',
             opacity: 0.9,
@@ -178,56 +179,91 @@ function Perfiluser() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: '20px',
-                width:'400px',
-               
+                width: { xs: '100%', sm: '400px' }, // Full width en pantallas pequeñas
+                marginBottom: { xs: 2, md: 0 }, // Margen para separar en móviles
               }}
             >
               <Avatar
-                src={userData.imagen || ''} 
+                src={userData.imagen || ''}
                 onClick={handleClickOpen}
                 sx={{
-                  width: 150,
-                  height: 150,
+                  width: { xs: 100, sm: 150 },
+                  height: { xs: 100, sm: 150 },
                   fontSize: 40,
                   backgroundColor: 'black',
                   cursor: 'pointer',
                   color: '#d01c35',
                 }}
               />
-              <Typography variant="h6" gutterBottom   sx={{ fontSize: '2.5rem' }}>
-                {userData.nombre || 'Nombre no disponible'} {userData.apellido || 'Apellido no disponible'}
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ fontSize: { xs: '1.5rem', sm: '2.5rem' } }}
+              >
+                {userData.nombre || 'Nombre no disponible'}{' '}
+                {userData.apellido || 'Apellido no disponible'}
               </Typography>
-              <Button fullWidth variant="contained" onClick={handleClickOpen} sx={{ backgroundColor: '#d01c34', fontSize: '1rem', padding: '5px', textTransform:'none'}}
-                > Editar Perfil</Button>
-              <Typography variant="body1" gutterBottom sx={{ fontSize: '1.5rem' }}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={handleClickOpen}
+                sx={{
+                  backgroundColor: '#d01c34',
+                  fontSize: { xs: '0.8rem', sm: '1rem' },
+                  padding: '5px',
+                  textTransform: 'none',
+                }}
+              >
+                Editar Perfil
+              </Button>
+              <Typography
+                variant="body1"
+                gutterBottom
+                sx={{ fontSize: { xs: '1rem', sm: '1.5rem' } }}
+              >
                 <strong>Información Personal</strong>
               </Typography>
-              <Typography variant="body2" sx={{ fontSize: '1rem' }}>
+              <Typography
+                variant="body2"
+                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
+              >
                 <strong>Correo electrónico:</strong>{' '}
                 {userData.correo_electronico || 'Correo no disponible'}
               </Typography>
-              <Typography variant="body2"sx={{ fontSize: '1rem' }}>
+              <Typography
+                variant="body2"
+                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
+              >
                 <strong>País:</strong> Colombia
               </Typography>
-              <Typography variant="body2" sx={{ fontSize: '1rem' }}>
+              <Typography
+                variant="body2"
+                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
+              >
                 <strong>Sede:</strong> Buga
               </Typography>
             </Card>
           ) : (
             <Typography>Cargando datos del usuario...</Typography>
           )}
-           
-           <Card
+
+          <Card
             variant="outlined"
             sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-start',
-              justifyContent: 'flex-start',  padding: '20px', width: '700px',  
-              marginLeft: 4,  top: '150px',   overflowY: 'auto', borderRadius: '10px',  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+              justifyContent: 'flex-start',
+              padding: '20px',
+              width: { xs: '100%', sm: '700px' },
+              marginLeft: { xs: 0, md: 4 },
+              marginTop: { xs: 2, md: 0 }, // Margen superior en móviles
+              overflowY: 'auto',
+              borderRadius: '10px',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
             }}
           >
-            <Typography variant="h3" gutterBottom>
+            <Typography variant="h3" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
               Notificaciones
             </Typography>
             {notifications.length > 0 ? (
@@ -239,49 +275,35 @@ function Perfiluser() {
                     position: 'relative',
                     '&:hover': {
                       '& .delete-button': {
-                        display: 'block', 
+                        display: 'block',
                       },
                     },
                   }}
                 >
-                  <Typography variant="h6">{notification.mensaje}</Typography>
+                  <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }}>
+                    {notification.mensaje}
+                  </Typography>
                   <IconButton
-                    onClick={() => handleClickOpenDelete(notification.id_notificacion)}
-                    className="delete-button" 
+                    onClick={() =>
+                      handleClickOpenDelete(notification.id_notificacion)
+                    }
+                    className="delete-button"
                     sx={{
                       position: 'absolute',
                       right: 0,
-                      bottom: '20px', 
-                      display: 'none', 
+                      bottom: '20px',
+                      display: 'none',
                     }}
                   >
                     <ClearIcon />
                   </IconButton>
-                  <Box sx={{  position: 'absolute', bottom: 0, left: '10%', right: '10%', eight: '1px', backgroundColor: '#e0e0e0',  }} />
                 </Box>
               ))
             ) : (
               <Typography variant="body2">No tienes notificaciones.</Typography>
             )}
-             <Dialog open={openDeleteDialog} onClose={handleCloseDelete}>
-              <DialogTitle sx={{textAlign:'center'}}>Confirmar Eliminación</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  ¿Estás seguro de que deseas eliminar esta notificación? Esta acción no se puede deshacer.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions sx ={{justifyContent:'center'}}>
-                <Button onClick={handleCloseDelete} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' },marginRight:2 }}variant="outlined">
-                  Cancelar
-                </Button>
-                <Button onClick={handleDelete} variant="contained" sx={{ backgroundColor: "#d01c35" }}>
-                  Eliminar
-                </Button>
-              </DialogActions>
-            </Dialog>
           </Card>
         </Paper>
-        
       </Box>
       <Dialog open={openDialog} onClose={handleClose}>
         <DialogTitle sx={{ textAlign: 'center' }}>Editar Perfil</DialogTitle>
@@ -315,6 +337,7 @@ function Perfiluser() {
       </Dialog>
 
       <ToastContainer />
+
       
     </>
   );

@@ -26,7 +26,24 @@ function Example() {
             </Box>
 
             <Box sx={{ marginBottom: '50px',marginTop: '60px' }}>
-                <Carousel>
+                <Carousel
+                    autoPlay={true}
+                    animation="slide"
+                    indicators={false}
+                    navButtonsAlwaysVisible={true}
+                    sx={{
+                        width: '100%',
+                        height: { xs: '200px', sm: '300px', md: '400px', lg: '500px' }, 
+                        '& .MuiPaper-root': {
+                            borderRadius: '12px', 
+                        },
+                        img: {
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover', 
+                        },
+                    }}
+                >
                     {slider.map((item) => (
                         <Item key={item.id} item={item} />
                     ))}

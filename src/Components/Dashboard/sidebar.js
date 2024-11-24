@@ -56,7 +56,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  
   ...theme.mixins.toolbar,
 }));
 
@@ -92,7 +91,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
       ...closedMixin(theme),
       '& .MuiDrawer-paper': closedMixin(theme),
     }),
-  }),
+  })
 );
 
 export default function SideBar() {
@@ -133,6 +132,7 @@ export default function SideBar() {
     navigate('/');
   };
 
+ 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
