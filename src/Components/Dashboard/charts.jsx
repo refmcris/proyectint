@@ -114,13 +114,46 @@ const Charts = () => {
             </IconButton>
           </Tooltip>
           <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>Equipos más usados</Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: 'flex',  alignItems: 'flex-start', mb: 2, gap: 2 }}>
+            {/* Fecha de Inicio */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                Desde:
+              </Typography>
+              <Button
+                onClick={handleDateClick}
+                variant="outlined"
+                sx={{
+                  textTransform: 'none',
+                  borderColor: '#f56c6c',
+                  color: 'black',
+                  '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' },
+                }}
+              >
+                {dayjs(dateRange.startDate).format('DD/MM/YYYY')}
+              </Button>
+            </Box>
 
+            {/* Fecha de Fin */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                Hasta:
+              </Typography>
+              <Button
+                onClick={handleDateClick}
+                variant="outlined"
+                sx={{
+                  textTransform: 'none',
+                  borderColor: '#f56c6c',
+                  color: 'black',
+                  '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' },
+                }}
+              >
+                {dayjs(dateRange.endDate).format('DD/MM/YYYY')}
+              </Button>
+            </Box>
 
-            {/* Date Range Picker Button */}
-            <Button onClick={handleDateClick} variant="outlined">
-              Seleccionar Rango de Fecha
-            </Button>
+            {/* Popover para seleccionar rango de fechas */}
             <Popover
               id={id}
               open={open}
@@ -140,7 +173,6 @@ const Charts = () => {
                 onChange={(ranges) => setDateRange(ranges.selection)}
               />
             </Popover>
-
           </Box>
 
           {loading ? (

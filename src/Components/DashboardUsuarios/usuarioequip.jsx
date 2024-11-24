@@ -15,8 +15,24 @@ function Usuarioequip() {
             sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f0f0f0' }}>
             <Navbar/>
 
-            <Box sx={{ marginBottom: '50px' }}>
-                <Carousel>
+            <Box sx={{ marginBottom: '50px',marginTop: '70px' }}>
+                <Carousel
+                    autoPlay={true}
+                    animation="slide"
+                    indicators={false}
+                    navButtonsAlwaysVisible={true}
+                    sx={{
+                        width: '100%',
+                        height: { xs: '200px', sm: '300px', md: '400px', lg: '500px' }, 
+                        '& .MuiPaper-root': {
+                        },
+                        img: {
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover', 
+                        },
+                    }}
+                >
                     {slider.map((item) => (
                         <Item key={item.id} item={item} />
                     ))}
