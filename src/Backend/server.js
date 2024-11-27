@@ -658,27 +658,35 @@ app.get('/api/equipos/utilizadoslineamonth', (req, res) => {
 });
 
 app.get('/api/equipos/utilizadoslinea', (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  console.log(req.query)
+
+  if (!startDate || !endDate) {
+    return res.status(400).json({ error: 'Se requieren startDate y endDate como parámetros de consulta.' });
+  }
+
   const query = `
       SELECT DATE(fecha_prestamo) AS fecha, COUNT(*) AS cantidad
       FROM préstamos
-      WHERE fecha_prestamo >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+      WHERE fecha_prestamo BETWEEN ? AND ?
       GROUP BY DATE(fecha_prestamo)
 
       UNION ALL
 
       SELECT DATE(fecha_prestamo) AS fecha, COUNT(*) AS cantidad
       FROM préstamosinternos
-      WHERE fecha_prestamo >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+      WHERE fecha_prestamo BETWEEN ? AND ?
       GROUP BY DATE(fecha_prestamo)
 
       ORDER BY fecha ASC;
   `;
 
-  connection.query(query, (error, results) => {
-      if (error) {
-          return res.status(500).json({ error: 'Error en la consulta de la base de datos.' });
-      }
-      res.json(results);
+  connection.query(query, [startDate, endDate, startDate, endDate], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Error en la consulta de la base de datos.' });
+    }
+    res.json(results);
   });
 });
 
