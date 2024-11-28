@@ -53,9 +53,7 @@ function Usuarioequip() {
                         Nuestra plataforma permite llevar un control detallado del inventario, registrar el préstamo de equipos, monitorear su estado, y generar reportes personalizados que ayudan a la toma de decisiones y la planificación de mantenimientos. Los usuarios con roles específicos, como administradores, podrán gestionar las altas y bajas de equipos, mientras que otros roles podrán tener acceso según sus permisos.
                     </Typography>
                 </Box>
-                
-
-
+            
             </Box>
 
             <Box sx={{ backgroundColor: '#cd1f32', padding: '80px', color: 'white', textAlign: 'center' }}>

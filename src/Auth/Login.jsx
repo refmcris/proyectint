@@ -25,7 +25,7 @@ const Login = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  
+
   const handleToggle = () => {
     setIsSignUp(!isSignUp);
   };

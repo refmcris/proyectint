@@ -177,8 +177,7 @@ const Navbar = () => {
               justifyContent: 'left',
               padding: '10px',
               width: '100%',
-              textTransform: 'none',
-              color: '#000',
+              textTransform: 'none',color: '#000',
               '&:hover': { color: '#fffff', backgroundColor: '#f56c6c' },
             }}
           >

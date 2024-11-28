@@ -29,7 +29,6 @@ const Register = () => {
   const handleDocumentTypeChange = (event) => {
     setDocumentTypeInput(event.target.value);
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault(); 
     if (passwordInput !== confirmPasswordInput) {

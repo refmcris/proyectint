@@ -110,7 +110,6 @@ function Perfiluser() {
         imagen: newImage || userData.imagen, 
         rol: userData.rol, 
       };
-
       await axios.put(`http://localhost:3001/api/usuarios/${id_usuario}`, updatedUserData);
       setUserData(prev => ({ ...prev, ...updatedUserData }));
       handleClose();

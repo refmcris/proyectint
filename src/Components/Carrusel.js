@@ -23,7 +23,6 @@ function Example() {
                     </Typography>
                 </NavLink>
             </Box>
-
             <Box sx={{ marginBottom: '30px',marginTop: '70px'}}>
                 <Carousel
                     autoPlay={true}
