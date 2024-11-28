@@ -60,7 +60,6 @@ const Register = () => {
       alert("Error al registrar el usuario");
     }
   };
-
   return (
     <Box
       sx={{
@@ -80,7 +79,6 @@ const Register = () => {
           </NavLink>
         </Box>
       </Box>
-
       <Box
         sx={{display: 'flex',flex: 1,justifyContent: 'center',alignItems: 'center',backgroundSize: 'cover',backgroundPosition: 'center'
         }}

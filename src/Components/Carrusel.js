@@ -4,7 +4,6 @@ import { Box, Button, Link, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';  
 import Item from "./Item";
 import slider from "../Helper/slider.json";
-
 function Example() {
     return (
         <Box

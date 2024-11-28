@@ -3,8 +3,7 @@ import { Box, Paper, Typography, TextField, FormControl, InputLabel, IconButton,
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, NavLink, useNavigate} from 'react-router-dom';
-import Logo from './logo3.PNG'
-import Logo1 from './logo1.png'
+
 import { useAuth } from './AuthContext'; 
 
 import axios from 'axios';
@@ -17,7 +16,6 @@ const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth(); 
@@ -78,9 +76,6 @@ const Login = () => {
       }
     }
   };
-
-  
-
   return (
     <Box
   sx={{
@@ -185,7 +180,6 @@ const Login = () => {
                   sx={{ fontSize: '1.2rem', '& .MuiInputBase-input': { fontSize: '1.2rem', padding: '12px' } }} 
                 />
               </Grid>
-
               <Grid item xs={12}>
                 <FormControl fullWidth variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">Contraseña</InputLabel>
@@ -234,7 +228,6 @@ const Login = () => {
           </Box>
         </Paper>
       </Box>
-
       <Box
         sx={{
           backgroundColor: '#cd1f32',

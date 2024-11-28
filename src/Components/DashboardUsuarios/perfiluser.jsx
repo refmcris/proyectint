@@ -119,9 +119,6 @@ function Perfiluser() {
       console.error('Error updating user:', error);
     }
   };
-
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {

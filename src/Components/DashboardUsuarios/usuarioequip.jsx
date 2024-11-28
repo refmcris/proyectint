@@ -63,5 +63,4 @@ function Usuarioequip() {
         </Box>
   )
 }
-
 export default Usuarioequip

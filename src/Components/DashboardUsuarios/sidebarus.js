@@ -199,7 +199,6 @@ const Navbar = () => {
           </Button>
         </Popover>
       </Box>
-
       {/* Sidebar - Drawer para pantallas pequeñas */}
       <Drawer
         sx={{
