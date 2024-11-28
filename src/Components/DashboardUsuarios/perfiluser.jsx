@@ -302,6 +302,22 @@ function Perfiluser() {
             ) : (
               <Typography variant="body2">No tienes notificaciones.</Typography>
             )}
+              <Dialog open={openDeleteDialog} onClose={handleCloseDelete}>
+              <DialogTitle sx={{textAlign:'center'}}>Confirmar Eliminación</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  ¿Estás seguro de que deseas eliminar esta notificación? Esta acción no se puede deshacer.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions sx ={{justifyContent:'center'}}>
+                <Button onClick={handleCloseDelete} sx={{ color: '#f56c6c', borderColor: '#f56c6c', '&:hover': { borderColor: '#f56c6c', backgroundColor: '#fbe8e8' },marginRight:2 }}variant="outlined">
+                  Cancelar
+                </Button>
+                <Button onClick={handleDelete} variant="contained" sx={{ backgroundColor: "#d01c35" }}>
+                  Eliminar
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Card>
         </Paper>
       </Box>

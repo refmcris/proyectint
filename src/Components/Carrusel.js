@@ -25,7 +25,7 @@ function Example() {
                 </NavLink>
             </Box>
 
-            <Box sx={{ marginBottom: '30px',marginTop: '60px'}}>
+            <Box sx={{ marginBottom: '30px',marginTop: '70px'}}>
                 <Carousel
                     autoPlay={true}
                     animation="slide"
@@ -34,13 +34,13 @@ function Example() {
                     sx={{
                         width: '100%',
                         border:'5px',
-                        height: { xs: '200px', sm: '300px', md: '400px', lg: '700px' }, 
+                        height: { xs: '150px', sm: '300px', md: '400px', lg: '500px' }, 
                         '& .MuiPaper-root': {
-                            borderRadius: '12px', 
+                            
                         },
                         img: {
                             width: '100%',
-                            height: '100%',
+                            height: '150%',
                             objectFit: 'cover', 
                         },
                     }}

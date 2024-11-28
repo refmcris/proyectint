@@ -15,7 +15,7 @@ function Usuarioequip() {
             sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f0f0f0' }}>
             <Navbar/>
 
-            <Box sx={{ marginBottom: '50px',marginTop: '70px' }}>
+            <Box sx={{ marginBottom: '30px',marginTop: '70px'}}>
                 <Carousel
                     autoPlay={true}
                     animation="slide"
@@ -23,12 +23,14 @@ function Usuarioequip() {
                     navButtonsAlwaysVisible={true}
                     sx={{
                         width: '100%',
-                        height: { xs: '200px', sm: '300px', md: '400px', lg: '500px' }, 
+                        border:'5px',
+                        height: { xs: '150px', sm: '300px', md: '400px', lg: '500px' }, 
                         '& .MuiPaper-root': {
+                            
                         },
                         img: {
                             width: '100%',
-                            height: '100%',
+                            height: '150%',
                             objectFit: 'cover', 
                         },
                     }}
@@ -51,38 +53,7 @@ function Usuarioequip() {
                         Nuestra plataforma permite llevar un control detallado del inventario, registrar el préstamo de equipos, monitorear su estado, y generar reportes personalizados que ayudan a la toma de decisiones y la planificación de mantenimientos. Los usuarios con roles específicos, como administradores, podrán gestionar las altas y bajas de equipos, mientras que otros roles podrán tener acceso según sus permisos.
                     </Typography>
                 </Box>
-                <Box 
-                    sx={{
-                        flex: 1,
-                        backgroundColor: 'white',
-                        padding: '40px',  
-                        borderRadius: '12px',
-                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                        textAlign: 'center',
-                    }}
-                >
-                    <Typography variant="h5" sx={{ marginBottom: '10px', fontWeight: 'bold' }}>
-                        Ayudas rápidas
-                    </Typography>
-                    <Box sx={{ textAlign: 'left', paddingLeft: '30px' }}>
-                        <Link href="#" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>
-                            + Recuperar contraseña
-                        </Link>
-                        <Link href="#" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>
-                            + 
-                        </Link>
-                        <Link href="#" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>
-                            + 
-                        </Link>
-                        <Link href="#" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>
-                            + 
-                        </Link>
-                        <Link href="#" underline="hover" sx={{ display: 'block', marginBottom: '15px', fontSize: '18px' }}>
-                            + 
-                        </Link>
-                    </Box>
-                </Box>
-
+                
 
 
             </Box>

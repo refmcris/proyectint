@@ -90,6 +90,7 @@ const Register = () => {
           sx={{padding: '60px',maxWidth: '900px',width: '100%',backdropFilter: 'blur(8px)',borderRadius: '12px',backgroundColor: 'rgba(255, 255, 255, 0.9)',boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)'
           }}
         >
+          <Typography variant="h4" sx={{padding:'10px'}}>Formulario de registro</Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={4}>
             <Grid item xs={12} sm={6}>

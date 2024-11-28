@@ -125,7 +125,7 @@ const Navbar = () => {
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Badge badgeContent={1} color="error" invisible={notifications.length === 0} sx={{ marginRight: 3 }}>
-          <IconButton sx={{ color: 'white' }} onClick={handleNotificationOpen}>
+          <IconButton sx={{ color: 'white' }} onClick={handleNotificationOpen} aria-label="Notificaciones">
             <NotificationsOutlinedIcon />
           </IconButton>
         </Badge>
@@ -159,6 +159,8 @@ const Navbar = () => {
           sx={{ cursor: 'pointer', backgroundColor: 'white', color: '#C20E1A', mr:5 }}
           src={profileImage}
           onClick={handleMenuOpen}
+          aria-label="Notificaciones"
+          title="Notificaciones"
         />
 
         <Popover

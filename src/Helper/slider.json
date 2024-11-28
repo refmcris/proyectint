@@ -1,12 +1,14 @@
 [
     {
         "id":1,
-        "image":"https://sitec.mx/wp-content/uploads/2024/01/main-baner2-1500x500.jpg"
+        "image":"https://sitec.mx/wp-content/uploads/2024/01/main-baner2-1500x500.jpg",
+        "alt": "Banner principal del sitio web de SITE"
 
     },
     {
         "id":2,
-        "image":"https://campusvirtual.univalle.edu.co/moodle/pluginfile.php/1/theme_mooveuv/sliderimage4/1729695369/SAB2024B-1500x500.jpg"
+        "image":"https://campusvirtual.univalle.edu.co/moodle/pluginfile.php/1/theme_mooveuv/sliderimage4/1729695369/SAB2024B-1500x500.jpg",
+        "alt": "Informacion boletin del saber"
         
         
     }

@@ -83,29 +83,63 @@ const Login = () => {
 
   return (
     <Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    backgroundColor: '#f0f0f0',
+  }}
+>
+  {/* Header */}
+  <Box
+    sx={{
+      backgroundColor: '#cd1f32',
+      padding: { xs: '10px', sm: '15px', md: '20px' },
+      color: 'white',
+    }}
+  >
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{
+            textAlign: 'left',
+            textDecoration: 'underline',
+            color: 'inherit',
+            fontFamily: 'Teko, sans-serif',
+            fontWeight: 700,
+            fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+          }}
+        >
+          Uninventory
+        </Typography>
+      </NavLink>
+    </Box>
+  </Box>
+
+  {/* Contenedor principal con espacio dinámico */}
+  <Box
+    sx={{
+      display: 'flex',
+      flex: 1, // Permite que este contenedor tome el espacio restante entre header y footer
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: { xs: '10px', sm: '20px', md: '30px' },
+    }}
+  >
+    <Paper
+      elevation={3}
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        backgroundColor: '#f0f0f0',
+        padding: { xs: '20px', sm: '30px', md: '50px' },
+        maxWidth: '600px',
+        width: '100%',
+        borderRadius: '8px',
+        backgroundColor: 'rgba(255,255,255,255)',
+        opacity: 0.9,
+        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
       }}
     >
-      <Box sx={{ backgroundColor: '#cd1f32', padding: '15px', color: 'white' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
-              Uninventory
-          </Typography>
-          </NavLink>
-          
-        </Box>
-      </Box>
-
-      <Box
-        sx={{display: 'flex',flex: 1,justifyContent: 'center',alignItems: 'center',backgroundSize: 'cover',backgroundPosition: 'center'}}
-
-      >
-        <Paper elevation={3} sx={{ padding: '50px', paddingBottom: '50px', maxWidth: '600px', width: '100%',height: '400px', borderRadius: '8px' ,backgroundColor: 'rgba(255,255,255,255)', opacity: 0.9, boxShadow:'0px 4px 12px rgba(0, 0, 0, 0.2)'}}>
           <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
           {/* <img src={Logo1} alt="logo" style={{ width: '180', height: '100px' }} /> */}
           <Typography variant="h2" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: '#d01c34',fontFamily: 'Teko, sans-serif',fontWeight: 700}}>
@@ -201,12 +235,19 @@ const Login = () => {
         </Paper>
       </Box>
 
-      <Box sx={{ backgroundColor: '#cd1f32', padding: '80px', color: 'white', textAlign: 'center' }}>
+      <Box
+        sx={{
+          backgroundColor: '#cd1f32',
+          padding: { xs: '10px', sm: '20px', md: '40px' },
+          color: 'white',
+          textAlign: 'center',
+          fontSize: { xs: '0.8rem', sm: '1rem' },
+        }}
+      >
         <Typography>
-        Vicerrectoría Académica
-        Dirección de Nuevas Tecnologías y Educación Virtual - DINTEV
+          Vicerrectoría Académica<br />
+          Dirección de Nuevas Tecnologías y Educación Virtual - DINTEV
         </Typography>
-        
       </Box>
     </Box>
   );
