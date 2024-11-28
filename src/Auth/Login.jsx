@@ -43,7 +43,6 @@ const Login = () => {
       Cookies.set('userRole', response.data.rol);
       Cookies.set('imagen',response.data.imagen);
       localStorage.setItem('isAuthenticated', 'true');
-      
       const userRole = response.data.rol;
       login(userRole); 
       if (userRole === 'admin') {
