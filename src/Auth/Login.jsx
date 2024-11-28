@@ -37,7 +37,6 @@ const Login = () => {
       });
       setUserInfo(response.data);
       setErrorMessage('');
-      
       Cookies.set('id_usuario',response.data.id_usuario);
       Cookies.set('userName', response.data.nombre);
       Cookies.set('userLastName', response.data.apellido);
