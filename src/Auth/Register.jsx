@@ -70,7 +70,6 @@ const Register = () => {
     > 
       <Box sx={{ backgroundColor: '#cd1f32', padding: '15px', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img src={Logo} alt="logo" style={{ width: '40px', height: '40px' }} />
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             <Typography variant="h4" component="div" sx={{ textAlign: 'left', textDecoration: 'underline', color: 'inherit',fontFamily: 'Teko, sans-serif',fontWeight: 700 }}>
               Uninventory
