@@ -50,7 +50,7 @@ const Register = () => {
     };
 
     try {
-      await axios.post('http://localhost:3001/api/register', data);
+      await axios.post('https://uniback.onrender.com/api/register', data);
       console.log(data);
       alert("Registro exitoso");
       navigate('/login');
