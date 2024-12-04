@@ -29,7 +29,7 @@ const Recupcontra = () => {
     }
   
     try {
-      const checkResponse = await axios.post('http://localhost:3001/api/checkEmail', { email: emailInput });
+      const checkResponse = await axios.post('https://uniback.onrender.com/api/checkEmail', { email: emailInput });
       if (checkResponse.status === 200) {
         const { token } = checkResponse.data;
         
@@ -41,7 +41,7 @@ const Recupcontra = () => {
             token,
         };
 
-        const response = await axios.post('http://localhost:3001/api/sendEmail', emailData);
+        const response = await axios.post('https://uniback.onrender.com/api/sendEmail', emailData);
         alert("Recibira un correo pronto, revise su bandeja de entrada");
         navigate('/');
         setEmailInput('');

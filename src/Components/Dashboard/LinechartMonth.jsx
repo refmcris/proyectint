@@ -14,7 +14,7 @@ const LineChartMonth = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/equipos/utilizadoslineamonth");
+      const response = await axios.get("https://uniback.onrender.com/api/equipos/utilizadoslineamonth");
       const formattedData = response.data.map(item => ({
         // Convierte la fecha de string a un objeto dayjs
         fecha: dayjs(item.mes, 'YYYY-MM'), // Especifica el formato de la fecha

@@ -20,13 +20,13 @@ import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import ComputerIcon from '@mui/icons-material/Computer';
 import PersonIcon from '@mui/icons-material/Person';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Auth/AuthContext';
 import Cookies from 'js-cookie';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import HelpIcon from '@mui/icons-material/Help';
 
 const drawerWidth = 240;
 
@@ -227,6 +227,20 @@ export default function SideBar() {
                 <HandshakeIcon />
               </ListItemIcon>
               <ListItemText primary="Prestamos" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={() => handleNavigation('ayudas')}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                borderBottom: activeSection === 'ayudas' ? `2px solid #1976d2` : 'none', 
+              }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+                <HelpIcon />
+              </ListItemIcon>
+              <ListItemText primary="Ayudas" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

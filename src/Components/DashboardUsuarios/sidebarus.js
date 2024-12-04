@@ -57,7 +57,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/notificaciones/${userId}`);
+        const response = await axios.get(`https://uniback.onrender.com/api/notificaciones/${userId}`);
         setNotifications(response.data); 
       } catch (error) {
         console.error('Error al obtener notificaciones:', error);
@@ -90,7 +90,6 @@ const Navbar = () => {
             color: isActive ? '#f56c6c' : '#FFFFFF',
             borderBottom: isActive ? '2px solid #f56c6c' : 'none',
             paddingBottom: '5px',
-            color: 'inherit',
           })}>
             <Typography sx={{ color: '#FFFFFF', fontWeight: 'bold', textTransform: 'none', fontSize: '15px', fontFamily: 'Open Sans Variable' }}>
               Página Principal
@@ -102,7 +101,6 @@ const Navbar = () => {
             color: isActive ? '#f56c6c' : '#FFFFFF',
             borderBottom: isActive ? '2px solid #f56c6c' : 'none',
             paddingBottom: '5px',
-            color: 'inherit',
           })}>
             <Typography sx={{ color: '#FFFFFF', fontWeight: 'bold', textTransform: 'none', fontSize: '15px', fontFamily: 'Open Sans Variable' }}>
               Área Préstamos
@@ -114,7 +112,6 @@ const Navbar = () => {
             color: isActive ? '#f56c6c' : '#FFFFFF',
             borderBottom: isActive ? '2px solid #f56c6c' : 'none',
             paddingBottom: '5px',
-            color: 'inherit',
           })}>
             <Typography sx={{ color: '#FFFFFF', fontWeight: 'bold', textTransform: 'none', fontSize: '15px', fontFamily: 'Open Sans Variable' }}>
               Mis Préstamos
@@ -222,8 +219,7 @@ const Navbar = () => {
             textDecoration: 'none',
             color: isActive ? '#f56c6c' : '#FFFFFF',
             borderBottom: isActive ? '2px solid #f56c6c' : 'none',
-            paddingBottom: '5px',
-            color: 'inherit',
+            paddingBottom: '5px'
           })}>
             <Typography sx={{ color: '#495057', fontWeight: 'bold', fontSize: '15px', fontFamily: 'Open Sans Variable' }}>
               Página Principal
@@ -234,7 +230,6 @@ const Navbar = () => {
             color: isActive ? '#f56c6c' : '#FFFFFF',
             borderBottom: isActive ? '2px solid #f56c6c' : 'none',
             paddingBottom: '5px',
-            color: 'inherit',
           })}>
             <Typography sx={{ color: '#495057', fontWeight: 'bold', fontSize: '15px', fontFamily: 'Open Sans Variable' }}>
               Área Préstamos
@@ -245,7 +240,6 @@ const Navbar = () => {
             color: isActive ? '#f56c6c' : '#FFFFFF',
             borderBottom: isActive ? '2px solid #f56c6c' : 'none',
             paddingBottom: '5px',
-            color: 'inherit',
           })}>
             <Typography sx={{ color: '#495057', fontWeight: 'bold', fontSize: '15px', fontFamily: 'Open Sans Variable' }}>
               Mis Préstamos

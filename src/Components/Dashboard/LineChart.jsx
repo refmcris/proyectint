@@ -24,7 +24,7 @@ const BarChartComponent = () => {
   const fetchData = async () => {
     
     try {
-      const response = await axios.get("http://localhost:3001/api/equipos/utilizadoslinea", {
+      const response = await axios.get("https://uniback.onrender.com/api/equipos/utilizadoslinea", {
         params: {
           startDate: dayjs(range[0].startDate).format('YYYY-MM-DD'),
           endDate: dayjs(range[0].endDate).format('YYYY-MM-DD'),

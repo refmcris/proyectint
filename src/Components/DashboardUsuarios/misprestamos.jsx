@@ -30,7 +30,7 @@ function Misprestamos() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/prestamos-equipos/${id_usuario}`);
+        const response = await axios.get(`https://uniback.onrender.com/api/prestamos-equipos/${id_usuario}`);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);

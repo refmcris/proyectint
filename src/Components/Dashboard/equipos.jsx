@@ -1,7 +1,6 @@
   import React, { useState, useEffect } from "react";
   import axios from "axios";
-  import {Button, Box, Dialog, DialogTitle,CircularProgress, DialogContent, DialogActions,TextField, FormControl, InputLabel, Select, MenuItem, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel, Grid, Tooltip, IconButton, styled} from "@mui/material";
-  import SideBar from "./sidebar";
+  import {Button, Box, Dialog, DialogTitle,CircularProgress, DialogContent, DialogActions,TextField, FormControl, InputLabel, Select, MenuItem, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel, Tooltip, IconButton} from "@mui/material";
   import { exportExcel } from "../../Common/exportExcel";
   import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
   import { ToastContainer, toast } from 'react-toastify'; 
@@ -11,11 +10,8 @@
   import BuildIcon from '@mui/icons-material/Build';
   import ErrorIcon from '@mui/icons-material/Error';
 
-  import { Cloudinary } from 'cloudinary-core';
-import Layout from "../../Common/Layout";
+  import Layout from "../../Common/Layout";
 
-
-  const initialData = [];
 
   const columns = [
     { id: "nombre_equipo", label: "Nombre Equipo" },
@@ -45,11 +41,10 @@ import Layout from "../../Common/Layout";
     const [imageUploaded, setImageUploaded] = useState(false);
 
 
-    const cl = new Cloudinary({ cloud_name: 'tu_cloud_name' });
     
       const fetchData = async () => {
         try {
-          const response = await axios.get("http://localhost:3001/api/equipos");
+          const response = await axios.get("https://uniback.onrender.com/api/equipos");
           setData(response.data);
           setFilteredData(response.data);
         } catch (error) {
@@ -57,7 +52,9 @@ import Layout from "../../Common/Layout";
         }
       };
 
-      fetchData();
+      useEffect(() => {
+        fetchData();
+      }, []); 
     
 
     const handleOpenDialog = () => {
@@ -189,7 +186,7 @@ import Layout from "../../Common/Layout";
           ...editRecord,
           imagen: imageBase64 || editRecord.imagen 
         };
-        const url = "http://localhost:3001/api/registro";    
+        const url = "https://uniback.onrender.com/api/registro";    
         try {
           if (editMode) {
             await axios.put(`${url}/${editRecord.id_equipo}`, postData);

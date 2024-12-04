@@ -85,7 +85,7 @@ function Internos() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/prestamos-internos");
+      const response = await axios.get("https://uniback.onrender.com/api/prestamos-internos");
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
@@ -94,7 +94,7 @@ function Internos() {
   };
   const fetchEquipos = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/equipos"); 
+      const response = await axios.get("https://uniback.onrender.com/api/equipos"); 
       setEquipos(response.data);
     } catch (error) {
       console.error("Error fetching equipos:", error);
@@ -158,7 +158,7 @@ function Internos() {
     if (editMode) {
       try {
        
-        const response = await axios.put(`http://localhost:3001/api/prestamos-equipos-internos/${editRecord.id_prestamo}`, {
+        const response = await axios.put(`https://uniback.onrender.com/api/prestamos-equipos-internos/${editRecord.id_prestamo}`, {
           estado: editRecord.estado,
         });
         if (response.status === 200) {
@@ -184,7 +184,7 @@ function Internos() {
           fecha_devolucion: fechaHoraDevolucion.format('YYYY-MM-DD HH:mm'), 
         };
 
-        const response = await axios.post("http://localhost:3001/api/prestamos-externos", newPrestamo);
+        const response = await axios.post("https://uniback.onrender.com/api/prestamos-externos", newPrestamo);
         if (response.status === 201) {
           toast.success("Prestamo registrado con éxito!",{autoClose:2000});
           handleCloseModal();

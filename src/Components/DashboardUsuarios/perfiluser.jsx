@@ -39,7 +39,7 @@ function Perfiluser() {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3001/api/notificaciones/${selectedNotificationId}`);
+      const response = await axios.delete(`https://uniback.onrender.com/api/notificaciones/${selectedNotificationId}`);
   
       if (response.status === 200) {
           setNotifications(prevNotifications =>
@@ -88,7 +88,7 @@ function Perfiluser() {
   };
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/notificaciones/${id_usuario}`);
+      const response = await axios.get(`https://uniback.onrender.com/api/notificaciones/${id_usuario}`);
       setNotifications(response.data);
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -110,7 +110,7 @@ function Perfiluser() {
         imagen: newImage || userData.imagen, 
         rol: userData.rol, 
       };
-      await axios.put(`http://localhost:3001/api/usuarios/${id_usuario}`, updatedUserData);
+      await axios.put(`https://uniback.onrender.com/api/usuarios/${id_usuario}`, updatedUserData);
       setUserData(prev => ({ ...prev, ...updatedUserData }));
       handleClose();
       toast.success("Perfil actualizado con éxito!",{autoClose:2000});
@@ -121,7 +121,7 @@ function Perfiluser() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/usuarios');
+        const response = await axios.get('https://uniback.onrender.com/api/usuarios');
         const user = response.data.find((u) => u.id_usuario == id_usuario);
 
         if (user) {

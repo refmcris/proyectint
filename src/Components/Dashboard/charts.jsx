@@ -19,7 +19,7 @@ const Charts = () => {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [chartType, setChartType] = useState('pie');
   const [anchorEl, setAnchorEl] = useState(null); // State for Popover anchor
-  const API_URL = 'http://localhost:3001/api/equipos/utilizados';
+  const API_URL = 'https://uniback.onrender.com/api/equipos/utilizados';
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {

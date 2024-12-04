@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {Button,Box,Modal,TextField,FormControl,InputLabel,Select,MenuItem,Typography,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, Grid, IconButton, Tooltip, DialogTitle, Dialog, DialogContent, DialogActions} from "@mui/material";
-import SideBar from "./sidebar";
+import {Button,Box,TextField,FormControl,InputLabel,Select,MenuItem,Table,TableContainer,TableHead,TableRow,TableCell, TableBody,Paper,TablePagination,TableSortLabel, IconButton, Tooltip, DialogTitle, Dialog, DialogContent, DialogActions} from "@mui/material";
 import { exportExcel } from "../../Common/exportExcel";
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { ToastContainer, toast } from 'react-toastify'; 
@@ -70,7 +69,7 @@ function Externos() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/prestamos-equipos");
+      const response = await axios.get("https://uniback.onrender.com/api/prestamos-equipos");
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
@@ -82,11 +81,7 @@ function Externos() {
     fetchData(); 
   }, []);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
-    setEditMode(false);
-    setEditRecord({});
-  };
+ 
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -120,7 +115,7 @@ function Externos() {
   };
   const handleSaveChanges = async () => {
     try {
-        const response = await axios.put(`http://localhost:3001/api/prestamos-equipos/${editRecord.id_prestamo}`, {
+        const response = await axios.put(`https://uniback.onrender.com/api/prestamos-equipos/${editRecord.id_prestamo}`, {
           estado: editRecord.estado 
         });
   

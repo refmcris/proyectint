@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Button, Box, Modal, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel, Grid, Tooltip, IconButton, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
+import React, { useEffect, useState,  } from "react";
+import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, TableSortLabel,  Tooltip, IconButton, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
 import axios from "axios";
 import SideBar from './sidebar';
 import { exportExcel } from "../../Common/exportExcel";
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
-
-const initialData = [];
 
 const columns = [
   { id: "nombre", label: "Nombre" },
@@ -33,7 +31,7 @@ function Usuarios() {
   
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/usuarios"); 
+      const response = await axios.get("https://uniback.onrender.com/api/usuarios"); 
       setData(response.data);
       setFilteredData(response.data);
     } catch (error) {
@@ -41,7 +39,9 @@ function Usuarios() {
     }
   };
 
+  useEffect(() => {
     fetchData();
+  }, []); 
 
   const handleExport = () => {
     const cols = [
@@ -118,7 +118,7 @@ function Usuarios() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const postData = { ...editRecord };
-    const url = "http://localhost:3001/api/usuarios"; 
+    const url = "https://uniback.onrender.com/api/usuarios"; 
 
     try {
       if (editMode) {
@@ -165,9 +165,9 @@ function Usuarios() {
             onChange={handleSearchChange}
             sx={{ mb: 3, width: '300px' }}
           />
-          <Button variant="contained" onClick={handleOpenModal} sx={{ backgroundColor: "#d01c35" }}>
+          {/* <Button variant="contained" onClick={handleOpenModal} sx={{ backgroundColor: "#d01c35" }}>
             Agregar Registro
-          </Button>
+          </Button> */}
         </Box>
         <Box sx ={{display:"flex",justifyContent:"flex-end"}}>
             <Tooltip title="Exportar a excel">
@@ -268,14 +268,18 @@ function Usuarios() {
                 fullWidth
                 sx={{ mb: 2 }}
               />
-              <TextField
-                name="rol"
-                label="Rol"
-                value={editRecord.rol || ""}
-                onChange={handleInputChange}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Rol</InputLabel>
+                <Select
+                  name="rol"
+                  value={editRecord.rol || ""}
+                  onChange={handleInputChange}
+                  label="Rol"
+                >
+                  <MenuItem value="admin">Admin</MenuItem>
+                  <MenuItem value="estudiante">Estudiante</MenuItem>
+                </Select>
+              </FormControl>
             </form>
           </DialogContent>
           <DialogActions>

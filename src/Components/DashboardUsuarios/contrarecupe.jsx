@@ -58,7 +58,7 @@ const Contrarecupe = () => {
     };
 
     try {
-      const response = await axios.put('http://localhost:3001/api/resetPassword', passwordData);
+      const response = await axios.put('https://uniback.onrender.com/api/resetPassword', passwordData);
       console.log('Contraseña actualizada:', response.data);
       alert('Contraseña actualizada con éxito.');
       navigate('/login')

@@ -64,7 +64,7 @@ function Prestamos() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/equipos");
+      const response = await axios.get("https://uniback.onrender.com/api/equipos");
       const availableData = response.data.filter(item => item.estado === "disponible");
       setData(availableData);
       setFilteredData(availableData);
@@ -120,7 +120,7 @@ function Prestamos() {
           
         };
     
-        const response = await axios.post("http://localhost:3001/api/prestamos", payload);
+        const response = await axios.post("https://uniback.onrender.com/api/prestamos", payload);
     
         if (response.status === 201) {
           toast.success("Prestamo realizado con éxito!",{autoClose:2000});

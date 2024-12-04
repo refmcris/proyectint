@@ -9,5 +9,15 @@
         "id":2,
         "image":"https://campusvirtual.univalle.edu.co/moodle/pluginfile.php/1/theme_mooveuv/sliderimage4/1729695369/SAB2024B-1500x500.jpg",
         "alt": "Informacion boletin del saber"
+    },
+    {
+        "id":3,
+        "image":"https://res.cloudinary.com/ds6fxjeak/image/upload/v1733340709/slide3_oaevjq.jpg",
+        "alt": "Imagen de referencia a equipos"
+    },
+    {
+        "id":4,
+        "image":"https://res.cloudinary.com/ds6fxjeak/image/upload/v1733340722/concept-electrician-electrical-tools-top-view-1-1-1500x500_fvefxt.jpg",
+        "alt": "Imagen de referencia a equipos"
     }
 ]
